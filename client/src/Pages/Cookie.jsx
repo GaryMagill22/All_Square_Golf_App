@@ -3,11 +3,11 @@ import React, { useEffect } from 'react'
 import Register from './Register';
 
 const Cookie = () => {
-    useEffect(() => {
-        axios.get(`http://localhost:8000/api/cookie`, { withCredentials: true })
-            .then(res => console.log("success"))
-            .catch()
-    })
+    // useEffect(() => {
+    //     axios.get(`http://localhost:8000/api/cookie`, { withCredentials: true })
+    //         .then(response => console.log("success"))
+    //         .catch(err => console.log(err));
+    // }, [])
     return (
         <div>
             <Register />

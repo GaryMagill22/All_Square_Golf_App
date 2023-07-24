@@ -73,7 +73,7 @@ module.exports.apiTest = (req, res) => {
     res.json({ message: "succesful wooot woooot!" })
 }
 
-// Create new User
+// Create new User //not using this one
 module.exports.createUser = (req, res) => {
     User.create(req.body)
         .then(user => res.json(user))

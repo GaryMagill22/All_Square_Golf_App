@@ -6,6 +6,7 @@ import { useNavigate, Link } from 'react-router-dom'; // Importing useNavigate h
 const ScoreCard = () => {
     const navigate = useNavigate(); // Creating a navigation function using useNavigate
     const [user, setUser] = useState([]); // State variable for the user data
+    const [bettingAmount, setBettingAmount] = useState(0); // State for how much money betting.
     const [players, setPlayers] = useState(() => { // State variable for player data fetched from local storage
         const data = localStorage.getItem('players');
         return data ? JSON.parse(data) : []
@@ -55,6 +56,8 @@ const ScoreCard = () => {
         }
         return points;
     };
+
+
 
     // useEffect to fetch user data from the server
     useEffect(() => {
@@ -195,6 +198,7 @@ const ScoreCard = () => {
                     </table>
                     <div className="row justify-content-center">
                         <div className="col-6 text-center">
+
                             <button style={{ margin: "20px" }} type="submit" onClick={submitHandler} className="btn btn-success">Submit Score</button>
                         </div>
                     </div>
@@ -208,7 +212,7 @@ const ScoreCard = () => {
                                             <th>Player</th>
                                             <th id="totalScore">Score</th>
                                             <th>Points</th>
-                                            <th>Money Earned</th>
+
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -216,26 +220,23 @@ const ScoreCard = () => {
                                             <td>{user.username}</td>
                                             <td>{scoreUpdating[0]}</td>
                                             <td>{calculatedPoints[0].points}</td>
-                                            <td>$50</td>
+
                                         </tr>
 
                                         <tr>
                                             <td>{players[1]}</td>
                                             <td>{scoreUpdating[1]}</td>
                                             <td>{calculatedPoints[1].points}</td>
-                                            <td>$45</td>
                                         </tr>
                                         <tr>
                                             <td>{players[2]}</td>
                                             <td>{scoreUpdating[2]}</td>
                                             <td>{calculatedPoints[2].points}</td>
-                                            <td>$45</td>
                                         </tr>
                                         <tr>
                                             <td>{players[3]}</td>
                                             <td>{scoreUpdating[3]}</td>
                                             <td>{calculatedPoints[3].points}</td>
-                                            <td>$45</td>
                                         </tr>
                                     </tbody>
                                 </table>

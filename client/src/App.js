@@ -6,7 +6,7 @@ import Home from './Pages/Home';
 import GamesPage from './Pages/GamesPage';
 import LobbyPage from './Pages/LobbyPage';
 import ProfileCard from './Components/ProfileCard';
-import Register from './Pages/Register';
+// import Register from './Pages/Register';
 import Cookie from './Pages/Cookie';
 import Login from './Pages/Login';
 import DashBoard from './Pages/DashBoard';
@@ -34,7 +34,7 @@ function App() {
           <Route path="/register" element={<Cookie />} />
           <Route path="/" element={<DashBoard />} />
           <Route path="/users" element={<Home />} />
-          <Route path="/register" element={<Register />} />
+          {/* <Route path="/register" element={<Register />} /> */}
           <Route path="/login" element={<Login />} />
           <Route path="/home" element={<Home />} />
           <Route path="/home" element={<BottomNav />} />

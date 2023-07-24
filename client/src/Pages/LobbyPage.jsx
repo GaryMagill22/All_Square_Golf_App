@@ -20,6 +20,8 @@ const LobbyPage = () => {
     const [players, setPlayers] = useState(['', '', '', '']);
 
     const [user, setUser] = useState([]);
+    const [bettingAmount, setBettingAmount] = useState(0); // State for how much money betting.
+
 
 
     const navigate = useNavigate()
@@ -110,6 +112,12 @@ const LobbyPage = () => {
     }
 
 
+    const handleBetSubmit = (e) => {
+        e.preventDefault();
+        // Handle form submission here (e.g., submit the betAmount to the server)
+        console.log(bettingAmount);
+    };
+
     return (
         <div>
             <div>
@@ -173,6 +181,20 @@ const LobbyPage = () => {
                     <button type="submit" className="btn btn-primary">Submit</button>
                 </form>
             </div>
+            <form onSubmit={handleBetSubmit}>
+                <div className="mb-3">
+                    <label htmlFor="betAmount" className="form-label">Money to bet (18 Holes)</label>
+                    <input
+                        type="number"
+                        className="form-control"
+                        name="bettingAmount"
+                        value={bettingAmount}
+                        onChange={(e) => setBettingAmount(parseInt(e.target.value))}
+                        placeholder="Enter amount"
+                    />
+                </div>
+                <button type="submit" className="btn btn-primary">Submit Bet</button>
+            </form>
             <div>
                 <Link to="/home" className="btn btn-outline-primary btn-sm m-2">
                     Home

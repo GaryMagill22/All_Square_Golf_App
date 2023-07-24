@@ -4,7 +4,7 @@ const UserController = require("../controllers/user.controller");
 const { authenticate } = require('../config/jwt.config');
 const userRoutes = express.Router()
 
-userRoutes.post('/register/new', UserController.register)
+
 userRoutes.get(`/allUsers`, authenticate, UserController.index)
 // app.get(`/api/cookie`, UserController.cookie)
 // /login endpoint is hte endpoint the frontend will hit
@@ -14,7 +14,6 @@ userRoutes.delete(`/logout`, UserController.logout)
 userRoutes.get(`/getUser`, authenticate, UserController.getUser)
 userRoutes.get('/testingAuthFunc', authenticate, (req, res) => res.json('hi'))
 
-module.exports = userRoutes
 
 
 
@@ -22,12 +21,12 @@ module.exports = userRoutes
 
 
 // Get All Users
-// userRoutes.get('/', UserController.getAllUsers)
+userRoutes.get('/', UserController.getAllUsers)
 
 
 
 // Create User
-
+userRoutes.post('/register/new', UserController.register)
 
 
 
@@ -40,7 +39,7 @@ module.exports = userRoutes
 
 
 // Get One User
-// userRoutes.get(`/:id`, UserController.getOneUser)
+userRoutes.get(`/:id`, UserController.getOneUser)
 
 
 
