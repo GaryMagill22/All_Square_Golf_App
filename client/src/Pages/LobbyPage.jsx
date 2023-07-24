@@ -178,23 +178,21 @@ const LobbyPage = () => {
                         <label htmlFor="player4" className="form-label">Player 4</label>
                         <input type="text" className="form-control" id="player4" value={players[3]} onChange={(e) => handlePlayerChange(3, e.target.value)} />
                     </div>
+                    <div className="mb-3">
+                        <label htmlFor="betAmount" className="form-label">Money to bet (18 Holes)</label>
+                        <input
+                            type="number"
+                            className="form-control"
+                            name="bettingAmount"
+                            value={bettingAmount}
+                            onChange={(e) => setBettingAmount(parseInt(e.target.value))}
+                            placeholder="Enter amount"
+                        />
+                    </div>
                     <button type="submit" className="btn btn-primary">Submit</button>
                 </form>
             </div>
-            <form onSubmit={handleBetSubmit}>
-                <div className="mb-3">
-                    <label htmlFor="betAmount" className="form-label">Money to bet (18 Holes)</label>
-                    <input
-                        type="number"
-                        className="form-control"
-                        name="bettingAmount"
-                        value={bettingAmount}
-                        onChange={(e) => setBettingAmount(parseInt(e.target.value))}
-                        placeholder="Enter amount"
-                    />
-                </div>
-                <button type="submit" className="btn btn-primary">Submit Bet</button>
-            </form>
+
             <div>
                 <Link to="/home" className="btn btn-outline-primary btn-sm m-2">
                     Home
