@@ -3,10 +3,11 @@ import { useState, useEffect } from 'react'
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Link, useNavigate } from 'react-router-dom';
+import ScoreCard from '../Components/ScoreCard';
 
 
 
-const LobbyPage = () => {
+const LobbyPage = (props) => {
     // state for setting what game user picks
     const [gamePicked, setGamePicked] = useState('');
     // state for setting what course user picks
@@ -21,9 +22,6 @@ const LobbyPage = () => {
 
     const [user, setUser] = useState([]);
     const [bettingAmount, setBettingAmount] = useState(0); // State for how much money betting.
-
-
-
     const navigate = useNavigate()
 
 
@@ -39,7 +37,7 @@ const LobbyPage = () => {
             });
     }, []);
 
-    // Grabbing user that is logged in and using data in session
+    // Grabbing user that is logged in and using data in local Storage
     useEffect(() => {
         axios
             .get(`http://localhost:8000/api/users/getUser`, { withCredentials: true })
@@ -53,7 +51,21 @@ const LobbyPage = () => {
         }
     }, []);
 
+    //CHANGES MADE HERE
+    //=====================================================================================================
 
+
+    const handleBettingAmount = () => {
+        // Store the betting amount in local storage
+        localStorage.setItem('bettingAmount', JSON.stringify(bettingAmount));
+
+    }
+
+
+
+
+
+    //=====================================================================================================
     // GET ALL COURSES
     useEffect(() => {
         axios.get('http://localhost:8000/api/courses')
@@ -75,6 +87,7 @@ const LobbyPage = () => {
             .then(res => setUser(res.data))
             .catch()
     }, [])
+
 
 
 
@@ -105,18 +118,16 @@ const LobbyPage = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        console.log(players, 'checking if the user got added to localst')
         // Store the player data in local storage
         localStorage.setItem('players', JSON.stringify(players));
-        navigate('/new/game')
+        handleBettingAmount()
+        navigate('/new/game');
+
+        // navigate('/new/game')
     }
 
 
-    const handleBetSubmit = (e) => {
-        e.preventDefault();
-        // Handle form submission here (e.g., submit the betAmount to the server)
-        console.log(bettingAmount);
-    };
+
 
     return (
         <div>
@@ -179,19 +190,20 @@ const LobbyPage = () => {
                         <input type="text" className="form-control" id="player4" value={players[3]} onChange={(e) => handlePlayerChange(3, e.target.value)} />
                     </div>
                     <div className="mb-3">
-                        <label htmlFor="betAmount" className="form-label">Money to bet (18 Holes)</label>
+                        <label htmlFor="bettingAmount" className="form-label">Money to bet (18 Holes)</label>
                         <input
                             type="number"
                             className="form-control"
                             name="bettingAmount"
                             value={bettingAmount}
                             onChange={(e) => setBettingAmount(parseInt(e.target.value))}
-                            placeholder="Enter amount"
+
                         />
                     </div>
                     <button type="submit" className="btn btn-primary">Submit</button>
                 </form>
             </div>
+
 
             <div>
                 <Link to="/home" className="btn btn-outline-primary btn-sm m-2">

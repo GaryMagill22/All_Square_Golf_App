@@ -6,7 +6,6 @@ import { useNavigate, Link } from 'react-router-dom'; // Importing useNavigate h
 const ScoreCard = () => {
     const navigate = useNavigate(); // Creating a navigation function using useNavigate
     const [user, setUser] = useState([]); // State variable for the user data
-    const [bettingAmount, setBettingAmount] = useState(0); // State for how much money betting.
     const [players, setPlayers] = useState(() => { // State variable for player data fetched from local storage
         const data = localStorage.getItem('players');
         return data ? JSON.parse(data) : []
@@ -23,6 +22,15 @@ const ScoreCard = () => {
     const [currentHoleNumber, setCurrentHoleNumber] = useState(1); // State variable to keep track of the current hole number
     const [isSubmitted, setIsSubmitted] = useState(false); // State variable to track if the score is submitted
     const [totalScores, setTotalScores] = useState({}); // State variable for the total scores
+    const [winners, setWinners] = useState([]); // State variable to track winners
+    const [bettingAmount, setBettingAmount] = useState(0); // State for how much money betting.
+    const [gamePicked, setGamePicked] = useState();
+    const [coursePicked, setCoursePicked] = useState('');
+
+
+    const [roundData, setRoundData] = useState({});
+
+
 
     // Function to handle score update for each player
     const handleScoreUpdate = (player, score) => {
@@ -112,14 +120,74 @@ const ScoreCard = () => {
         });
 
         // Check if it's the last hole (hole 18) and set isSubmitted to true
-        if (currentHoleNumber === 18) {
+        if (currentHoleNumber >= 18) {
             setIsSubmitted(true);
+            // handleWinners()
         }
     };
 
     // Extracting the scores from the totalScores object as an array
     const scoreUpdating = Object.values(totalScores);
 
+    const handleWinners = () => {
+
+
+
+        const maxPoints = Math.max(...calculatedPoints.map((player) => player.points)); //this will return a winner
+        // const winners = [];
+
+        // for (const player of calculatedPoints) {
+        //     if (player.points === maxPoints) {
+        //         winners.push(player.player); //if there is a tie, we add to the winners which is good
+
+        //     }
+        // }
+        const playersWon = calculatedPoints.filter(player => player.points === maxPoints);
+        console.log(playersWon);
+        //setWinners((prev) => ([...prev, playersWon]));
+        const earnings = Math.floor(bettingAmount / playersWon.length)
+        // setWinners(playersWon)
+        return { winners: playersWon, payout: earnings }//{ winners: [], payout: int}
+
+
+    };
+    useEffect(() => {
+        // Retrieve betting amount from local storage
+        const storedBettingAmount = localStorage.getItem('bettingAmount');
+        if (storedBettingAmount) {
+            setBettingAmount(parseInt(JSON.parse(storedBettingAmount)) * (players.length - 1));
+        }
+    }, []);
+
+    console.log(bettingAmount);
+
+    // Saving Round data and posting to database
+    const saveRoundData = async () => {
+        try {
+            // Prepare the round data to be sent to the backend
+            const roundData = {
+                players: calculatedPoints.map(player => ({
+                    name: player.player,
+                    score: totalScores[player.player],
+                    points: player.points,
+                })),
+                winners: handleWinners().winners.map(player => player.player),
+                payout: handleWinners().payout,
+                amountBet: bettingAmount,
+                game: gamePicked,
+                coursePicked: coursePicked,
+            };
+            console.log(roundData);
+            // Make a POST request to the backend to save the round data
+            await axios.post('http://localhost:8000/api/rounds/new', roundData);
+
+
+        } catch (error) {
+            console.log('Error saving round data:', error);
+            // Handle any errors that might occur during the API call
+            // ...
+        }
+    };
 
 
     return (
@@ -255,7 +323,6 @@ const ScoreCard = () => {
                                 <th>Players</th>
                                 <th>Total Score</th>
                                 <th>Total Points</th>
-                                <th>Total Money Earned</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -263,38 +330,47 @@ const ScoreCard = () => {
                                 <td>{user.username}</td>
                                 <td>{totalScores[players[0]]}</td>
                                 <td>{calculatedPoints[0].points}</td>
-                                <td></td>
                             </tr>
                             <tr>
                                 <td>{players[1]}</td>
                                 <td>{totalScores[players[1]]}</td>
                                 <td>{calculatedPoints[1].points}</td>
-                                <td></td>
+
                             </tr>
                             <tr>
                                 <td>{players[2]}</td>
                                 <td>{totalScores[players[2]]}</td>
                                 <td>{calculatedPoints[2].points}</td>
-                                <td></td>
                             </tr>
                             <tr>
                                 <td>{players[3]}</td>
                                 <td>{totalScores[players[3]]}</td>
                                 <td>{calculatedPoints[3].points}</td>
-                                <td></td>
                             </tr>
                         </tbody>
                     </table>
+                    <div style={{ textAlign: "center" }} >
+                        {handleWinners().length === 1 ? (
+
+                            <p colSpan="4">Winner: {handleWinners().winners[0]}</p>
+
+                        ) : (
+
+                            <p colSpan="4">Winners: {handleWinners().winners.map(player => player.player).join(", ")} earned {handleWinners().payout}</p>
+                        )}
+                        <button className="btn btn-primary" onClick={saveRoundData}>
+                            Save Round
+                        </button>
+                    </div>
                 </div>
+
             }
             <Link to="/home" className="btn btn-outline-primary btn-sm m-2">
                 Home
             </Link>
-        </main>
+        </main >
 
     )
 };
 
 export default ScoreCard;
-
-

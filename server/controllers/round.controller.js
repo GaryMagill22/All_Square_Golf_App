@@ -5,46 +5,39 @@ const Round = require("../models/round.model")
 
 
 
-
 // Create new Round
 module.exports.createRound = (req, res) => {
+    const roundData = req.body;
+    console.log(req.body);
     Round.create(req.body)
-        .then(game => res.json(game))
-        .catch(err => res.status(400).json(err))
+        .then(round => res.json(round))
+        .catch(err => res.status(400).json(err));
+};
 
-
-}
-
-
-// GeT all Rounds
+// Get all Rounds
 module.exports.getAllRounds = (req, res) => {
-    Round.find({})
-        .then(game => res.json(game))
-        .catch(err => res.json(err))
-}
-
+    Round.find()
+        .then(rounds => res.json(rounds))
+        .catch(err => res.json(err));
+};
 
 // Read One Round
 module.exports.getOneRound = (req, res) => {
-    // const idFromParams = req.params.id
     Round.findById(req.params.id)
-        .then((oneRound) => { res.json(oneRound) })
-        .catch((err) => { res.json({ err: err }) })
-}
+        .then(oneRound => res.json(oneRound))
+        .catch(err => res.json({ err: err }));
+};
 
-
-//Update one Round
+// Update one Round
 module.exports.updateRound = (req, res) => {
-    Game.findOneAndUpdate({ _id: req.params.id }, req.body, { runValidators: true })
+    Round.findOneAndUpdate({ _id: req.params.id }, req.body, { runValidators: true })
         .then(updatedRound => res.json(updatedRound))
-        .catch((err) => res.status(400).json(err))
-}
-
-
+        .catch(err => res.status(400).json(err));
+};
 
 // Delete one Round
 module.exports.deleteRound = (req, res) => {
-    Game.deleteOne({ _id: req.params.id })
+    Round.deleteOne({ _id: req.params.id })
         .then(deleteRound => res.json(deleteRound))
-        .catch(err => res.json(err))
-}
+        .catch(err => res.json(err));
+};

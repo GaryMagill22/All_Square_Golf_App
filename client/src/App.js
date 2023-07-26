@@ -1,6 +1,6 @@
 import './App.css';
 import { Routes, Route, BrowserRouter, Link } from 'react-router-dom';
-import React from 'react';
+import React, { useState } from 'react';
 import BottomNav from './Components/BottomNav';
 import Home from './Pages/Home';
 import GamesPage from './Pages/GamesPage';
@@ -17,8 +17,6 @@ import ScoreCard from './Components/ScoreCard';
 
 
 function App() {
-
-
 
 
   return (

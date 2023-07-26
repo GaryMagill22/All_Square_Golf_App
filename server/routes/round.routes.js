@@ -4,24 +4,24 @@ const roundRoutes = express.Router()
 
 
 
-// Create Round
-roundRoutes.post('/api/round/new', RoundController.createRound)
 
+
+// Create Round using RoundController
+roundRoutes.post('/new', RoundController.createRound);
 
 // Get All Rounds
-roundRoutes.get('/api/rounds', RoundController.getAllRounds);
-
+roundRoutes.get('/', RoundController.getAllRounds);
 
 // Get One Round
-roundRoutes.get(`/:id`, RoundController.getOneRound)
-
+roundRoutes.get(`/:id`, RoundController.getOneRound);
 
 // Update Round
-roundRoutes.put('/:id', RoundController.updateRound)
-
+roundRoutes.put('/:id', RoundController.updateRound);
 
 // Delete User
 roundRoutes.delete('/:id', RoundController.deleteRound);
+
+
 
 
 
