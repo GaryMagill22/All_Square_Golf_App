@@ -2,7 +2,6 @@ import axios from 'axios'; // Importing Axios for making HTTP requests
 import 'bootstrap/dist/css/bootstrap.css'; // Importing Bootstrap CSS for styling
 import React, { useEffect, useState } from 'react'; // Importing necessary React components
 import { useNavigate, Link } from 'react-router-dom'; // Importing useNavigate hook from react-router-dom
-
 const ScoreCard = () => {
     const navigate = useNavigate(); // Creating a navigation function using useNavigate
     const [user, setUser] = useState([]); // State variable for the user data
@@ -122,6 +121,7 @@ const ScoreCard = () => {
         // Check if it's the last hole (hole 18) and set isSubmitted to true
         if (currentHoleNumber >= 18) {
             setIsSubmitted(true);
+
             // handleWinners()
         }
     };
@@ -164,7 +164,7 @@ const ScoreCard = () => {
     // Saving Round data and posting to database
     const saveRoundData = async () => {
         try {
-            // Prepare the round data to be sent to the backend
+            // Create Object to save rounds
             const roundData = {
                 players: calculatedPoints.map(player => ({
                     name: player.player,
@@ -177,9 +177,11 @@ const ScoreCard = () => {
                 game: gamePicked,
                 coursePicked: coursePicked,
             };
-            console.log(roundData);
+
+            // console.log(roundData);
             // Make a POST request to the backend to save the round data
             await axios.post('http://localhost:8000/api/rounds/new', roundData);
+            navigate("/home");
 
 
         } catch (error) {
@@ -352,11 +354,11 @@ const ScoreCard = () => {
                     <div style={{ textAlign: "center" }} >
                         {handleWinners().length === 1 ? (
 
-                            <p colSpan="4">Winner: {handleWinners().winners[0]}</p>
+                            <h3 colSpan="4">Winner: {handleWinners().winners[0]}</h3>
 
                         ) : (
 
-                            <p colSpan="4">Winners: {handleWinners().winners.map(player => player.player).join(", ")} earned {handleWinners().payout}</p>
+                            <h3 style={{ color: "red" }} colSpan="4">Winners: {handleWinners().winners.map(player => player.player).join(", ")} won ${handleWinners().payout}</h3>
                         )}
                         <button className="btn btn-primary" onClick={saveRoundData}>
                             Save Round

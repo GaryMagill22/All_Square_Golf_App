@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 
 
@@ -60,6 +61,9 @@ const GamesPage = () => {
             </div>
           );
         })}
+      <Link to="/home" className="btn btn-outline-primary btn-sm m-2">
+        Home
+      </Link>
     </div>
   );
 };

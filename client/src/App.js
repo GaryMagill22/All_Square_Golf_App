@@ -13,6 +13,7 @@ import DashBoard from './Pages/DashBoard';
 import DisplayUsers from './Pages/DisplayUsers';
 import UserInfo from './Pages/UserInfo';
 import ScoreCard from './Components/ScoreCard';
+import DisplayRounds from './Pages/DisplayRounds';
 
 
 
@@ -43,6 +44,7 @@ function App() {
           <Route path="/new/round" element={<LobbyPage />} />
           <Route path="/profile" element={<ProfileCard />} />
           <Route path="/new/game" element={<ScoreCard />} />
+          <Route path="/rounds" element={<DisplayRounds />} />
 
         </Routes>
       </BrowserRouter>
