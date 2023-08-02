@@ -2,6 +2,14 @@ import axios from 'axios'; // Importing Axios for making HTTP requests
 import 'bootstrap/dist/css/bootstrap.css'; // Importing Bootstrap CSS for styling
 import React, { useEffect, useState } from 'react'; // Importing necessary React components
 import { useNavigate, Link } from 'react-router-dom'; // Importing useNavigate hook from react-router-dom
+
+
+
+
+
+
+
+
 const ScoreCard = () => {
     const navigate = useNavigate(); // Creating a navigation function using useNavigate
     const [user, setUser] = useState([]); // State variable for the user data
@@ -29,7 +37,7 @@ const ScoreCard = () => {
 
     const [roundData, setRoundData] = useState({});
 
-
+    const scoreUpdating = Object.values(totalScores);
 
     // Function to handle score update for each player
     const handleScoreUpdate = (player, score) => {
@@ -82,12 +90,32 @@ const ScoreCard = () => {
         }
     }, []);
 
-    // Function to handle form submission
-    const submitHandler = (e) => {
+    // Define handleWinners function before it's being used
+    const handleWinners = () => {
+        const maxPoints = Math.max(...calculatedPoints.map((player) => player.points));
+        const playersWon = calculatedPoints.filter(player => player.points === maxPoints);
+        const earnings = Math.floor(bettingAmount / playersWon.length)
+
+
+        return { winners: playersWon, payout: earnings }
+    };
+
+    const executePayouts = async (gameResult) => {
+        try {
+            await axios.post(`http://localhost:8000/api/execute-payouts`, gameResult);
+            // This URL should be replaced with the endpoint in your backend that handles payouts
+        } catch (error) {
+            console.error(`Error while executing payouts: ${error}`);
+        }
+    };
+
+
+
+
+    const submitHandler = async (e) => {
         e.preventDefault();
 
-        // Execute the function to calculate total scores
-        handleTotalScore();
+
 
         // Calculate points for each player based on their total scores
         const updatedCalculatedPoints = calculatedPoints.map((playerObj) => {
@@ -104,64 +132,71 @@ const ScoreCard = () => {
         // Update the current hole number
         setCurrentHoleNumber(currentHoleNumber => currentHoleNumber + 1);
 
+        // Execute the function to calculate total scores
+        handleTotalScore();
+
         // Update the calculated points
         setCalculatedPoints(updatedCalculatedPoints);
 
         // Store the submitted scores in session storage
         sessionStorage.setItem('submittedScores', JSON.stringify(totalScores));
 
-        // Reset the player scores for the next round
         setPlayerScores({
             [user.username]: 0,
             [players[1]]: 0,
             [players[2]]: 0,
             [players[3]]: 0
         });
-
         // Check if it's the last hole (hole 18) and set isSubmitted to true
         if (currentHoleNumber >= 18) {
             setIsSubmitted(true);
 
-            // handleWinners()
+            const gameResult = handleWinners();
+
+            // Await here to make sure the payouts are executed before moving to next lines
+            await executePayouts(gameResult);
+            // Now we should save round data since the payouts have been calculated and sent
+
+
         }
-    };
-
-    // Extracting the scores from the totalScores object as an array
-    const scoreUpdating = Object.values(totalScores);
-
-    const handleWinners = () => {
 
 
 
-        const maxPoints = Math.max(...calculatedPoints.map((player) => player.points)); //this will return a winner
-        // const winners = [];
+        // Extracting the scores from the totalScores object as an array
 
-        // for (const player of calculatedPoints) {
-        //     if (player.points === maxPoints) {
-        //         winners.push(player.player); //if there is a tie, we add to the winners which is good
-
-        //     }
-        // }
-        const playersWon = calculatedPoints.filter(player => player.points === maxPoints);
-        console.log(playersWon);
-        //setWinners((prev) => ([...prev, playersWon]));
-        const earnings = Math.floor(bettingAmount / playersWon.length)
-        // setWinners(playersWon)
-        return { winners: playersWon, payout: earnings }//{ winners: [], payout: int}
+        // const handleWinners = () => {
 
 
-    };
+
+        //     const maxPoints = Math.max(...calculatedPoints.map((player) => player.points)); //this will return a winner
+        //     // const winners = [];
+
+        //     // for (const player of calculatedPoints) {
+        //     //     if (player.points === maxPoints) {
+        //     //         winners.push(player.player); //if there is a tie, we add to the winners which is good
+
+        //     //     }
+        //     // }
+        //     const playersWon = calculatedPoints.filter(player => player.points === maxPoints);
+        //     console.log(playersWon);
+        //     //setWinners((prev) => ([...prev, playersWon]));
+        //     const earnings = Math.floor(bettingAmount / playersWon.length)
+        //     // setWinners(playersWon)
+        //     return { winners: playersWon, payout: earnings }//{ winners: [], payout: int}
+
+
+        // };
+
+
+    }
     useEffect(() => {
-        // Retrieve betting amount from local storage
         const storedBettingAmount = localStorage.getItem('bettingAmount');
         if (storedBettingAmount) {
             setBettingAmount(parseInt(JSON.parse(storedBettingAmount)) * (players.length - 1));
         }
     }, []);
 
-    console.log(bettingAmount);
 
-    // Saving Round data and posting to database
     const saveRoundData = async () => {
         try {
             // Create Object to save rounds
@@ -177,7 +212,11 @@ const ScoreCard = () => {
                 game: gamePicked,
                 coursePicked: coursePicked,
             };
-
+            // // Create payout data object
+            const payoutData = {
+                userId: user.id,  // The ID of the user who won
+                amount: handleWinners().payout // The amount to pay out
+            }
             // console.log(roundData);
             // Make a POST request to the backend to save the round data
             await axios.post('http://localhost:8000/api/rounds/new', roundData);
@@ -190,7 +229,6 @@ const ScoreCard = () => {
             // ...
         }
     };
-
 
     return (
         <main>
@@ -373,6 +411,97 @@ const ScoreCard = () => {
         </main >
 
     )
-};
 
+
+    // ============================================================================
+    // Function to handle form submission
+    // const submitHandler = async (e) => {
+    //     e.preventDefault();
+
+    //     // Execute the function to calculate total scores
+    //     handleTotalScore();
+
+    //     // Calculate points for each player based on their total scores
+    //     const updatedCalculatedPoints = calculatedPoints.map((playerObj) => {
+    //         const playerName = playerObj.player;
+    //         const currPoints = playerObj.points;
+    //         const newPoints = handleTotalPoints(playerScores[playerObj.player], playerObj.points);
+
+    //         return {
+    //             player: playerName,
+    //             points: newPoints
+    //         }
+    //     });
+
+    //     // Update the current hole number
+    //     setCurrentHoleNumber(currentHoleNumber => currentHoleNumber + 1);
+
+    //     // Update the calculated points
+    //     setCalculatedPoints(updatedCalculatedPoints);
+
+    //     // Store the submitted scores in session storage
+    //     sessionStorage.setItem('submittedScores', JSON.stringify(totalScores));
+
+    //     // Reset the player scores for the next round
+    //     setPlayerScores({
+    //         [user.username]: 0,
+    //         [players[1]]: 0,
+    //         [players[2]]: 0,
+    //         [players[3]]: 0
+    //     });
+
+    //     // Check if it's the last hole (hole 18) and set isSubmitted to true
+    //     if (currentHoleNumber >= 18) {
+    //         setIsSubmitted(true);
+
+    //         const gameResult = handleWinners();
+
+    //         // Await here to make sure the payouts are executed before moving to next lines
+    //         await executePayouts(gameResult);
+    //         // Now we should save round data since the payouts have been calculated and sent
+    //         await saveRoundData();
+    //     };
+
+    //     const executePayouts = async (gameResult) => {
+    //         try {
+    //             await axios.post(`http://localhost:8000/api/execute-payouts`, gameResult);
+    //             // This URL should be replaced with the endpoint in your backend that handles payouts
+    //         } catch (error) {
+    //             console.error(`Error while executing payouts: ${error}`);
+    //         }
+    //     };
+
+    //     const handleWinners = () => {
+    //         const maxPoints = Math.max(...calculatedPoints.map((player) => player.points));
+    //         const playersWon = calculatedPoints.filter(player => player.points === maxPoints);
+    //         const earnings = Math.floor(bettingAmount / playersWon.length)
+
+    //         return { winners: playersWon, payout: earnings }
+    //     };
+
+    //     // Extracting the scores from the totalScores object as an array
+
+
+
+
+    //     const maxPoints = Math.max(...calculatedPoints.map((player) => player.points)); //this will return a winner
+    //     // const winners = [];
+
+    //     // for (const player of calculatedPoints) {
+    //     //     if (player.points === maxPoints) {
+    //     //         winners.push(player.player); //if there is a tie, we add to the winners which is good
+
+    //     //     }
+    //     // }
+    //     const playersWon = calculatedPoints.filter(player => player.points === maxPoints);
+    //     // console.log(playersWon);
+    //     //setWinners((prev) => ([...prev, playersWon]));
+    //     const earnings = Math.floor(bettingAmount / playersWon.length)
+    //     // setWinners(playersWon)
+    //     return { winners: playersWon, payout: earnings }//{ winners: [], payout: int}
+
+};
 export default ScoreCard;
+
+
+

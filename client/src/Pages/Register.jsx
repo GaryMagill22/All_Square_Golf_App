@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
-import axios from "axios"
-import { useNavigate, Link } from "react-router-dom"
+import React, { useState } from 'react';
+import axios from "axios";
+import { useNavigate, Link } from "react-router-dom";
+
 
 const Register = () => {
 
@@ -41,8 +42,10 @@ const Register = () => {
                 // console.log(err.res.data)
                 const errorResponse = err.response.data.errors;
                 const errMsgArr = []
-                for (const key of Object.keys(errorResponse)) {
-                    errMsgArr.push(errorResponse[key].message);
+                if (errorResponse) {
+                    for (const key of Object.keys(errorResponse)) {
+                        errMsgArr.push(errorResponse[key].message);
+                    }
                 }
                 setErrorsLog(errMsgArr);
             })
@@ -93,6 +96,7 @@ const Register = () => {
                 <button type="submit" className="btn btn-outline-danger">Register</button>
                 <button type="button" className="btn btn-outline-danger" ><Link to={"/"} >Back</Link></button>
             </form>
+
         </div>
     )
 }

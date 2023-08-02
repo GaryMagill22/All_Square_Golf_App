@@ -1,6 +1,10 @@
 import React, { useState } from 'react'
 import axios from "axios"
 import { useNavigate, Link } from 'react-router-dom'
+// import PayPalConnectButton from '../Components/PayPalConnectButton';
+
+
+
 
 const Login = () => {
     const [errorsLog, setErrorsLog] = useState('');
@@ -49,9 +53,10 @@ const Login = () => {
                 <button className="btn btn-outline-primary" type="submit"> Login </button>
             </form>
 
-
-
             <button type="button" className="btn btn-outline-danger" ><Link to={"/"} >Back</Link></button>
+            {/* <div>
+                <PayPalConnectButton />
+            </div> */}
         </div>
     )
 }

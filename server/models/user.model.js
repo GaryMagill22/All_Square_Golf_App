@@ -35,7 +35,11 @@ const UserSchema = new mongoose.Schema({
     round: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Rounds'
-    }]
+    }],
+    stripeCustomerId: {
+        type: String,
+        default: null,
+    }
 
 
 }, { timestamps: true });

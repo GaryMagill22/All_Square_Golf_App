@@ -2,29 +2,7 @@
 const { User } = require("../models/user.model")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
-
-
-
-
-module.exports.register = (req, res) => {
-    User.create(req.body)
-        .then(user => {
-            //creating that usertoken
-            const userToken = jwt.sign({ id: user._id }, process.env.SECRET_KEY);
-            // console.log(userToken)
-            //sending it back, it stores the user credentials, NOT the cookie
-            res
-                .cookie("usertoken", userToken, { httpOnly: true })
-                .json({ msg: "success", user: user });
-        })
-        .catch(err => {
-            console.log("in err")
-            console.log(err)
-            res.status(400).json(err)
-        });
-}
-
-
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 
 module.exports.index = (req, res) => {
@@ -47,7 +25,7 @@ module.exports.login = async (req, res) => {
         return res.sendStatus(400);
     }
     //create TOKEN, this token is unique, and the id
-    const userToken = jwt.sign({ id: user._id }, process.env.SECRET_KEY);
+    const userToken = jwt.sign({ id: user._id }, process.env.STRIPE_SECRET_KEY);
     //you ship that token in the response.cookie
     //cookie that gets stored on your browser, with the id value and the unique identifier
     res
@@ -115,3 +93,88 @@ module.exports.deleteUser = (req, res) => {
         .then(deleteUser => res.json(deleteUser))
         .catch(err => res.json(err))
 }
+
+
+
+
+
+// ===================  STRIPE CONTROLLER ROUTES TO CREATE USER   ==========================
+
+
+module.exports.register = async (req, res) => {
+    // Validate and sanitize req.body here as necessary
+    const user = new User(req.body);
+    try {
+        const doc = await user.save();
+        //creating that user token
+        const userToken = jwt.sign({ id: doc._id }, process.env.SECRET_KEY);
+        try {
+            // Create the Stripe customer
+            const customer = await stripe.customers.create({
+                email: req.body.email,
+            });
+            // Save the Stripe customer ID to the user document in the database
+            const result = await User.findByIdAndUpdate(
+                doc._id,
+                { stripeCustomerId: customer.id },
+                { new: true }
+            );
+            //sending it back, it stores the user credentials, NOT the cookie
+            res
+                .cookie("usertoken", userToken, { httpOnly: true })
+                .json({ msg: "success", user: result });
+        } catch (stripeErr) {
+            console.log("Stripe error:", stripeErr);
+            res.status(400).json({ error: "Stripe customer creation failed" });
+        }
+    } catch (err) {
+        console.log("User save error:", err);
+        res.status(400).json({ error: "User registration failed" });
+    }
+};
+
+
+
+// Method to charge user account and hold money in stripe account
+module.exports.chargeUser = async (req, res) => {
+    const userId = req.body.userId;
+    const amount = req.body.amount;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+        return res.status(400).json({ error: "User not found" });
+    }
+
+    // Make sure to convert the amount to cents as Stripe expects amounts to be in the smallest currency unit
+    const charge = await stripe.charges.create({
+        amount: amount * 100,
+        currency: 'usd',
+        customer: user.stripeCustomerId,
+    });
+
+    // Save the charge id to the database for reference
+
+    res.json({ msg: "Charge created successfully", charge });
+};
+
+
+// Medthod to dsitrubute and pay out winners
+module.exports.distributeWinnings = async (req, res) => {
+    const userId = req.body.userId;
+    const amount = req.body.amount;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+        return res.status(400).json({ error: "User not found" });
+    }
+
+    const transfer = await stripe.transfers.create({
+        amount: amount * 100,
+        currency: 'usd',
+        destination: user.stripeAccountId,
+    });
+
+    res.json({ msg: "Winnings distributed successfully", transfer });
+};

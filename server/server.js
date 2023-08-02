@@ -1,9 +1,10 @@
 const express = require('express');
 const app = express();
-const cors = require('cors')
-require('dotenv').config()
+const cors = require('cors');
+require('dotenv').config();
 const port = 8000;
-
+app.set("view engine", "ejs");
+app.use(express.static("public"));
 const cookieParser = require('cookie-parser');
 
 
@@ -43,8 +44,6 @@ require("./config/mongoose.config");
 // require("./routes/user.routes")(app)
 // const connectDB = require('./config/mongoose.config')
 // connectDB()
-
-
 
 
 
