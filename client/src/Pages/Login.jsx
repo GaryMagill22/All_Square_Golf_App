@@ -30,7 +30,7 @@ const Login = () => {
         axios.post(`http://localhost:8000/api/users/login`, user, { withCredentials: true })
             .then(res => navigate("/users"))
             .catch(err => {
-                console.log(err.response.data)
+                // console.log(err.response.data)
                 const errorResponse = err.response.data; // Get the errors from err.response.data
                 setErrorsLog(errorResponse.msg);
             })
@@ -54,9 +54,7 @@ const Login = () => {
             </form>
 
             <button type="button" className="btn btn-outline-danger" ><Link to={"/"} >Back</Link></button>
-            {/* <div>
-                <PayPalConnectButton />
-            </div> */}
+
         </div>
     )
 }

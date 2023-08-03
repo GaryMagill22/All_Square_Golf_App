@@ -37,18 +37,22 @@ const DisplayRounds = () => {
                 <table className="table table-bordered">
                     <thead>
                         <tr>
-                            <th>#</th>
+                            <th>Players</th>
                             <th>Round ID</th>
-                            <th>Round Data</th>
+                            <th>Score</th>
+                            <th>Winner</th>
+                            <th>Amount Bet</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {displayRounds.map((round, i) => (
+                        {displayRounds.map((round, i, score) => (
+                            console.log(score),
                             <tr key={round._id}>
+                                <td>{round.players.map(players => players.name)}</td>
                                 <td>{i + 1}</td>
-                                <td>{round._id}</td>
-                                <td>{JSON.stringify(round)}</td>
-                                {/* Add more table cells here for additional round details */}
+                                <td>{round.players.score}</td>
+                                <td>{round.winners}</td>
+                                <td>{round.amountBet}</td>
                             </tr>
                         ))}
                     </tbody>

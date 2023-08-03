@@ -35,6 +35,22 @@ userRoutes.post('/register/new', [
 });
 
 
+
+// Create User and Stripe Customer
+userRoutes.post('/login', [
+    check('email', 'Email is required').isEmail(),
+    check('password', 'Password is required').isLength({ min: 6 })
+], async (req, res) => {
+    // Handle the validation results
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    // If validation is successful, proceed to user registration
+    UserController.login(req, res);
+});
+
 userRoutes.post("/charge", UserController.chargeUser);
 
 
