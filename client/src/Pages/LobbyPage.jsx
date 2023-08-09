@@ -197,7 +197,6 @@ const LobbyPage = (props) => {
                             name="bettingAmount"
                             value={bettingAmount}
                             onChange={(e) => setBettingAmount(parseInt(e.target.value))}
-
                         />
                     </div>
                     <button type="submit" className="btn btn-primary">Submit</button>

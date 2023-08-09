@@ -40,17 +40,19 @@ const DisplayRounds = () => {
                             <th>Players</th>
                             <th>Round ID</th>
                             <th>Score</th>
+                            <th>Points</th>
                             <th>Winner</th>
                             <th>Amount Bet</th>
                         </tr>
                     </thead>
                     <tbody>
                         {displayRounds.map((round, i, score) => (
-                            console.log(score),
+                            console.log("this is the score:", score),
                             <tr key={round._id}>
                                 <td>{round.players.map(players => players.name)}</td>
                                 <td>{i + 1}</td>
-                                <td>{round.players.score}</td>
+                                <td>{round.players.map(players => players.score)}</td>
+                                <td>{round.players.map(players => players.points)}</td>
                                 <td>{round.winners}</td>
                                 <td>{round.amountBet}</td>
                             </tr>
