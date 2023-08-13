@@ -4,7 +4,7 @@ const UserController = require("../controllers/user.controller");
 const { authenticate } = require('../config/jwt.config');
 const userRoutes = express.Router()
 const { check, validationResult } = require('express-validator');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+// const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 userRoutes.get(`/allUsers`, authenticate, UserController.index)
 // app.get(`/api/cookie`, UserController.cookie)
 // /login endpoint is hte endpoint the frontend will hit
@@ -19,39 +19,39 @@ userRoutes.get('/testingAuthFunc', authenticate, (req, res) => res.json('hi'))
 
 
 
-// Create User and Stripe Customer
-userRoutes.post('/register/new', [
-    check('email', 'Email is required').isEmail(),
-    check('password', 'Password is required').isLength({ min: 6 })
-], async (req, res) => {
-    // Handle the validation results
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
+// // Create User and Stripe Customer
+// userRoutes.post('/register', [
+//     check('email', 'Email is required').isEmail(),
+//     check('password', 'Password is required').isLength({ min: 6 })
+// ], async (req, res) => {
+//     // Handle the validation results
+//     const errors = validationResult(req);
+//     if (!errors.isEmpty()) {
+//         return res.status(400).json({ errors: errors.array() });
+//     }
 
-    // If validation is successful, proceed to user registration
-    UserController.register(req, res);
-});
+//     // If validation is successful, proceed to user registration
+//     UserController.register(req, res);
+// });
 
 
 
-// Create User and Stripe Customer
-userRoutes.post('/login', [
-    check('email', 'Email is required').isEmail(),
-    check('password', 'Password is required').isLength({ min: 6 })
-], async (req, res) => {
-    // Handle the validation results
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
+// // Create User and Stripe Customer
+// userRoutes.post('/login', [
+//     check('email', 'Email is required').isEmail(),
+//     check('password', 'Password is required').isLength({ min: 6 })
+// ], async (req, res) => {
+//     // Handle the validation results
+//     const errors = validationResult(req);
+//     if (!errors.isEmpty()) {
+//         return res.status(400).json({ errors: errors.array() });
+//     }
 
-    // If validation is successful, proceed to user registration
-    UserController.login(req, res);
-});
+//     // If validation is successful, proceed to user registration
+//     UserController.login(req, res);
+// });
 
-userRoutes.post("/charge", UserController.chargeUser);
+// userRoutes.post("/charge", UserController.chargeUser);
 
 
 

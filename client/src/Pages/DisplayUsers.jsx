@@ -9,13 +9,17 @@ const DisplayUsers = () => {
     useEffect(() => {
         axios.get(`http://localhost:8000/api/users/allUsers`, { withCredentials: true })
             .then(res => setUsers(res.data))
-            .catch()
+            .catch(err => {
+                console.error("Error fetching users:", err)
+            })
     }, [])
 
     const logoutHandler = () => {
         axios.delete(`http://localhost:8000/api/users/logout`, { withCredentials: true })
             .then(res => navigate("/register"))
-            .catch()
+            .catch(err => {
+                console.error("Error during logout:", err)
+            })
     }
 
     return (

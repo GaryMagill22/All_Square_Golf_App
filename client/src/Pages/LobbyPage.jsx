@@ -94,14 +94,14 @@ const LobbyPage = (props) => {
 
     // Function to handle game selection
     const handleGameSelection = (game) => {
-        console.log(game)
+        // console.log(game)
         setGamePicked(game);
     };
 
 
     // Function to handle course selection
     const handleCourseSelection = (course) => {
-        console.log(course)
+        // console.log(course)
         setCoursePicked(course);
 
     };
@@ -112,7 +112,7 @@ const LobbyPage = (props) => {
         players[0] = user.username
         const updatedPlayers = [...players];
         updatedPlayers[index] = value;
-        console.log(updatedPlayers)
+        // console.log(updatedPlayers)
         setPlayers(updatedPlayers);
     }
 

@@ -9,7 +9,6 @@ import { useNavigate, Link } from 'react-router-dom'; // Importing useNavigate h
 
 
 
-
 const ScoreCard = () => {
     const navigate = useNavigate(); // Creating a navigation function using useNavigate
     const [user, setUser] = useState([]); // State variable for the user data
@@ -162,31 +161,6 @@ const ScoreCard = () => {
 
 
 
-        // Extracting the scores from the totalScores object as an array
-
-        // const handleWinners = () => {
-
-
-
-        //     const maxPoints = Math.max(...calculatedPoints.map((player) => player.points)); //this will return a winner
-        //     // const winners = [];
-
-        //     // for (const player of calculatedPoints) {
-        //     //     if (player.points === maxPoints) {
-        //     //         winners.push(player.player); //if there is a tie, we add to the winners which is good
-
-        //     //     }
-        //     // }
-        //     const playersWon = calculatedPoints.filter(player => player.points === maxPoints);
-        //     console.log(playersWon);
-        //     //setWinners((prev) => ([...prev, playersWon]));
-        //     const earnings = Math.floor(bettingAmount / playersWon.length)
-        //     // setWinners(playersWon)
-        //     return { winners: playersWon, payout: earnings }//{ winners: [], payout: int}
-
-
-        // };
-
 
     }
     useEffect(() => {
@@ -229,6 +203,11 @@ const ScoreCard = () => {
             // ...
         }
     };
+
+
+
+
+
 
     return (
         <main>
@@ -351,7 +330,10 @@ const ScoreCard = () => {
                             </div>
                         </div>
                     </div>
+
+
                 </section>
+
                 :
 
                 <div className="container mt-4">
@@ -402,6 +384,8 @@ const ScoreCard = () => {
                             Save Round
                         </button>
                     </div>
+
+
                 </div>
 
             }
