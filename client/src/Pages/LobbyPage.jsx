@@ -20,7 +20,7 @@ const LobbyPage = (props) => {
     // state for setting user inputting players to play with.
     const [players, setPlayers] = useState(['', '', '', '']);
 
-    const [user, setUser] = useState([]);
+    const [user, setUser] = useState(null);
     const [bettingAmount, setBettingAmount] = useState(0); // State for how much money betting.
     const navigate = useNavigate()
 
@@ -40,7 +40,7 @@ const LobbyPage = (props) => {
     // Grabbing user that is logged in and using data in local Storage
     useEffect(() => {
         axios
-            .get(`http://localhost:8000/api/users/getUser`, { withCredentials: true })
+            .get(`http://localhost:8000/api/getUser`, { withCredentials: true })
             .then((res) => setUser(res.data))
             .catch((error) => console.log(error));
 
@@ -81,17 +81,6 @@ const LobbyPage = (props) => {
 
 
 
-    // Grabbing user that is logged in and using data in session
-    useEffect(() => {
-        axios.get(`http://localhost:8000/api/users/getUser`, { withCredentials: true })
-            .then(res => setUser(res.data))
-            .catch()
-    }, [])
-
-
-
-
-
     // Function to handle game selection
     const handleGameSelection = (game) => {
         // console.log(game)
@@ -109,7 +98,7 @@ const LobbyPage = (props) => {
 
     const handlePlayerChange = (index, value) => {
         // console.log(user, 'from within hamndle player change func')
-        players[0] = user.username
+        // players[0] = user.username;// 
         const updatedPlayers = [...players];
         updatedPlayers[index] = value;
         // console.log(updatedPlayers)
@@ -175,8 +164,13 @@ const LobbyPage = (props) => {
                 <form onSubmit={handleSubmit} >
                     <div className="mb-3">
                         <label htmlFor="player1" className="form-label">Player 1</label>
-                        <input type="text" className="form-control" id="player1" value={user.username} onChange={(e) => handlePlayerChange(0, e.target.value)} />
+                        {user && <div className="mb-3">
+                            <label htmlFor="player1" className="form-label">Player 1</label>
+                            {user && <input type="text" className="form-control" id="player1" value={user.username} onChange={(e) => handlePlayerChange(0, e.target.value)} />}
+                        </div>
+                        }
                     </div>
+
                     <div class="mb-3">
                         <label htmlFor="player2" className="form-label">Player 2</label>
                         <input type="text" className="form-control" id="player2" value={players[1]} onChange={(e) => handlePlayerChange(1, e.target.value)} />

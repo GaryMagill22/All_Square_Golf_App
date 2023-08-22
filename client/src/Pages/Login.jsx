@@ -8,9 +8,10 @@ import { useNavigate, Link } from 'react-router-dom'
 const Login = () => {
 
 
-    const [errorsLog, setErrorsLog] = useState('');
     const navigate = useNavigate()
-    const [userInfo, setUserInfo] = useState({
+    const [errorMsg, setErrorMsg] = useState(null);
+
+    const [formInfo, setFormInfo] = useState({
         email: "",
         password: "",
     })
@@ -19,22 +20,24 @@ const Login = () => {
 
 
     const changeHandler = (e) => {
-        let { name, value } = e.target
-        setUserInfo({
-            ...userInfo,
-            [name]: value
+        setFormInfo({
+            ...formInfo,
+            [e.target.name]: e.target.value
         })
     }
 
     const submitHandler = (e) => {
         e.preventDefault()
-        axios.post('http://localhost:8000/api/users/login', userInfo, { withCredentials: true })
-            .then(res => navigate("/users"))
-            .catch(err => {
-                // console.log(err.response.data)
-                const errorResponse = err.response.data; // Get the errors from err.response.data
-                setErrorsLog(errorResponse.msg);
+        axios.post('http://localhost:8000/api/users/login', formInfo, { withCredentials: true })
+            .then(res => {
+                if (res.data.msg === "success!") {
+                    navigate("/users")
+                } else {
+                    setErrorMsg(res.data.msg)
+                }
             })
+            .catch(err => console.log(err))
+
     }
 
 
@@ -42,14 +45,15 @@ const Login = () => {
         <div>
             <form onSubmit={submitHandler}>
                 <div>
+                    {errorMsg ? <p className="text-danger" >{errorMsg}</p> : ""}
                     <label>Email</label>
-                    <input type="text" name="email" value={userInfo.email} onChange={changeHandler} />
-                    {errorsLog && <div style={{ color: 'red' }}>{errorsLog}</div>}
+                    <input type="text" name="email" value={formInfo.email} onChange={changeHandler} />
+
                 </div>
                 <div>
                     <label>Password</label>
-                    <input type="password" name="password" value={userInfo.password} onChange={changeHandler} />
-                    {errorsLog && <div style={{ color: 'red' }}>{errorsLog}</div>}
+                    <input type="password" name="password" value={formInfo.password} onChange={changeHandler} />
+
                 </div>
                 <button className="btn btn-outline-primary" type="submit"> Login </button>
             </form>

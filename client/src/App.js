@@ -6,26 +6,17 @@ import Home from './Pages/Home';
 import GamesPage from './Pages/GamesPage';
 import LobbyPage from './Pages/LobbyPage';
 import ProfileCard from './Components/ProfileCard';
-// import Register from './Pages/Register';
+import Register from './Pages/Register';
 import Cookie from './Pages/Cookie';
 import Login from './Pages/Login';
 import DashBoard from './Pages/DashBoard';
 import DisplayUsers from './Pages/DisplayUsers';
-import UserInfo from './Pages/UserInfo';
+import UserInfo from './Components/UserInfo';
 import ScoreCard from './Components/ScoreCard';
 import DisplayRounds from './Pages/DisplayRounds';
 
 
 function App() {
-
-    // dont need to use Setter for socket
-    // const [socket] = useState(() => io(":8000"))
-
-    // useEffect(() => {
-    //     console.log("Is this thing on??");
-    //     // dont need return unless breaking it down into other components rather than on this file.
-    //     return () => socket.disconnect(true);
-    // }, [socket])
 
 
 
@@ -42,7 +33,7 @@ function App() {
                     <Route path="/register" element={<Cookie />} />
                     <Route path="/" element={<DashBoard />} />
                     <Route path="/users" element={<Home />} />
-                    {/* <Route path="/register" element={<Register />} /> */}
+                    <Route path="/register" element={<Register />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/home" element={<Home />} />
                     <Route path="/home" element={<BottomNav />} />
