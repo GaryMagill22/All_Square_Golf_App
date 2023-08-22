@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
-
+import socketIOClient from "socket.io-client";
 
 const Chat = () => {
 
@@ -10,9 +10,11 @@ const Chat = () => {
     const [input, setInput] = useState("");
     // Store messages sent into empty array
     const [messages, setMessages] = useState([]);
-
     const [socket] = useState(() => io(':8000'));
 
+
+    const [userIsLoggedIn, setUserIsLoggedIn] = useState(false);
+    const [currentUserID, setCurrentUserID] = useState(null);
 
 
     useEffect(() => {
@@ -26,9 +28,18 @@ const Chat = () => {
 
         // Running callback function to ensure that the underlying socket will be closed if App is unmounted.
         // This would be more critical if we were creating the scoket in a subcomponent.
-        return () => socket.removeALlListeners;
+        return () => socket.removeAllListeners;
         // dependency array
     }, [socket]);
+
+
+    useEffect(() => {
+        if (userIsLoggedIn) {
+            socket.emit('user_logged_in', { userId: currentUserID });
+        }
+    }, [userIsLoggedIn]);
+
+
 
 
     const usernameHandler = (e) => {

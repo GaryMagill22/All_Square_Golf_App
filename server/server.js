@@ -1,13 +1,12 @@
 const express = require('express');
 const app = express();
-const cors = require('cors')
 require('dotenv').config()
 const port = 8000;
 const cookieParser = require('cookie-parser');
+const cors = require("cors");
 
 
-// CONFIG EXPRESS
-// app.use(cors()) // Having 2 localhost port to communicate
+// CONFIG EXPRESS ===================================================================
 app.use(cors({
     credentials: true,
     origin: 'http://localhost:3000'
@@ -26,9 +25,6 @@ const { courseRoutes } = require('./routes/course.routes')
 const { roundRoutes } = require('./routes/round.routes')
 
 
-// app.use('/api/auth', require('./routes/auth.routes'));
-// app.use('/api/users', require('./routes/user.routes'));
-
 app.use('/api/lobbys', lobbyRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/games', gameRoutes)
@@ -36,11 +32,6 @@ app.use('/api/courses', courseRoutes)
 app.use('/api/rounds', roundRoutes)
 
 require("./config/mongoose.config");
-
-
-// require("./routes/user.routes")(app)
-// const connectDB = require('./config/mongoose.config')
-// connectDB()
 
 
 
@@ -52,17 +43,44 @@ require("./config/mongoose.config");
 const server = app.listen(port, () => console.log(`Listening on port: ${port}`));
 
 
-// importing socket.io module and attatching it to our server
+// // importing socket.io module and attatching it to our server
 const io = require("socket.io")(server, { cors: true });
 
+// const io = new Server(server, {
+//     cors: {
+//         origin: "http://localhost:3000",
+//         methods: ["GET", "POST"],
+//     },
+// });
 
+// server.listen(8000, () => {
+//     console.log("SERVER IS RUNNING!")
+// })
+
+
+
+let socketToUserId = {};
 // Each client that connects get their own socket id.
-io.on("connection", socket => {
-    console.log(socket.id);
+io.on("connection", (socket) => {
+    console.log(`User connected: ${socket.id}`);
     // if this is logged in our node terminal, that means new client successfully has completed handshake 
     socket.on("chat", (client_input) => {
         console.log("got a message", client_input);
+        // io.broadcast.emit("got a message", client_input);
         io.emit("post chat", client_input);
     })
+
+    socket.on('user_logged_in', ({ userId }) => {
+        socketToUserId[socket.id] = userId;
+    });
+    // Delete userId when disconnects
+    socket.on('disconnect', () => {
+        delete socketToUserId[socket.id];
+    });
 })
+// ==========================================================================================================================================
+
+// NEW SOCKET.IO SERVER     =======================================================================================
+
+
 

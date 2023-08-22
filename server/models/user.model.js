@@ -19,7 +19,7 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: [true, "Email is required"],
         validate: {
-            validator: val => /^([\w-\.]+@([\w-]+\.)+[\w-]+)?$/.test(val),
+            validator: value => /^([\w-\.]+@([\w-]+\.)+[\w-]+)?$/.test(value),
             message: "Please enter a valid email"
         }
     },
@@ -32,7 +32,7 @@ const UserSchema = new mongoose.Schema({
         required: [true, "Password is required"],
         minlength: [8, "Password must be 8 characters or longer"]
     },
-    round: [{
+    rounds: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Rounds'
     }]
@@ -42,15 +42,16 @@ const UserSchema = new mongoose.Schema({
 
 UserSchema.virtual('confirmPassword')
     .get(() => this._confirmPassword)
-    .set(val => this._confirmPassword = val)
+    .set(value => this._confirmPassword = value);
 
 
 
 UserSchema.pre('validate', function (next) {
-    console.log(this.password)
-    console.log("HELLO")
-    console.log(this.get('confirmPassword'))
-    if (this.password !== this.get('confirmPassword')) {
+    // console.log(this.password)
+    // console.log("HELLO")
+    // console.log(this.get('confirmPassword'))
+    // CHANGED LINE BELOW TOOK OUT "THIS.GET(CONFIRMPASSWORD)"
+    if (this.password !== this.confirmPassword) {
         this.invalidate('confirmPassword', 'Password must match confirm password')
     }
     next()
@@ -59,8 +60,8 @@ UserSchema.pre('validate', function (next) {
 UserSchema.pre('save', function (next) {
     bcrypt.hash(this.password, 10)
         .then(hash => {
-            this.password = hash
-            console.log(hash)
+            this.password = hash;
+            // console.log(hash)
             next()
         })
 })
