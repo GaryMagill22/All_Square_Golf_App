@@ -3,7 +3,6 @@ const app = express();
 const cors = require('cors')
 require('dotenv').config()
 const port = 8000;
-
 const cookieParser = require('cookie-parser');
 
 
@@ -15,7 +14,6 @@ app.use(cors({
 }));
 app.use(express.json(), express.urlencoded({ extended: true }));  // POST METHOD
 app.use(cookieParser());
-// Change the app.use(cors()) to the one below
 
 // ROUTES
 
@@ -46,7 +44,25 @@ require("./config/mongoose.config");
 
 
 
+// SOCKETS.IO //
+// ==========================================================================================================================================
 
 
+// created variable called server listening on port 8000
+const server = app.listen(port, () => console.log(`Listening on port: ${port}`));
 
-app.listen(port, () => console.log(`Listening on port: ${port}`));
+
+// importing socket.io module and attatching it to our server
+const io = require("socket.io")(server, { cors: true });
+
+
+// Each client that connects get their own socket id.
+io.on("connection", socket => {
+    console.log(socket.id);
+    // if this is logged in our node terminal, that means new client successfully has completed handshake 
+    socket.on("chat", (client_input) => {
+        console.log("got a message", client_input);
+        io.emit("post chat", client_input);
+    })
+})
+

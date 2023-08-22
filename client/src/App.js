@@ -14,6 +14,7 @@ import DisplayUsers from './Pages/DisplayUsers';
 import UserInfo from './Components/UserInfo';
 import ScoreCard from './Components/ScoreCard';
 import DisplayRounds from './Pages/DisplayRounds';
+import Chat from './Components/Chat';
 
 
 function App() {
@@ -39,12 +40,12 @@ function App() {
                     <Route path="/home" element={<BottomNav />} />
                     <Route path="/allUsers" element={<DisplayUsers />} />
                     <Route path="/userInfo" element={<UserInfo />} />
-
+                    {/* <Route path="/new/game" element={<Chat />} /> */}
                     <Route path="/games" element={<GamesPage />} />
-                    <Route path="/new/round" element={<LobbyPage />} />
                     <Route path="/profile" element={<ProfileCard />} />
                     <Route path="/new/game" element={<ScoreCard />} />
                     <Route path="/rounds" element={<DisplayRounds />} />
+                    <Route path="/new/round" element={<LobbyPage />} />
 
                 </Routes>
             </BrowserRouter>

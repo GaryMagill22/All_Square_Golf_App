@@ -164,14 +164,10 @@ const LobbyPage = (props) => {
                 <form onSubmit={handleSubmit} >
                     <div className="mb-3">
                         <label htmlFor="player1" className="form-label">Player 1</label>
-                        {user && <div className="mb-3">
-                            <label htmlFor="player1" className="form-label">Player 1</label>
-                            {user && <input type="text" className="form-control" id="player1" value={user.username} onChange={(e) => handlePlayerChange(0, e.target.value)} />}
-                        </div>
-                        }
+                        <input type="text" className="form-control" id="player1" value={players[0]} onChange={(e) => handlePlayerChange(0, e.target.value)} />
                     </div>
 
-                    <div class="mb-3">
+                    <div className="mb-3">
                         <label htmlFor="player2" className="form-label">Player 2</label>
                         <input type="text" className="form-control" id="player2" value={players[1]} onChange={(e) => handlePlayerChange(1, e.target.value)} />
                     </div>
@@ -179,7 +175,7 @@ const LobbyPage = (props) => {
                         <label htmlFor="player3" className="form-label">Player 3</label>
                         <input type="text" className="form-control" id="player3" value={players[2]} onChange={(e) => handlePlayerChange(2, e.target.value)} />
                     </div>
-                    <div class="mb-3">
+                    <div className="mb-3">
                         <label htmlFor="player4" className="form-label">Player 4</label>
                         <input type="text" className="form-control" id="player4" value={players[3]} onChange={(e) => handlePlayerChange(3, e.target.value)} />
                     </div>

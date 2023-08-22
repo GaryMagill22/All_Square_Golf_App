@@ -2,6 +2,7 @@ import axios from 'axios'; // Importing Axios for making HTTP requests
 import 'bootstrap/dist/css/bootstrap.css'; // Importing Bootstrap CSS for styling
 import React, { useEffect, useState } from 'react'; // Importing necessary React components
 import { useNavigate, Link } from 'react-router-dom'; // Importing useNavigate hook from react-router-dom
+import Chat from './Chat';
 
 
 
@@ -289,9 +290,9 @@ const ScoreCard = () => {
                             <button style={{ margin: "20px" }} type="submit" onClick={submitHandler} className="btn btn-success">Submit Score</button>
                         </div>
                     </div>
-                    <div className="container">
+                    <div className="container" style={{ marginLeft: "600px" }} >
                         <div className="row justify-content-center">
-                            <div className="col-6">
+                            <div className="col-md-4">
                                 <h1>ScoreCard</h1>
                                 <table className="table" style={{ border: "solid black" }}>
                                     <thead>
@@ -330,7 +331,9 @@ const ScoreCard = () => {
                             </div>
                         </div>
                     </div>
-
+                    <div className="col-md-6">
+                        <Chat />
+                    </div>
 
                 </section>
 
@@ -395,6 +398,12 @@ const ScoreCard = () => {
         </main >
 
     )
+
+};
+export default ScoreCard;
+
+
+
 
 
     // ============================================================================
@@ -483,9 +492,4 @@ const ScoreCard = () => {
     //     const earnings = Math.floor(bettingAmount / playersWon.length)
     //     // setWinners(playersWon)
     //     return { winners: playersWon, payout: earnings }//{ winners: [], payout: int}
-
-};
-export default ScoreCard;
-
-
 

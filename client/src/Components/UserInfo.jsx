@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from "axios"
+import { Link } from 'react-router-dom';
 
 
 const UserInfo = () => {
@@ -16,7 +17,9 @@ const UserInfo = () => {
     return (
         <div>UserInfo
             <h1> Username : {user && user.username}</h1>
-
+            <Link to="/home" className="btn btn-outline-primary btn-sm m-2">
+                Home
+            </Link>
         </div>
 
     )
