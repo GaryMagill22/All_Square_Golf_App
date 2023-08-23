@@ -10,7 +10,7 @@ userRoutes.get(`/allUsers`, authenticate, UserController.index)
 // /login endpoint is hte endpoint the frontend will hit
 //http://localhost:8000/aoi/login, that will trigger the login func
 userRoutes.post(`/login`, UserController.login)
-userRoutes.delete(`/logout`, UserController.logout)
+userRoutes.delete(`/logout`, authenticate, UserController.logout)
 userRoutes.get(`/getUser`, authenticate, UserController.getUser)
 userRoutes.get('/testingAuthFunc', authenticate, (req, res) => res.json('hi'))
 
@@ -49,7 +49,7 @@ userRoutes.put('/:id', UserController.updateUser)
 
 
 // Delete User
-userRoutes.delete('/:id', UserController.deleteUser);
+userRoutes.delete('/:id', authenticate, UserController.deleteUser);
 
 
 

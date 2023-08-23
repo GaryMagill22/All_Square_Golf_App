@@ -1,5 +1,6 @@
 const express = require('express');
-const CourseController = require('../controllers/course.controller')
+const CourseController = require('../controllers/course.controller');
+const { authenticate } = require('../config/jwt.config');
 
 
 
@@ -11,21 +12,21 @@ const courseRoutes = express.Router();
 
 
 // Create Course
-courseRoutes.post('/new', CourseController.createCourse)
+courseRoutes.post('/new', authenticate, CourseController.createCourse)
 
 
 // Get All Courses
-courseRoutes.get('/', CourseController.getAllCourses)
+courseRoutes.get('/', authenticate, CourseController.getAllCourses)
 
 
 
 // Get One Course
-courseRoutes.get(`/:id`, CourseController.getOneCourse)
+courseRoutes.get(`/:id`, authenticate, CourseController.getOneCourse)
 
 
 
 // Update Course
-courseRoutes.put('/:id', CourseController.updateCourse)
+courseRoutes.put('/:id', authenticate, CourseController.updateCourse)
 
 
 

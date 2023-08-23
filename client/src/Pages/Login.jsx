@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import axios from "axios"
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom';
+import { Axios } from '../helpers/axiosHelper';
 
 
 
@@ -26,18 +27,26 @@ const Login = () => {
         })
     }
 
-    const submitHandler = (e) => {
+    const submitHandler = async (e) => {
         e.preventDefault()
-        axios.post('http://localhost:8000/api/users/login', formInfo, { withCredentials: true })
-            .then(res => {
-                if (res.data.msg === "success!") {
-                    navigate("/users")
-                } else {
-                    setErrorMsg(res.data.msg)
-                }
-            })
-            .catch(err => console.log(err))
-
+        try {
+            const response = await Axios({
+                url: '/users/login',
+                method: 'post',
+                body: formInfo,
+            });
+            if (response.msg === "success!") {
+                localStorage.setItem('isLoggedIn', true);
+                navigate("/users");
+                /*setTimeout(() => {
+                    navigate("/users");
+                }, 3000);*/
+            } else {
+                setErrorMsg(response.msg)
+            }
+        } catch (err) {
+            console.log(err)
+        }
     }
 
 
@@ -65,4 +74,3 @@ const Login = () => {
 }
 
 export default Login
-

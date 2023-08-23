@@ -1,6 +1,7 @@
 import './App.css';
 import { Routes, Route, BrowserRouter, Link } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
+import ProtectedRoute from './Components/ProtectedRoute';
 import BottomNav from './Components/BottomNav';
 import Home from './Pages/Home';
 import GamesPage from './Pages/GamesPage';
@@ -18,7 +19,7 @@ import Chat from './Components/Chat';
 
 
 function App() {
-
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
 
 
     return (
@@ -33,12 +34,26 @@ function App() {
                 <Routes>
                     <Route path="/register" element={<Cookie />} />
                     <Route path="/" element={<DashBoard />} />
-                    <Route path="/users" element={<Home />} />
+                    <Route
+                        path="/users"
+                        element={
+                            <ProtectedRoute isLoggedIn={isLoggedIn}>
+                                <Home />
+                            </ProtectedRoute>
+                        }
+                    />
                     <Route path="/register" element={<Register />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/home" element={<Home />} />
                     <Route path="/home" element={<BottomNav />} />
-                    <Route path="/allUsers" element={<DisplayUsers />} />
+                    <Route
+                        path="/allUsers"
+                        element={
+                            <ProtectedRoute isLoggedIn={isLoggedIn}>
+                                <DisplayUsers />
+                            </ProtectedRoute>
+                        }
+                    />
                     <Route path="/userInfo" element={<UserInfo />} />
                     {/* <Route path="/new/game" element={<Chat />} /> */}
                     <Route path="/games" element={<GamesPage />} />

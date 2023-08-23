@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import axios from "axios"
 import { useNavigate } from 'react-router-dom'
 
+
+
 const DisplayUsers = () => {
     const [users, setUsers] = useState(null)
     const navigate = useNavigate()
@@ -16,7 +18,7 @@ const DisplayUsers = () => {
 
     const logoutHandler = () => {
         axios.delete(`http://localhost:8000/api/users/logout`, { withCredentials: true })
-            .then(res => navigate("/register"))
+            .then(res => navigate("/"))
             .catch(err => {
                 console.error("Error during logout:", err)
             })

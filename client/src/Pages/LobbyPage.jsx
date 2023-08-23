@@ -164,6 +164,7 @@ const LobbyPage = (props) => {
                 <form onSubmit={handleSubmit} >
                     <div className="mb-3">
                         <label htmlFor="player1" className="form-label">Player 1</label>
+
                         <input type="text" className="form-control" id="player1" value={players[0]} onChange={(e) => handlePlayerChange(0, e.target.value)} />
                     </div>
 

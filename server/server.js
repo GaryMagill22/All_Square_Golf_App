@@ -14,6 +14,10 @@ app.use(cors({
 app.use(express.json(), express.urlencoded({ extended: true }));  // POST METHOD
 app.use(cookieParser());
 
+
+app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
+
+
 // ROUTES
 
 
@@ -34,9 +38,16 @@ app.use('/api/rounds', roundRoutes)
 require("./config/mongoose.config");
 
 
+// COOKIES
+//==========================================================================================================================================
+
+
+
+
+
 
 // SOCKETS.IO //
-// ==========================================================================================================================================
+//==========================================================================================================================================
 
 
 // created variable called server listening on port 8000
@@ -45,17 +56,6 @@ const server = app.listen(port, () => console.log(`Listening on port: ${port}`))
 
 // // importing socket.io module and attatching it to our server
 const io = require("socket.io")(server, { cors: true });
-
-// const io = new Server(server, {
-//     cors: {
-//         origin: "http://localhost:3000",
-//         methods: ["GET", "POST"],
-//     },
-// });
-
-// server.listen(8000, () => {
-//     console.log("SERVER IS RUNNING!")
-// })
 
 
 
