@@ -59,9 +59,9 @@ const io = require("socket.io")(server, { cors: true });
 
 
 
-let socketToUserId = {};
 // Each client that connects get their own socket id.
 io.on("connection", (socket) => {
+    let socketToUserId = {};
     console.log(`User connected: ${socket.id}`);
     // if this is logged in our node terminal, that means new client successfully has completed handshake 
     socket.on("chat", (client_input) => {
