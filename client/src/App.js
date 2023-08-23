@@ -1,7 +1,7 @@
 import './App.css';
 import { Routes, Route, BrowserRouter, Link } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
-import ProtectedRoute from './Components/ProtectedRoute';
+import ProtectedRoute from './Components/ProtectedRoute.jsx';
 import BottomNav from './Components/BottomNav';
 import Home from './Pages/Home';
 import GamesPage from './Pages/GamesPage';
@@ -20,8 +20,7 @@ import Chat from './Components/Chat';
 
 function App() {
     const isLoggedIn = localStorage.getItem('isLoggedIn');
-
-
+    console.log('on app file', isLoggedIn);
     return (
         <div className="App">
             <BrowserRouter>
@@ -34,22 +33,30 @@ function App() {
                 <Routes>
                     <Route path="/register" element={<Cookie />} />
                     <Route path="/" element={<DashBoard />} />
-                    <Route
+                    {/* <Route
                         path="/users"
                         element={
                             <ProtectedRoute isLoggedIn={isLoggedIn}>
                                 <Home />
                             </ProtectedRoute>
                         }
-                    />
-                    <Route path="/register" element={<Register />} />
+                    /> */}
+                    {/* <Route path="/register" element={<Register />} /> */}
                     <Route path="/login" element={<Login />} />
-                    <Route path="/home" element={<Home />} />
-                    <Route path="/home" element={<BottomNav />} />
+                    {/* <Route path="/home" element={<Home />} /> */}
+                    <Route
+                        path="/home"
+                        element={
+                            <ProtectedRoute>
+                                <Home />
+                            </ProtectedRoute>
+                        }
+                    />
+                    {/* <Route path="/home" element={<BottomNav />} /> */}
                     <Route
                         path="/allUsers"
                         element={
-                            <ProtectedRoute isLoggedIn={isLoggedIn}>
+                            <ProtectedRoute>
                                 <DisplayUsers />
                             </ProtectedRoute>
                         }

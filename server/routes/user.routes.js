@@ -30,7 +30,7 @@ userRoutes.put('/:id', UserController.updateUser)
 
 
 // Delete User
-userRoutes.delete('/:id', authenticate, UserController.deleteUser);
+userRoutes.delete('/:id', UserController.deleteUser);
 
 
 

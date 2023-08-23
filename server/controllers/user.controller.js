@@ -12,22 +12,14 @@ module.exports.register = async (req, res) => {
         }
 
         const user = await User.create(req.body);
-        const userToken = jwt.sign({ id: user._id }, process.env.SECRET_KEY);
         res
-            .cookie("usertoken", userToken,
-                {
-                    // setting how long coooke will be alive for.
-                    maxAge: 18000 * 60 * 10,
-                    httpOnly: true,
-                    sameSite: 'none',
-                    secure: true
-                }
-            )
             .json({ msg: "success!", user: user });
     } catch (err) {
+        console.log('err', err);
         res.status(500).json('Internal server error');
     }
 }
+
 
 module.exports.index = (req, res) => {
     User.find()
@@ -61,7 +53,7 @@ module.exports.login = async (req, res) => {
                 secure: true
             }
         )
-        .json({ msg: "success!" });
+        .json({ msg: "success!", user: user });
 }
 
 module.exports.logout = (req, res) => {
@@ -69,12 +61,6 @@ module.exports.logout = (req, res) => {
     res.sendStatus(200);
 }
 
-// module.exports.getUser = (req, res) => {
-//     const decodedJwt = jwt.decode(req.cookies.usertoken, { complete: true })
-//     User.findOne({ _id: decodedJwt.payload.id })
-//         .then(oneUser => res.json(oneUser))
-//         .catch(err => res.status(500).json(err))
-// }
 
 // Read One User
 module.exports.getOneUser = (req, res) => {
@@ -86,12 +72,7 @@ module.exports.getOneUser = (req, res) => {
 }
 
 
-module.exports.getUser = (req, res) => {
-    const decodedJwt = jwt.decode(req.cookies.usertoken, { complete: true })
-    User.findOne({ _id: decodedJwt.payload.id })
-        .then(oneUser => res.json(oneUser))
-        .catch(err => res.status(500).json(err))
-}
+
 
 
 // Testing connection

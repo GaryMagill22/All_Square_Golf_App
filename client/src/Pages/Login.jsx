@@ -10,6 +10,7 @@ const Login = () => {
 
 
     const navigate = useNavigate()
+    const [isLoading, setIsLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState(null);
 
     const [formInfo, setFormInfo] = useState({
@@ -29,22 +30,24 @@ const Login = () => {
 
     const submitHandler = async (e) => {
         e.preventDefault()
+        setIsLoading(true);
         try {
             const response = await Axios({
                 url: '/users/login',
                 method: 'post',
                 body: formInfo,
             });
-            if (response.msg === "success!") {
+            if (response.user) {
                 localStorage.setItem('isLoggedIn', true);
-                navigate("/users");
-                /*setTimeout(() => {
-                    navigate("/users");
-                }, 3000);*/
+                setTimeout(() => {
+                    setIsLoading(false);
+                    navigate("/home");
+                }, 3000);
             } else {
                 setErrorMsg(response.msg)
             }
         } catch (err) {
+            setIsLoading(false);
             console.log(err)
         }
     }
@@ -64,10 +67,17 @@ const Login = () => {
                     <input type="password" name="password" value={formInfo.password} onChange={changeHandler} />
 
                 </div>
-                <button className="btn btn-outline-primary" type="submit"> Login </button>
+                <button className="btn btn-outline-primary" type="submit" disabled={isLoading}>
+                    {
+                        isLoading && <span className='spinner-border spinner-border-sm' role='status' aria-hidden="true"></span>
+                    }
+                    Login
+                </button>
             </form>
 
-            <button type="button" className="btn btn-outline-danger" ><Link to={"/"} >Back</Link></button>
+            <button type="button" className="btn btn-outline-danger" >
+                <Link to={"/"} >Back</Link>
+            </button>
 
         </div>
     )
