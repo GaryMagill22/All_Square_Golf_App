@@ -63,3 +63,31 @@ module.exports.deleteLobby = (req, res) => {
         .then(deleteLobby => res.json(deleteLobby))
         .catch(err => res.json(err))
 }
+
+
+
+module.exports.updateUsersByLobbyId = async (lobbyId, updatedPlayers) => {
+    console.log("this is lobby id error message", lobbyId)
+    try {
+        const lobby = await Lobby.findOne({ lobbyId });
+        if (!lobby) {
+            throw new Error('Lobby not found');
+        }
+        lobby.players.push(updatedPlayers);
+        const updatedLobby = await lobby.save();
+        return updatedLobby;
+    } catch (error) {
+        console.error('Error updating users:', error);
+        throw error;
+    }
+}
+
+module.exports.getUsersByLobbyId = async (lobbyId) => {
+    try {
+        const lobby = await Lobby.findOne({ lobbyId }).populate('players');
+        return lobby ? lobby.players : [];
+    } catch (error) {
+        console.error('Error getting users:', error);
+        throw error;
+    }
+}

@@ -2,16 +2,18 @@ import React from 'react'
 import { useState, useEffect } from 'react'
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.css';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation, useParams } from 'react-router-dom';
 import ScoreCard from '../Components/ScoreCard';
 import generateRandomRoomName from '../helpers/roomKeyGenarator';
 import io from 'socket.io-client';
-import queryString from 'query-string';
 
 const LobbyPage = () => {
+
+    // grabbing the lobbyId from url of Home.jsx Page to use on this page.
     const location = useLocation();
-    const parsed = queryString.parse(location.search);
-    const lobbyId = parsed.id;
+    // const parsed = queryString.parse(location.search);
+    // const lobbyId = parsed.id;
+    const { lobbyId } = useParams();
 
 
     const [socket, setSocket] = useState(io);
@@ -25,7 +27,7 @@ const LobbyPage = () => {
     // setting state for loading in all of the db games to choose from
     const [games, setGames] = useState([]);
     // state for setting user inputting players to play with.
-    const [players, setPlayers] = useState(['', '', '', '']);
+    const [players, setPlayers] = useState([]);
 
     const [user, setUser] = useState(null);
     const [bettingAmount, setBettingAmount] = useState(0); // State for how much money betting.
@@ -67,7 +69,7 @@ const LobbyPage = () => {
     // Grabbing user that is logged in and using data in local Storage
     useEffect(() => {
         axios
-            .get(`http://localhost:8000/api/getUser`, { withCredentials: true })
+            .get(`http://localhost:8000/api/users/getUser`, { withCredentials: true })
             .then((res) => setUser(res.data))
             .catch((error) => console.log(error));
 
@@ -77,6 +79,15 @@ const LobbyPage = () => {
             setPlayers(JSON.parse(storedPlayers));
         }
     }, []);
+
+    useEffect(() => {
+        if (lobbyId)
+            axios
+                .get(`http://localhost:8000/api/lobbys/get-users-in-room/${lobbyId}`)
+                .then((res) => console.log(res.data))
+                .catch((error) => console.log(error));
+    }, [])
+
 
     //CHANGES MADE HERE
     //=====================================================================================================
@@ -139,7 +150,6 @@ const LobbyPage = () => {
         handleBettingAmount()
         navigate('/new/game');
 
-        // navigate('/new/game')
     }
 
 
@@ -148,8 +158,14 @@ const LobbyPage = () => {
     return (
         <div>
             <div>
-                <h1>Lobby Code: ${lobbyId}</h1>
-
+                <h1>Lobby Code: {lobbyId}</h1>
+                <ul>
+                    {
+                        players.map((player, i) => {
+                            return <li key="i" >{player}</li>
+                        })
+                    }
+                </ul>
             </div>
 
 

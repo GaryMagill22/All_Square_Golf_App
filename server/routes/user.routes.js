@@ -22,7 +22,7 @@ userRoutes.post('/register/new', UserController.register)
 
 
 // Get One User
-userRoutes.get(`/:id`, authenticate, UserController.getOneUser)
+userRoutes.get(`/getUser`, authenticate, UserController.getOneUser)
 
 
 // Update User

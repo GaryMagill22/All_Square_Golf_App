@@ -76,7 +76,7 @@ function App() {
                         <Route path="/profile" element={<ProfileCard />} />
                         <Route path="/new/game" element={<ScoreCard />} />
                         <Route path="/rounds" element={<DisplayRounds />} />
-                        <Route path="/new/round" element={<LobbyPage />} />
+                        <Route path="/new/round/:lobbyId" element={<LobbyPage />} />
 
                     </Routes>
                 </AppContext.Provider>

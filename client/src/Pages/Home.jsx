@@ -1,29 +1,53 @@
 import React, { useEffect, useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.css';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation, useParams } from 'react-router-dom';
 import BottomNav from '../Components/BottomNav';
 import io from 'socket.io-client';
 import { useAppContext } from '../helpers/context';
 import axios from 'axios';
 import { Axios } from '../helpers/axiosHelper';
+import queryString from 'query-string';
+
 
 
 const Home = () => {
+    const location = useLocation();
     const navigate = useNavigate();
     const [games, setGames] = useState([]);
     const [course, setCourse] = useState([]);
     const [selectedGame, setSelectedGame] = useState(null);
     const [selectedCourse, setSelectedCourse] = useState(null);
     const [setLoaded] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
 
     const [show, setShow] = useState(false);
     const handleClose = () => { setShow(false) };
-    const handleShow = () => {
-        navigate("/new/round")
-        setShow(true)
-    };
+    // const handleShow = () => {
+    //     navigate("/new/round")
+    //     setShow(true)
+    // };
     const { socket } = useAppContext();
 
+
+
+
+    const { lobbyId } = useParams();
+
+
+    // const parsed = queryString.parse(location.search);
+    // const lobbyId = parsed.id;
+
+
+    const openModal = () => {
+        const modal = new window.bootstrap.Modal(document.getElementById('exampleModal'));
+        modal.show();
+    };
+
+    const closeModal = () => {
+        const modal = new window.bootstrap.Modal(document.getElementById('exampleModal'));
+        modal.hide();
+    };
 
     // GET ALL GAMES
     useEffect(() => {
@@ -75,14 +99,77 @@ const Home = () => {
                     selectedGame
                 }
             });
-            navigate(`/new/round?id=${response.lobby.lobbyId}`);
+            navigate(`/new/round/${response.lobby.lobbyId}`);
         } catch (err) {
             console.log(err)
         }
         console.log(selectedCourse, selectedGame);
     }
 
+    const joinRoom = () => {
+        const lobbyId = lobbyId;
+        socket.emit('joinRoom', { lobbyId });
+    }
 
+
+    const handleUserUpdateIntoTheLobby = async (lobbyId, room) => {
+        try {
+            const storedPlayers = localStorage.getItem('players');
+            const response = await axios.post(`http://localhost:8000/api/lobbys/update-users/${lobbyId}`, { updatedPlayers: JSON.parse(storedPlayers) });
+            // handle response, e.g., confirm success
+
+            navigate(`/new/round/${lobbyId}`);
+
+        } catch (error) {
+            console.error("Error updating the lobby:", error);
+            // handle error, e.g., show a message to the user
+        }
+    }
+
+
+
+    // To close modal after inputting the key and navigating to next page.
+
+    useEffect(() => {
+        const myModal = document.getElementById('myModal');
+        const myInput = document.getElementById('myInput');
+
+        const handleModalShown = () => {
+            myInput.focus();
+        };
+
+        if (myModal) {
+            myModal.addEventListener('shown.bs.modal', handleModalShown);
+        }
+
+        // This is the cleanup function
+        return () => {
+            if (myModal) {
+                myModal.removeEventListener('shown.bs.modal', handleModalShown);
+            }
+        };
+    }, []);
+
+
+    // const handleJoinRoom = (lobbyId) => {
+    //     socket.emit('JoinRoom', { lobbyId });
+    //     const inputLobbyId = document.getElementById('lobbyIdInput').value;
+    //     navigate(`/new/round?id=${lobbyId}`);
+    //     setIsModalOpen(false); // Close the modal
+    // };
+
+    const handleJoinRoom = async (lobbyId) => {
+        socket.emit('JoinRoom', { lobbyId })
+        const inputLobbyId = document.getElementById('lobbyIdInput').value;
+
+        // Close the modal
+        setIsModalOpen(false);
+
+        // Use a timeout or a callback to wait for the modal to finish its closing animation (if any).
+        setTimeout(() => {
+            navigate(`/new/round?id=${inputLobbyId}`);
+        }, 500);  // Assuming 500ms is the duration of the modal's closing animation.
+    }
 
     return (
         <div style={{ margin: "20px", gap: "20px" }} className="btn-group-vertical">
@@ -126,7 +213,7 @@ const Home = () => {
                         </select>
                     </div>
                     <div className='mt-4'>
-                        <button className='btn btn-success'>Create Lobby</button>
+                        <button className='btn btn-success' disabled={!selectedGame || !selectedCourse}>Create Lobby</button>
                     </div>
                 </form>
             </div>
@@ -134,23 +221,31 @@ const Home = () => {
             {/* <Button className="btn btn-primary" variant="primary" onClick={handleShow}>
                 Join Round
             </Button> */}
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={openModal}>
                 Join Game
             </button>
 
-            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div className="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h1 className="modal-title fs-5" id="exampleModalLabel">Join a Game</h1>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="modal-body">
-                            ...
+                        <div className="modal-body">
+                            <label for="lobbyIdInput">Enter the Lobby ID:</label>
+                            <input type="text" id="lobbyIdInput" className="form-control" placeholder="Lobby ID" />
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Save changes</button>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={() => {
+                                const lobbyId = document.getElementById('lobbyIdInput').value;
+                                joinRoom(lobbyId);
+                                closeModal();
+                                handleUserUpdateIntoTheLobby(lobbyId, `/new/round/${lobbyId}`)
+                            }}>
+                                Join Game
+                            </button>
                         </div>
                     </div>
                 </div>

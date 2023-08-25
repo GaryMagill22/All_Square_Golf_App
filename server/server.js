@@ -40,8 +40,24 @@ require("./config/mongoose.config");
 // MODELS IMPORT
 const Lobby = require('./models/lobby.model');
 
-// COOKIES
-//==========================================================================================================================================
+
+// update lobby with players
+// app.post('/api/lobbys/update/:lobbyId', async (req, res) => {
+//     const lobbyId = req.params.lobbyId;
+//     const newPlayer = req.body.newPlayer;
+
+//     const lobby = await Lobby.findById(lobbyId);  // This assumes you're using something like Mongoose with MongoDB
+
+//     if (!lobby) {
+//         return res.status(404).send('Lobby not found');
+//     }
+
+//     lobby.players.push(newPlayer);
+
+//     await lobby.save();
+
+//     res.status(200).send('Player added successfully');
+// });
 
 
 

@@ -14,6 +14,10 @@ const LobbySchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Course'
     },
+    lobbyName: {
+        type: String,
+        require: true,
+    },
     lobbyId: {
         type: String,
         require: true,
