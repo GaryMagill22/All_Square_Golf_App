@@ -16,13 +16,20 @@ import UserInfo from './Components/UserInfo';
 import ScoreCard from './Components/ScoreCard';
 import DisplayRounds from './Pages/DisplayRounds';
 import Chat from './Components/Chat';
+import io from 'socket.io-client';
+import AppContext from './helpers/context';
 
 
 function App() {
+
+    const [socket] = useState(() => io(":8000"));
+
+
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     console.log('on app file', isLoggedIn);
     return (
         <div className="App">
+
             <BrowserRouter>
                 <p><Link to="/">Test Cookie</Link>|
                     <Link to="/register">Register</Link>|
@@ -30,10 +37,11 @@ function App() {
                     <Link to="/allUsers">All users</Link>|
                     <Link to="/userInfo"> User info</Link>
                 </p>
-                <Routes>
-                    <Route path="/register" element={<Cookie />} />
-                    <Route path="/" element={<DashBoard />} />
-                    {/* <Route
+                <AppContext.Provider value={{ socket }} >
+                    <Routes>
+                        <Route path="/register" element={<Cookie />} />
+                        <Route path="/" element={<DashBoard />} />
+                        {/* <Route
                         path="/users"
                         element={
                             <ProtectedRoute isLoggedIn={isLoggedIn}>
@@ -41,35 +49,37 @@ function App() {
                             </ProtectedRoute>
                         }
                     /> */}
-                    {/* <Route path="/register" element={<Register />} /> */}
-                    <Route path="/login" element={<Login />} />
-                    {/* <Route path="/home" element={<Home />} /> */}
-                    <Route
-                        path="/home"
-                        element={
-                            <ProtectedRoute>
-                                <Home />
-                            </ProtectedRoute>
-                        }
-                    />
-                    {/* <Route path="/home" element={<BottomNav />} /> */}
-                    <Route
-                        path="/allUsers"
-                        element={
-                            <ProtectedRoute>
-                                <DisplayUsers />
-                            </ProtectedRoute>
-                        }
-                    />
-                    <Route path="/userInfo" element={<UserInfo />} />
-                    {/* <Route path="/new/game" element={<Chat />} /> */}
-                    <Route path="/games" element={<GamesPage />} />
-                    <Route path="/profile" element={<ProfileCard />} />
-                    <Route path="/new/game" element={<ScoreCard />} />
-                    <Route path="/rounds" element={<DisplayRounds />} />
-                    <Route path="/new/round" element={<LobbyPage />} />
+                        {/* <Route path="/register" element={<Register />} /> */}
+                        <Route path="/login" element={<Login />} />
+                        {/* <Route path="/home" element={<Button />} /> */}
+                        {/* <Route path="/home" element={<Home />} /> */}
+                        <Route
+                            path="/home"
+                            element={
+                                <ProtectedRoute>
+                                    <Home />
+                                </ProtectedRoute>
+                            }
+                        />
+                        {/* <Route path="/home" element={<BottomNav />} /> */}
+                        <Route
+                            path="/allUsers"
+                            element={
+                                <ProtectedRoute>
+                                    <DisplayUsers />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route path="/userInfo" element={<UserInfo />} />
+                        {/* <Route path="/new/game" element={<Chat />} /> */}
+                        <Route path="/games" element={<GamesPage />} />
+                        <Route path="/profile" element={<ProfileCard />} />
+                        <Route path="/new/game" element={<ScoreCard />} />
+                        <Route path="/rounds" element={<DisplayRounds />} />
+                        <Route path="/new/round" element={<LobbyPage />} />
 
-                </Routes>
+                    </Routes>
+                </AppContext.Provider>
             </BrowserRouter>
 
         </div>

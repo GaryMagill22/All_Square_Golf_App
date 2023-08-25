@@ -6,15 +6,18 @@ const LobbySchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     }],
-    selectedGame: [{
+    selectedGame: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Game'
-    }],
+    },
     selectedCourse: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Course'
+    },
+    lobbyId: {
+        type: String,
+        require: true,
     }
-
 
 }, { timestamps: true })
 

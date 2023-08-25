@@ -4,10 +4,12 @@ import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Link, useNavigate } from 'react-router-dom';
 import ScoreCard from '../Components/ScoreCard';
+import generateRandomRoomName from '../helpers/roomKeyGenarator';
+import io from 'socket.io-client';
 
 
-
-const LobbyPage = (props) => {
+const LobbyPage = () => {
+    const [socket, setSocket] = useState(io);
     // state for setting what game user picks
     const [gamePicked, setGamePicked] = useState('');
     // state for setting what course user picks
@@ -24,6 +26,26 @@ const LobbyPage = (props) => {
     const [bettingAmount, setBettingAmount] = useState(0); // State for how much money betting.
     const navigate = useNavigate()
 
+    const [roomKey, setRoomKey] = useState('');
+
+    const joinRoom = () => {
+        if (socket && roomKey) {
+            socket.emit('join', roomKey);
+        }
+    };
+
+    // useEffect(() => {
+    //     if (!data) {
+    //         const roomkey = generateRandomRoomName();
+    //         setRoomKey(roomkey);
+    //     } else {
+    //         setRoomKey(data);
+    //     }
+    // }, []);
+
+    // useEffect(() => {
+    //     joinRoom();
+    // }, [roomKey])
 
     // GET ALL GAMES
     useEffect(() => {
@@ -201,6 +223,10 @@ const LobbyPage = (props) => {
                 </Link>
             </div>
         </div>
+
+
+
+
     );
 };
 

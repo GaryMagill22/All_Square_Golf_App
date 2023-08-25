@@ -37,6 +37,8 @@ app.use('/api/rounds', roundRoutes)
 
 require("./config/mongoose.config");
 
+// MODELS IMPORT
+const Lobby = require('./models/lobby.model');
 
 // COOKIES
 //==========================================================================================================================================
@@ -58,24 +60,78 @@ const server = app.listen(port, () => console.log(`Listening on port: ${port}`))
 const io = require("socket.io")(server, { cors: true });
 
 
-
+const rooms = [];
 // Each client that connects get their own socket id.
 io.on("connection", (socket) => {
-    let socketToUserId = {};
-    console.log(`User connected: ${socket.id}`);
+    //let socketToUserId = {};
+    //console.log(`User connected: ${socket.id}`);
     // if this is logged in our node terminal, that means new client successfully has completed handshake 
-    socket.on("chat", (client_input) => {
-        console.log("got a message", client_input);
-        // io.broadcast.emit("got a message", client_input);
-        io.emit("post chat", client_input);
+    // socket.on("chat", (client_input) => {
+    //     console.log("got a message", client_input);
+    //     // io.broadcast.emit("got a message", client_input);
+    //     io.emit("post chat", client_input);
+    // })
+
+    // socket.on('user_logged_in', ({ userId }) => {
+    //     socketToUserId[socket.id] = userId;
+    // });
+
+
+
+
+    // Join a room
+    // socket.on('join', (roomName) => {
+    //     if (!rooms[roomName]) {
+    //         rooms[roomName] = [];
+    //     }
+    //     rooms[roomName].push(socket.id);
+    //     socket.join(roomName);
+    //     io.to(roomName).emit('playerJoined', rooms[roomName]);
+    // });
+
+    // Leave a room
+    // socket.on('leave', (roomName) => {
+    //     if (rooms[roomName]) {
+    //         rooms[roomName] = rooms[roomName].filter((id) => id !== socket.id);
+    //         socket.leave(roomName);
+    //         io.to(roomName).emit('playerLeft', rooms[roomName]);
+    //     }
+    // });
+
+
+    // // Create Round 
+    // socket.on('create_round', () => {
+
+    // });
+
+    // // Delete userId when disconnects
+    // socket.on('disconnect', () => {
+    //     delete socketToUserId[socket.id];
+    // });
+
+    socket.on('joinLobby', (lobbyId) => {
+        const isLobbyExist = Lobby.findById(lobbyId, (err, lobby) => {
+            if (err) {
+                console.error('Error locating lobby:', err);
+                return;
+            }
+
+            if (!lobby) {
+                console.error('Lobby not found');
+                return;
+            }
+
+            if (lobby.lobbyId !== lobbyId) {
+                console.log('Invalid Join key');
+                return;
+            }
+
+            socket.emit('joinSuccess', 'User joined successfully');
+        })
     })
 
-    socket.on('user_logged_in', ({ userId }) => {
-        socketToUserId[socket.id] = userId;
-    });
-    // Delete userId when disconnects
     socket.on('disconnect', () => {
-        delete socketToUserId[socket.id];
+        console.log(`User disconnected: ${socket.id}`);
     });
 })
 // ==========================================================================================================================================
