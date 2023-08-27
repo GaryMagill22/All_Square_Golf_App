@@ -23,7 +23,7 @@ const UserInfo = () => {
     }
 
     useEffect(() => {
-        axios.get(`http://localhost:8000/api/users/getOneUser`, { withCredentials: true })
+        axios.get(`http://localhost:8000/api/users/getUser`, { withCredentials: true })
             .then(res => setUser(res.data))
             .catch()
     }, [])

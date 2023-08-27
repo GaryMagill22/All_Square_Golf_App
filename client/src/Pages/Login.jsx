@@ -39,6 +39,7 @@ const Login = () => {
             });
             if (response.user) {
                 localStorage.setItem('isLoggedIn', true);
+                localStorage.setItem('players', JSON.stringify(response.user._id));
                 setTimeout(() => {
                     setIsLoading(false);
                     navigate("/home");

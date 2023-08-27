@@ -27,7 +27,6 @@ const Home = () => {
     //     navigate("/new/round")
     //     setShow(true)
     // };
-    const { socket } = useAppContext();
 
 
 
@@ -37,6 +36,20 @@ const Home = () => {
 
     // const parsed = queryString.parse(location.search);
     // const lobbyId = parsed.id;
+
+    useEffect(() => {
+        const socket = io('ws://http://localhost:8000');
+
+        socket.on('connect', () => {
+            console.log('Socket connect made');
+        });
+
+        socket.on('disconnect', () => {
+            console.log('Scoket disconnected from server');
+        })
+
+        socket.emit('joinLobby', lobbyId);
+    }, [])
 
 
     const openModal = () => {
@@ -108,7 +121,6 @@ const Home = () => {
 
     const joinRoom = () => {
         const lobbyId = lobbyId;
-        socket.emit('joinRoom', { lobbyId });
     }
 
 
@@ -159,7 +171,6 @@ const Home = () => {
     // };
 
     const handleJoinRoom = async (lobbyId) => {
-        socket.emit('JoinRoom', { lobbyId })
         const inputLobbyId = document.getElementById('lobbyIdInput').value;
 
         // Close the modal

@@ -7,7 +7,10 @@ import ScoreCard from '../Components/ScoreCard';
 import generateRandomRoomName from '../helpers/roomKeyGenarator';
 import io from 'socket.io-client';
 
+
 const LobbyPage = () => {
+
+
 
     // grabbing the lobbyId from url of Home.jsx Page to use on this page.
     const location = useLocation();
@@ -41,18 +44,18 @@ const LobbyPage = () => {
         }
     };
 
-    // useEffect(() => {
-    //     if (!data) {
+    // useEffect((res) => {
+    //     if (!res.data) {
     //         const roomkey = generateRandomRoomName();
     //         setRoomKey(roomkey);
     //     } else {
-    //         setRoomKey(data);
+    //         setRoomKey(res.data);
     //     }
     // }, []);
 
-    // useEffect(() => {
-    //     joinRoom();
-    // }, [roomKey])
+    useEffect(() => {
+        joinRoom();
+    }, [roomKey])
 
     // GET ALL GAMES
     useEffect(() => {
@@ -86,7 +89,21 @@ const LobbyPage = () => {
                 .get(`http://localhost:8000/api/lobbys/get-users-in-room/${lobbyId}`)
                 .then((res) => console.log(res.data))
                 .catch((error) => console.log(error));
-    }, [])
+    }, []);
+
+
+
+
+
+    const handleJoinRoom = async (lobbyId) => {
+        socket.emit('JoinRoom', { lobbyId })
+        const inputLobbyId = document.getElementById('lobbyIdInput').value;
+
+    }
+
+
+
+
 
 
     //CHANGES MADE HERE
@@ -152,6 +169,11 @@ const LobbyPage = () => {
 
     }
 
+    // {
+    //     players.map((players, i) => {
+    //         return <li key="i" >{players}</li>
+    //     })
+    // }
 
 
 
@@ -160,13 +182,23 @@ const LobbyPage = () => {
             <div>
                 <h1>Lobby Code: {lobbyId}</h1>
                 <ul>
-                    {
-                        players.map((player, i) => {
-                            return <li key="i" >{player}</li>
-                        })
-                    }
+
                 </ul>
             </div>
+            <div className="player-container">
+                <p></p>
+
+            </div>
+            <form className="mb-3" onClick={handleSubmit} >
+                <label htmlFor="bettingAmount" className="form-label">Money to bet (18 Holes)</label>
+                <input
+                    type="number"
+                    className="form-control"
+                    name="bettingAmount"
+                    value={bettingAmount}
+                    onChange={(e) => setBettingAmount(parseInt(e.target.value))}
+                />
+            </form>
 
 
             <div>

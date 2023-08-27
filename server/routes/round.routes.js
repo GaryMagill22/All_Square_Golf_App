@@ -14,13 +14,13 @@ roundRoutes.post('/new', authenticate, RoundController.createRound);
 roundRoutes.get('/', authenticate, RoundController.getAllRounds);
 
 // Get One Round
-roundRoutes.get(`/:id`, authenticate, RoundController.getOneRound);
+roundRoutes.get(`/:id`, RoundController.getOneRound);
 
 // Update Round
-roundRoutes.put('/:id', authenticate, RoundController.updateRound);
+roundRoutes.put(`/:id`, RoundController.updateRound);
 
 // Delete User
-roundRoutes.delete('/:id', authenticate, RoundController.deleteRound);
+roundRoutes.delete(`/:id`, authenticate, RoundController.deleteRound);
 
 
 

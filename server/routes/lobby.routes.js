@@ -16,22 +16,25 @@ lobbyRoutes.post('/new', authenticate, LobbyController.createLobby)
 
 
 // Get All Lobbys
-lobbyRoutes.get('/', authenticate, LobbyController.createLobby)
+lobbyRoutes.get('/', authenticate, LobbyController.getAllLobbys)
 
 
 
-// Get One User
-lobbyRoutes.get(`/:id`, authenticate, LobbyController.createLobby)
+// Get One Lobby
+lobbyRoutes.get(`/:id`, authenticate, LobbyController.getOneLobby)
 
 
 
 // Update Lobby
-lobbyRoutes.put('/:id', authenticate, LobbyController.createLobby)
+lobbyRoutes.put('/:id', authenticate, LobbyController.updateLobby)
 
 
 
-// Delete User
-lobbyRoutes.delete('/:id', authenticate, LobbyController.createLobby);
+// Delete Lobby
+lobbyRoutes.delete('/:id', authenticate, LobbyController.deleteLobby);
+
+
+
 
 lobbyRoutes.post('/update-users/:id', async (req, res) => {
     const lobbyId = req.params.id;
@@ -40,6 +43,7 @@ lobbyRoutes.post('/update-users/:id', async (req, res) => {
         const updatedLobby = await LobbyController.updateUsersByLobbyId(lobbyId, updatedPlayers);
         res.json(updatedLobby);
     } catch (error) {
+        console.log(error);
         res.status(500).json({ message: 'Error updating users.' });
     }
 });
