@@ -14,15 +14,9 @@ const ScoreCard = () => {
     const navigate = useNavigate(); // Creating a navigation function using useNavigate
     const [user, setUser] = useState([]); // State variable for the user data
 
-    // const [players, setPlayers] = useState(() => { // State variable for player data fetched from local storage
-    //     const data = localStorage.getItem('players');
-    //     return data ? JSON.parse(data) : []
-    // });
-
-    // Trying new way below
     const [players, setPlayers] = useState(() => { // State variable for player data fetched from local storage
-        const data = localStorage.getItem('players');
-        return data ? JSON.parse(data) : [];
+        const storedPlayers = localStorage.getItem('players');
+        return storedPlayers ? JSON.parse(storedPlayers) : [];
     });
 
 
@@ -248,7 +242,7 @@ const ScoreCard = () => {
                                 </td>
                             </tr>
                             <tr>
-                                <td>{players[1]}</td>
+                                <td>{players.username}</td>
                                 <td>{playerScores[players[1]]}</td>
                                 <td>
                                     <div className="d-flex justify-content-between">
@@ -262,7 +256,7 @@ const ScoreCard = () => {
                                 </td>
                             </tr>
                             <tr>
-                                <td>{players[2]}</td>
+                                {/* <td>{players[2]}</td> */}
                                 <td>{playerScores[players[2]]}</td>
                                 <td>
                                     <div className="d-flex justify-content-between">
@@ -276,7 +270,7 @@ const ScoreCard = () => {
                                 </td>
                             </tr>
                             <tr>
-                                <td>{players[3]}</td>
+                                {/* <td>{players[3]}</td> */}
                                 <td>{playerScores[players[3]]}</td>
                                 <td>
                                     <div className="d-flex justify-content-between">
@@ -312,24 +306,24 @@ const ScoreCard = () => {
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td>{user.username}</td>
+                                            {/* <td>{user.username}</td> */}
                                             <td>{scoreUpdating[0]}</td>
                                             <td>{calculatedPoints[0].points}</td>
 
                                         </tr>
 
                                         <tr>
-                                            <td>{players[1]}</td>
+                                            {/* <td>{players[1]}</td> */}
                                             <td>{scoreUpdating[1]}</td>
                                             <td>{calculatedPoints[1].points}</td>
                                         </tr>
                                         <tr>
-                                            <td>{players[2]}</td>
+                                            {/* <td>{players[2]}</td> */}
                                             <td>{scoreUpdating[2]}</td>
                                             <td>{calculatedPoints[2].points}</td>
                                         </tr>
                                         <tr>
-                                            <td>{players[3]}</td>
+                                            {/* <td>{players[3]}</td> */}
                                             <td>{scoreUpdating[3]}</td>
                                             <td>{calculatedPoints[3].points}</td>
                                         </tr>

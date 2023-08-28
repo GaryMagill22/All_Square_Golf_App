@@ -71,13 +71,17 @@ module.exports.deleteLobby = (req, res) => {
 
 module.exports.updateUsersByLobbyId = async (lobbyId, playerId, updatedPlayers) => {
     try {
-        const lobby = await Lobby.findOne({ lobbyId });
+        const lobby = await Lobby.findOne({ _id: lobbyId });
+
         if (!lobby) {
             throw new Error('Lobby not found');
         }
 
+        // Only add playerId if it's not already in the array
+        if (!lobby.players.includes(playerId)) {
+            lobby.players.push(playerId);
+        }
 
-        lobby.players.push(playerId);
         const updatedLobby = await lobby.save();
         return updatedLobby;
     } catch (error) {

@@ -21,26 +21,40 @@ lobbyRoutes.get('/', authenticate, LobbyController.getAllLobbys)
 
 
 // Get One Lobby
-lobbyRoutes.get(`/:id`, authenticate, LobbyController.getOneLobby)
+lobbyRoutes.get(`/:lobbyId`, authenticate, LobbyController.getOneLobby)
 
 
 
 // Update Lobby
-lobbyRoutes.put('/:id', authenticate, LobbyController.updateLobby)
+lobbyRoutes.put('/:lobbyId', authenticate, LobbyController.updateLobby)
 
 
 
 // Delete Lobby
-lobbyRoutes.delete('/:id', authenticate, LobbyController.deleteLobby);
+lobbyRoutes.delete('/:lobbyId', authenticate, LobbyController.deleteLobby);
 
 
 
 // changed id to lobbyId
+// lobbyRoutes.post('/update-users/:lobbyId', async (req, res) => {
+//     const lobbyId = req.params.lobbyId;
+//     const updatedPlayers = req.body.updatedPlayers;
+//     try {
+//         const updatedLobby = await LobbyController.updateUsersByLobbyId(lobbyId, updatedPlayers);
+//         res.json(updatedLobby);
+//     } catch (error) {
+//         console.log(error);
+//         res.status(500).json({ message: 'Error updating users.' });
+//     }
+// });
+
+// Trying something else ^^^^^
 lobbyRoutes.post('/update-users/:lobbyId', async (req, res) => {
     const lobbyId = req.params.lobbyId;
-    const updatedPlayers = req.body.updatedPlayers;
+    const playerId = req.body.playerId;
+
     try {
-        const updatedLobby = await LobbyController.updateUsersByLobbyId(lobbyId, updatedPlayers);
+        const updatedLobby = await LobbyController.updateUsersByLobbyId(lobbyId, playerId);
         res.json(updatedLobby);
     } catch (error) {
         console.log(error);
@@ -48,9 +62,9 @@ lobbyRoutes.post('/update-users/:lobbyId', async (req, res) => {
     }
 });
 
-
-lobbyRoutes.get('/get-users-in-room/:id', async (req, res) => {
-    const lobbyId = req.params.id;
+// made few changes (params.lobbyId rather than just id)
+lobbyRoutes.get('/get-users-in-room/:lobbyId', async (req, res) => {
+    const lobbyId = req.params.lobbyId;
     try {
         const users = await LobbyController.getUsersByLobbyId(lobbyId);
         res.json(users);
