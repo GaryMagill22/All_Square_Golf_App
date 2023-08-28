@@ -38,24 +38,21 @@ const LobbyPage = () => {
 
     const [roomKey, setRoomKey] = useState('');
 
-    const joinRoom = () => {
-        if (socket && roomKey) {
-            socket.emit('join', roomKey);
-        }
-    };
-
-    // useEffect((res) => {
-    //     if (!res.data) {
-    //         const roomkey = generateRandomRoomName();
-    //         setRoomKey(roomkey);
-    //     } else {
-    //         setRoomKey(res.data);
-    //     }
-    // }, []);
-
     useEffect(() => {
-        joinRoom();
-    }, [roomKey])
+        const socket = io('ws://localhost:8000');
+
+        socket.on('connect', () => {
+            socket.emit('joinLobby', lobbyId);
+        });
+
+        socket.on('disconnect', () => {
+            console.log('Socket disconnected from server');
+        });
+
+        socket.on('joinSuccess', (response) => {
+            console.log(response);
+        })
+    }, [])
 
     // GET ALL GAMES
     useEffect(() => {

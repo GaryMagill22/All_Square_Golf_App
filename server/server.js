@@ -81,17 +81,17 @@ const rooms = [];
 // Each client that connects get their own socket id.
 io.on("connection", (socket) => {
     console.log(`User ${socket.id} connected from client side`);
-    // socket.on('connect', () => {
-    //     console.log(`User ${socket.id} connected from client side`);
-    // });
 
-    socket.on('joinLobby', (lobbyId) => {
-        const isLobbyExist = Lobby.findById(lobbyId, (err, lobby) => {
-            if (err) {
-                console.error('Error locating lobby:', err);
-                return;
-            }
-
+    socket.on('joinLobby', async (lobbyId) => {
+        console.log('i got called');
+        try {
+            const lobby = await Lobby.findOne({
+                lobbyId
+            }).populate({
+                path: 'players',
+                model: 'User',
+                select: 'username'
+            });
             if (!lobby) {
                 console.error('Lobby not found');
                 return;
@@ -102,8 +102,14 @@ io.on("connection", (socket) => {
                 return;
             }
 
-            socket.emit('joinSuccess', 'User joined successfully');
-        })
+            socket.emit('joinSuccess', {
+                message: 'User joined successfully',
+                players: lobby
+            });
+        } catch (err) {
+            console.error('Error locating lobby:', err);
+            return;
+        }
     })
 
     socket.on('disconnect', () => {

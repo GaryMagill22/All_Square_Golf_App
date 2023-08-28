@@ -37,20 +37,6 @@ const Home = () => {
     // const parsed = queryString.parse(location.search);
     // const lobbyId = parsed.id;
 
-    useEffect(() => {
-        const socket = io('ws://http://localhost:8000');
-
-        socket.on('connect', () => {
-            console.log('Socket connect made');
-        });
-
-        socket.on('disconnect', () => {
-            console.log('Scoket disconnected from server');
-        })
-
-        socket.emit('joinLobby', lobbyId);
-    }, [])
-
 
     const openModal = () => {
         const modal = new window.bootstrap.Modal(document.getElementById('exampleModal'));
