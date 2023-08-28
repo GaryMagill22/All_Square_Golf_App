@@ -83,7 +83,6 @@ io.on("connection", (socket) => {
     console.log(`User ${socket.id} connected from client side`);
 
     socket.on('joinLobby', async (lobbyId) => {
-        console.log('i got called');
         try {
             const lobby = await Lobby.findOne({
                 lobbyId
@@ -101,8 +100,8 @@ io.on("connection", (socket) => {
                 console.log('Invalid Join key');
                 return;
             }
-
-            socket.emit('joinSuccess', {
+            socket.join(lobbyId)
+            io.in(lobbyId).emit('joinSuccess', {
                 message: 'User joined successfully',
                 players: lobby
             });
@@ -112,8 +111,15 @@ io.on("connection", (socket) => {
         }
     })
 
+    socket.on('logout', () => {
+        console.log(`User logged out: ${socket.id}`);
+        socket.disconnect();
+        console.log("User disconnected ")
+    });
+
     socket.on('disconnect', () => {
         console.log(`User disconnected: ${socket.id}`);
+
     });
 });
 // ==========================================================================================================================================

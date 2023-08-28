@@ -13,10 +13,19 @@ import Chat from './Chat';
 const ScoreCard = () => {
     const navigate = useNavigate(); // Creating a navigation function using useNavigate
     const [user, setUser] = useState([]); // State variable for the user data
+
+    // const [players, setPlayers] = useState(() => { // State variable for player data fetched from local storage
+    //     const data = localStorage.getItem('players');
+    //     return data ? JSON.parse(data) : []
+    // });
+
+    // Trying new way below
     const [players, setPlayers] = useState(() => { // State variable for player data fetched from local storage
         const data = localStorage.getItem('players');
-        return data ? JSON.parse(data) : []
+        return data ? JSON.parse(data) : [];
     });
+
+
     const [playerScores, setPlayerScores] = useState({}); // State variable for player scores
     const [calculatedPoints, setCalculatedPoints] = useState( // State variable for calculated points for each player
         [
@@ -46,6 +55,10 @@ const ScoreCard = () => {
             [player]: score
         }));
     };
+
+
+
+
 
     // Function to calculate total scores for each player
     const handleTotalScore = () => {
@@ -115,8 +128,6 @@ const ScoreCard = () => {
     const submitHandler = async (e) => {
         e.preventDefault();
 
-
-
         // Calculate points for each player based on their total scores
         const updatedCalculatedPoints = calculatedPoints.map((playerObj) => {
             const playerName = playerObj.player;
@@ -156,14 +167,10 @@ const ScoreCard = () => {
             // Await here to make sure the payouts are executed before moving to next lines
             await executePayouts(gameResult);
             // Now we should save round data since the payouts have been calculated and sent
-
-
         }
-
-
-
-
     }
+
+
     useEffect(() => {
         const storedBettingAmount = localStorage.getItem('bettingAmount');
         if (storedBettingAmount) {

@@ -38,6 +38,9 @@ const LobbyPage = () => {
 
     const [roomKey, setRoomKey] = useState('');
 
+
+
+
     useEffect(() => {
         const socket = io('ws://localhost:8000');
 
@@ -51,6 +54,7 @@ const LobbyPage = () => {
 
         socket.on('joinSuccess', (response) => {
             console.log(response);
+            setPlayers(response.players.players);
         })
     }, [])
 
@@ -74,10 +78,11 @@ const LobbyPage = () => {
             .catch((error) => console.log(error));
 
         // Retrieve player data from local storage
-        const storedPlayers = localStorage.getItem('players');
-        if (storedPlayers) {
-            setPlayers(JSON.parse(storedPlayers));
-        }
+        // const storedPlayers = localStorage.getItem('players');
+        // if (storedPlayers) {
+        //     //   if cannot find stored players in storage - use this empty array instead
+        //     setPlayers(storedPlayers ? JSON.parse(storedPlayers) : []);
+        // }
     }, []);
 
     useEffect(() => {
@@ -148,44 +153,43 @@ const LobbyPage = () => {
     };
 
 
-    const handlePlayerChange = (index, value) => {
-        // console.log(user, 'from within hamndle player change func')
-        // players[0] = user.username;// 
-        const updatedPlayers = [...players];
-        updatedPlayers[index] = value;
-        // console.log(updatedPlayers)
-        setPlayers(updatedPlayers);
-    }
+    // const handlePlayerChange = (index, value) => {
+    //     // console.log(user, 'from within hamndle player change func')
+    //     // players[0] = user.username;// 
+    //     const updatedPlayers = [...players];
+    //     updatedPlayers[index] = value;
+    //     // console.log(updatedPlayers)
+    //     setPlayers(updatedPlayers);
+    // }
 
     const handleSubmit = (e) => {
         e.preventDefault()
         // Store the player data in local storage
         localStorage.setItem('players', JSON.stringify(players));
-        handleBettingAmount()
+        handleBettingAmount();
         navigate('/new/game');
-
     }
-
-    // {
-    //     players.map((players, i) => {
-    //         return <li key="i" >{players}</li>
-    //     })
-    // }
-
 
 
     return (
         <div>
             <div>
                 <h1>Lobby Code: {lobbyId}</h1>
-                <ul>
 
-                </ul>
             </div>
             <div className="player-container">
                 <p></p>
 
             </div>
+            <div className="loadingPlayerContainer" >
+                <h3>Players Loading...</h3>
+                {
+                    players.map((p, i) => {
+                        return <h4 key={i} >{p.username}</h4>
+                    })
+                }
+            </div>
+
             <form className="mb-3" onClick={handleSubmit} >
                 <label htmlFor="bettingAmount" className="form-label">Money to bet (18 Holes)</label>
                 <input
@@ -195,9 +199,8 @@ const LobbyPage = () => {
                     value={bettingAmount}
                     onChange={(e) => setBettingAmount(parseInt(e.target.value))}
                 />
+                <button type="submit" className="btn btn-primary">Submit</button>
             </form>
-
-
             <div>
                 <Link to="/home" className="btn btn-outline-primary btn-sm m-2">
                     Home
@@ -216,7 +219,7 @@ export default LobbyPage;
 
 
 
-{/* <div>
+/* <div>
 <h1>Pick Your Game!</h1>
 <div className="d-flex flex-wrap">
 {games.map((game, i) => (
@@ -254,9 +257,8 @@ style={{
 </button>
 ))}
 </div>
-</div> */}
-
-{/* <div style={{ width: "500px", margin: "0 auto" }} >
+</div> */
+/* <div style={{ width: "500px", margin: "0 auto" }} >
     <h1>Add Players</h1>
     <form onSubmit={handleSubmit} >
         <div className="mb-3">
@@ -289,4 +291,4 @@ style={{
         </div>
         <button type="submit" className="btn btn-primary">Submit</button>
     </form>
-</div> */}
+</div> */

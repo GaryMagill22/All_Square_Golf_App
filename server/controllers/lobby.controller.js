@@ -69,13 +69,15 @@ module.exports.deleteLobby = (req, res) => {
 
 
 
-module.exports.updateUsersByLobbyId = async (lobbyId, updatedPlayers) => {
+module.exports.updateUsersByLobbyId = async (lobbyId, playerId, updatedPlayers) => {
     try {
         const lobby = await Lobby.findOne({ lobbyId });
         if (!lobby) {
             throw new Error('Lobby not found');
         }
-        lobby.players.push(updatedPlayers);
+
+
+        lobby.players.push(playerId);
         const updatedLobby = await lobby.save();
         return updatedLobby;
     } catch (error) {

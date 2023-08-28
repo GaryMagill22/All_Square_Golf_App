@@ -78,6 +78,7 @@ function App() {
                         <Route path="/rounds" element={<DisplayRounds />} />
                         <Route path="/new/round/:lobbyId" element={<LobbyPage />} />
 
+
                     </Routes>
                 </AppContext.Provider>
             </BrowserRouter>

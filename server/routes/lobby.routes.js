@@ -35,9 +35,9 @@ lobbyRoutes.delete('/:id', authenticate, LobbyController.deleteLobby);
 
 
 
-
-lobbyRoutes.post('/update-users/:id', async (req, res) => {
-    const lobbyId = req.params.id;
+// changed id to lobbyId
+lobbyRoutes.post('/update-users/:lobbyId', async (req, res) => {
+    const lobbyId = req.params.lobbyId;
     const updatedPlayers = req.body.updatedPlayers;
     try {
         const updatedLobby = await LobbyController.updateUsersByLobbyId(lobbyId, updatedPlayers);
