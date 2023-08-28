@@ -306,24 +306,24 @@ const ScoreCard = () => {
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            {/* <td>{user.username}</td> */}
+                                            <td>{user.username}</td>
                                             <td>{scoreUpdating[0]}</td>
                                             <td>{calculatedPoints[0].points}</td>
 
                                         </tr>
 
                                         <tr>
-                                            {/* <td>{players[1]}</td> */}
+                                            <td>{players[1]}</td>
                                             <td>{scoreUpdating[1]}</td>
                                             <td>{calculatedPoints[1].points}</td>
                                         </tr>
                                         <tr>
-                                            {/* <td>{players[2]}</td> */}
+                                            <td>{players[2]}</td>
                                             <td>{scoreUpdating[2]}</td>
                                             <td>{calculatedPoints[2].points}</td>
                                         </tr>
                                         <tr>
-                                            {/* <td>{players[3]}</td> */}
+                                            <td>{players[3]}</td>
                                             <td>{scoreUpdating[3]}</td>
                                             <td>{calculatedPoints[3].points}</td>
                                         </tr>

@@ -68,10 +68,10 @@ module.exports.deleteLobby = (req, res) => {
 //==============================================================================
 
 
-
-module.exports.updateUsersByLobbyId = async (lobbyId, playerId, updatedPlayers) => {
+// CHANGED FINDONE(ID: LOBBYID) TO(LOBBYID: LOBBYID)
+module.exports.updateUsersByLobbyId = async (lobbyId, playerId) => {
     try {
-        const lobby = await Lobby.findOne({ _id: lobbyId });
+        const lobby = await Lobby.findOne({ lobbyId: lobbyId });
 
         if (!lobby) {
             throw new Error('Lobby not found');
@@ -99,7 +99,7 @@ module.exports.updateUsersByLobbyId = async (lobbyId, playerId, updatedPlayers) 
 //     console.log("this is lobby id error message", lobbyId);
 //     try {
 //         // First, check if the lobby with the given ID exists
-//         const lobby = await Lobby.findOne({ lobbyId });
+//         const lobby = await Lobby.findOne({ LobbyId: lobbyId });
 //         if (!lobby) {
 //             throw new Error('Lobby not found');
 //         }
