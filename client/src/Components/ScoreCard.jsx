@@ -228,7 +228,7 @@ const ScoreCard = () => {
                         </thead>
                         <tbody>
                             <tr>
-                                <td>{user.username}</td>
+                                <td>{players[0].username}</td>
                                 <td>{playerScores[user.username]}</td>
                                 <td>
                                     <div className="d-flex justify-content-between">
@@ -242,7 +242,7 @@ const ScoreCard = () => {
                                 </td>
                             </tr>
                             <tr>
-                                <td>{players.username}</td>
+                                <td>{players[1].username}</td>
                                 <td>{playerScores[players[1]]}</td>
                                 <td>
                                     <div className="d-flex justify-content-between">
@@ -256,7 +256,7 @@ const ScoreCard = () => {
                                 </td>
                             </tr>
                             <tr>
-                                {/* <td>{players[2]}</td> */}
+                                <td>{players[2] ? players[2].username : 'Loading...'}</td>
                                 <td>{playerScores[players[2]]}</td>
                                 <td>
                                     <div className="d-flex justify-content-between">
@@ -270,7 +270,7 @@ const ScoreCard = () => {
                                 </td>
                             </tr>
                             <tr>
-                                {/* <td>{players[3]}</td> */}
+                                <td>{players[3] ? players[3].username : 'Loading...'}</td>
                                 <td>{playerScores[players[3]]}</td>
                                 <td>
                                     <div className="d-flex justify-content-between">
@@ -306,24 +306,24 @@ const ScoreCard = () => {
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td>{user.username}</td>
+                                            <td>{players[0].username}</td>
                                             <td>{scoreUpdating[0]}</td>
                                             <td>{calculatedPoints[0].points}</td>
 
                                         </tr>
 
                                         <tr>
-                                            <td>{players[1]}</td>
+                                            <td>{players[1].username}</td>
                                             <td>{scoreUpdating[1]}</td>
                                             <td>{calculatedPoints[1].points}</td>
                                         </tr>
                                         <tr>
-                                            <td>{players[2]}</td>
+                                            <td>{players[2].username}</td>
                                             <td>{scoreUpdating[2]}</td>
                                             <td>{calculatedPoints[2].points}</td>
                                         </tr>
                                         <tr>
-                                            <td>{players[3]}</td>
+                                            <td>{players[3] ? players[3].username : 'Loading...'}</td>
                                             <td>{scoreUpdating[3]}</td>
                                             <td>{calculatedPoints[3].points}</td>
                                         </tr>
