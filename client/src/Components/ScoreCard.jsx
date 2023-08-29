@@ -3,8 +3,10 @@ import 'bootstrap/dist/css/bootstrap.css'; // Importing Bootstrap CSS for stylin
 import React, { useEffect, useState } from 'react'; // Importing necessary React components
 import { useNavigate, Link } from 'react-router-dom'; // Importing useNavigate hook from react-router-dom
 import Chat from './Chat';
+import { getSocket } from '../helpers/socketHelper';
 
 const ScoreCard = () => {
+    const socket = getSocket();
     const navigate = useNavigate(); // Creating a navigation function using useNavigate
     const [user, setUser] = useState([]); // State variable for the user data
 
@@ -59,6 +61,7 @@ const ScoreCard = () => {
                 updatedTotalScores[player] = playerScores[player] + (totalScores[player] || 0);
             }
         }
+        socket.emit('scoreValue', updatedTotalScores);
         setTotalScores(updatedTotalScores);
     };
 
@@ -75,6 +78,26 @@ const ScoreCard = () => {
         }
         return points;
     };
+
+    useEffect(() => {
+        if (socket) {
+            socket.on('holeNumberReceived', (data) => {
+                setCurrentHoleNumber(data);
+            });
+
+            socket.on('calcPointReceived', (data) => {
+                setCalculatedPoints(data);
+            });
+
+            socket.on('scoreValueReceived', (data) => {
+                setTotalScores(data);
+            });
+
+            socket.on('gameCompleted', () => {
+                setIsSubmitted(true);
+            });
+        }
+    }, [socket])
 
 
 
@@ -118,7 +141,6 @@ const ScoreCard = () => {
 
     const submitHandler = async (e) => {
         e.preventDefault();
-
         // Calculate points for each player based on their total scores
         const updatedCalculatedPoints = calculatedPoints.map((playerObj) => {
             const playerName = playerObj.player;
@@ -132,12 +154,14 @@ const ScoreCard = () => {
         });
 
         // Update the current hole number
-        setCurrentHoleNumber(currentHoleNumber => currentHoleNumber + 1);
+        socket.emit('holeNumber', currentHoleNumber);
+        //setCurrentHoleNumber(currentHoleNumber => currentHoleNumber + 1);
 
         // Execute the function to calculate total scores
         handleTotalScore();
 
         // Update the calculated points
+        socket.emit('calcPoint', updatedCalculatedPoints);
         setCalculatedPoints(updatedCalculatedPoints);
 
         // Store the submitted scores in session storage
@@ -151,6 +175,7 @@ const ScoreCard = () => {
         });
         // Check if it's the last hole (hole 18) and set isSubmitted to true
         if (currentHoleNumber >= 18) {
+            socket.emit('gameCompleted');
             setIsSubmitted(true);
 
             const gameResult = handleWinners();
@@ -372,23 +397,23 @@ const ScoreCard = () => {
                         </thead>
                         <tbody>
                             <tr>
-                                <td>{user.username}</td>
+                                {/* <td>{players[0]}</td> */}
                                 <td>{totalScores[players[0]]}</td>
                                 <td>{calculatedPoints[0].points}</td>
                             </tr>
                             <tr>
-                                <td>{players[1]}</td>
+                                {/* <td>{players[1]}</td> */}
                                 <td>{totalScores[players[1]]}</td>
                                 <td>{calculatedPoints[1].points}</td>
 
                             </tr>
                             <tr>
-                                <td>{players[2]}</td>
+                                {/* <td>{players[2]}</td> */}
                                 <td>{totalScores[players[2]]}</td>
                                 <td>{calculatedPoints[2].points}</td>
                             </tr>
                             <tr>
-                                <td>{players[3]}</td>
+                                {/* <td>{players[3]}</td> */}
                                 <td>{totalScores[players[3]]}</td>
                                 <td>{calculatedPoints[3].points}</td>
                             </tr>
