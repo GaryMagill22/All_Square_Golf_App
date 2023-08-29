@@ -111,6 +111,10 @@ io.on("connection", (socket) => {
         }
     })
 
+    socket.on('submitScore', () => {
+        io.emit('alertUsers');
+    });
+
     socket.on('logout', () => {
         console.log(`User logged out: ${socket.id}`);
         socket.disconnect();

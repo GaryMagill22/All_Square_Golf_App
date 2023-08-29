@@ -5,6 +5,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import { Link, useNavigate, useLocation, useParams } from 'react-router-dom';
 import ScoreCard from '../Components/ScoreCard';
 import generateRandomRoomName from '../helpers/roomKeyGenarator';
+import { getSocket } from '../helpers/socketHelper';
 import io from 'socket.io-client';
 
 
@@ -19,7 +20,7 @@ const LobbyPage = () => {
     const { lobbyId } = useParams();
 
 
-    const [socket, setSocket] = useState(io);
+    const socket = getSocket();
     // state for setting what game user picks
     const [gamePicked, setGamePicked] = useState('');
     // state for setting what course user picks
@@ -31,6 +32,7 @@ const LobbyPage = () => {
     const [games, setGames] = useState([]);
     // state for setting user inputting players to play with.
     const [players, setPlayers] = useState([]);
+    const [creator, setCreator] = useState('');
 
     const [user, setUser] = useState(null);
     const [bettingAmount, setBettingAmount] = useState(0); // State for how much money betting.
@@ -42,21 +44,23 @@ const LobbyPage = () => {
 
 
     useEffect(() => {
-        const socket = io('ws://localhost:8000');
-
-        socket.on('connect', () => {
+        if (socket) {
             socket.emit('joinLobby', lobbyId);
-        });
 
-        socket.on('disconnect', () => {
-            console.log('Socket disconnected from server');
-        });
-
-        socket.on('joinSuccess', (response) => {
-            console.log(response);
-            setPlayers(response.players.players);
-        })
-    }, [])
+            socket.on('joinSuccess', (response) => {
+                console.log(response);
+                localStorage.setItem('players', JSON.stringify(response.players.players));
+                const userId = JSON.parse(localStorage.getItem('user_id'));
+                if (userId === response.players.creatorId) {
+                    localStorage.setItem('creator', true);
+                } else {
+                    localStorage.setItem('creator', false);
+                }
+                setCreator(response.players.creatorId);
+                setPlayers(response.players.players);
+            })
+        }
+    }, [socket])
 
     // GET ALL GAMES
     useEffect(() => {
@@ -164,8 +168,6 @@ const LobbyPage = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        // Store the player data in local storage
-        localStorage.setItem('players', JSON.stringify(players));
         handleBettingAmount();
         navigate('/new/game');
     }

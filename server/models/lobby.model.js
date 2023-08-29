@@ -21,6 +21,10 @@ const LobbySchema = new mongoose.Schema({
     lobbyId: {
         type: String,
         require: true,
+    },
+    creatorId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     }
 
 }, { timestamps: true })

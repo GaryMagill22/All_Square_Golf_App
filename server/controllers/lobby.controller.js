@@ -19,7 +19,8 @@ module.exports.createLobby = async (req, res) => {
             selectedCourse,
             selectedGame,
             players: [req.user.id],
-            lobbyId: generateRandomRoomName()
+            lobbyId: generateRandomRoomName(),
+            creatorId: req.user.id,
         });
         res.status(200).json({
             message: 'Lobby created',

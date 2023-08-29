@@ -38,6 +38,7 @@ const Login = () => {
                 body: formInfo,
             });
             if (response.user) {
+                localStorage.setItem('user_id', JSON.stringify(response.user._id));
                 localStorage.setItem('isLoggedIn', true);
                 localStorage.setItem('players', JSON.stringify(response.user._id));
                 setTimeout(() => {

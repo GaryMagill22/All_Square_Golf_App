@@ -1,6 +1,7 @@
 import './App.css';
 import { Routes, Route, BrowserRouter, Link } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
+import { initSocket } from './helpers/socketHelper';
 import ProtectedRoute from './Components/ProtectedRoute.jsx';
 import BottomNav from './Components/BottomNav';
 import Home from './Pages/Home';
@@ -16,15 +17,14 @@ import UserInfo from './Components/UserInfo';
 import ScoreCard from './Components/ScoreCard';
 import DisplayRounds from './Pages/DisplayRounds';
 import Chat from './Components/Chat';
-import io from 'socket.io-client';
 import AppContext from './helpers/context';
 
 
 function App() {
 
-    const [socket] = useState(() => io(":8000"));
-
-
+    useEffect(() => {
+        initSocket()
+    }, [])
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     console.log('on app file', isLoggedIn);
     return (
@@ -37,7 +37,7 @@ function App() {
                     <Link to="/allUsers">All users</Link>|
                     <Link to="/userInfo"> User info</Link>
                 </p>
-                <AppContext.Provider value={{ socket }} >
+                <AppContext.Provider>
                     <Routes>
                         <Route path="/register" element={<Cookie />} />
                         <Route path="/" element={<DashBoard />} />
