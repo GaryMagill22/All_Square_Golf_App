@@ -128,6 +128,12 @@ io.on("connection", (socket) => {
         io.emit('scoreValueReceived', data);
     });
 
+
+    socket.on('totalScore', (data) => {
+        io.emit('totalScoreReceived',);
+    });
+
+
     socket.on('gameCompleted', () => {
         io.emit('gameCompletedReceived');
     });

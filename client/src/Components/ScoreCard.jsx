@@ -18,6 +18,7 @@ const ScoreCard = () => {
     console.log('player value', players);
     console.log('creator value', isCreator);
 
+    const [scorePoints, setScorePoints] = useState([]);
 
     const [playerScores, setPlayerScores] = useState({}); // State variable for player scores
     const [calculatedPoints, setCalculatedPoints] = useState( // State variable for calculated points for each player
@@ -38,14 +39,33 @@ const ScoreCard = () => {
 
 
     const [roundData, setRoundData] = useState({});
+    const [selectedPlayer, setSelectedPlayer] = useState(Object.fromEntries(players.map(player => [player.username, { score: 0, point: 0 }])))
 
     const scoreUpdating = Object.values(totalScores);
 
     // Function to handle score update for each player
     const handleScoreUpdate = (player, score) => {
-        setPlayerScores(prevScores => ({
-            ...prevScores,
-            [player]: score
+        var points;
+        if (score === 2) {
+            points = 2; // Double Bogey
+        } if (score === 1) {
+            points = 1; // Bogey
+        } else if (score === 0) {
+            points = 2; // Par
+        } else if (score === -1) {
+            points = 3; // Birdie
+        } else if (score === -2) {
+            points = 4; // Eagle
+        } else {
+            points = 0;
+        }
+
+        setSelectedPlayer(prevData => ({
+            ...prevData,
+            [player]: {
+                score,
+                point: points
+            }
         }));
     };
 
@@ -53,33 +73,37 @@ const ScoreCard = () => {
 
 
 
-    // Function to calculate total scores for each player
-    const handleTotalScore = () => {
-        let updatedTotalScores = {};
-        for (const player in playerScores) {
-            if (playerScores.hasOwnProperty(player)) {
-                updatedTotalScores[player] = playerScores[player] + (totalScores[player] || 0);
-            }
+    const submitScore = () => {
+        const updatedScorePoints = scorePoints.map(scorePoint => ({
+            ...scorePoint,
+            score: scorePoint.score + selectedPlayer[scorePoint.user].score,
+            point: scorePoint.point + selectedPlayer[scorePoint.user].point
+        }));
+        setScorePoints(updatedScorePoints);
+        setSelectedPlayer(Object.fromEntries(players.map(player => [player.username, { score: 0, point: 0 }])));
+        setCurrentHoleNumber(currentHoleNumber => currentHoleNumber + 1);
+        if (currentHoleNumber >= 18) {
+            setIsSubmitted(true);
         }
-        socket.emit('scoreValue', updatedTotalScores);
-        setTotalScores(updatedTotalScores);
-    };
-
-    // Function to calculate points based on the score submitted
-    const handleTotalPoints = (score, points) => {
-        if (score === 1) {
-            points += 1; // Bogey
-        } else if (score === 0) {
-            points += 2; // Par
-        } else if (score === -1) {
-            points += 3; // Birdie
-        } else if (score === -2) {
-            points += 4; // Eagle
-        }
-        return points;
-    };
+    }
 
     useEffect(() => {
+        // Set initial scorepoints value of players
+        const scoreValues = players.map((player) => (
+            {
+                user: player.username,
+                score: 0,
+                point: 0
+            }
+        ))
+        setScorePoints(scoreValues);
+    }, [])
+
+
+
+
+    useEffect(() => {
+
         if (socket) {
             socket.on('holeNumberReceived', (data) => {
                 setCurrentHoleNumber(data);
@@ -96,6 +120,7 @@ const ScoreCard = () => {
             socket.on('gameCompleted', () => {
                 setIsSubmitted(true);
             });
+
         }
     }, [socket])
 
@@ -118,120 +143,114 @@ const ScoreCard = () => {
     }, []);
 
     // Define handleWinners function before it's being used
-    const handleWinners = () => {
-        const maxPoints = Math.max(...calculatedPoints.map((player) => player.points));
-        const playersWon = calculatedPoints.filter(player => player.points === maxPoints);
-        const earnings = Math.floor(bettingAmount / playersWon.length)
+    // const handleWinners = () => {
+    //     const maxPoints = Math.max(...calculatedPoints.map((player) => player.points));
+    //     const playersWon = calculatedPoints.filter(player => player.points === maxPoints);
+    //     const earnings = Math.floor(bettingAmount / playersWon.length)
 
 
-        return { winners: playersWon, payout: earnings }
-    };
+    //     return { winners: playersWon, payout: earnings }
+    // };
 
-    const executePayouts = async (gameResult) => {
-        try {
-            await axios.post(`http://localhost:8000/api/execute-payouts`, gameResult);
-            // This URL should be replaced with the endpoint in your backend that handles payouts
-        } catch (error) {
-            console.error(`Error while executing payouts: ${error}`);
-        }
-    };
-
-
+    // const executePayouts = async (gameResult) => {
+    //     try {
+    //         await axios.post(`http://localhost:8000/api/execute-payouts`, gameResult);
+    //         // This URL should be replaced with the endpoint in your backend that handles payouts
+    //     } catch (error) {
+    //         console.error(`Error while executing payouts: ${error}`);
+    //     }
+    // };
 
 
-    const submitHandler = async (e) => {
-        e.preventDefault();
-        // Calculate points for each player based on their total scores
-        const updatedCalculatedPoints = calculatedPoints.map((playerObj) => {
-            const playerName = playerObj.player;
-            const currPoints = playerObj.points;
-            const newPoints = handleTotalPoints(playerScores[playerObj.player], playerObj.points);
+    // const submitHandler = async (e) => {
+    //     e.preventDefault();
+    //     // Calculate points for each player based on their total scores
+    //     const updatedCalculatedPoints = calculatedPoints.map((playerObj) => {
+    //         const playerName = playerObj.player;
+    //         console.log('player name', playerObj);
+    //         const currPoints = playerObj.points;
+    //         const newPoints = handleTotalPoints(playerScores[playerObj.player], playerObj.points);
 
-            return {
-                player: playerName,
-                points: newPoints
-            }
-        });
+    //         return {
+    //             player: playerName,
+    //             points: newPoints
+    //         }
+    //     });
 
-        // Update the current hole number
-        socket.emit('holeNumber', currentHoleNumber);
-        //setCurrentHoleNumber(currentHoleNumber => currentHoleNumber + 1);
+    //     // Update the current hole number
+    //     socket.emit('holeNumber', currentHoleNumber);
+    //     //setCurrentHoleNumber(currentHoleNumber => currentHoleNumber + 1);
 
-        // Execute the function to calculate total scores
-        handleTotalScore();
+    //     // Execute the function to calculate total scores
+    //     handleTotalScore();
 
-        // Update the calculated points
-        socket.emit('calcPoint', updatedCalculatedPoints);
-        setCalculatedPoints(updatedCalculatedPoints);
+    //     // Update the calculated points
+    //     socket.emit('calcPoint', updatedCalculatedPoints);
+    //     setCalculatedPoints(updatedCalculatedPoints);
 
-        // Store the submitted scores in session storage
-        sessionStorage.setItem('submittedScores', JSON.stringify(totalScores));
+    //     // Store the submitted scores in session storage
+    //     sessionStorage.setItem('submittedScores', JSON.stringify(totalScores));
 
-        setPlayerScores({
-            [user.username]: 0,
-            [players[1]]: 0,
-            [players[2]]: 0,
-            [players[3]]: 0
-        });
-        // Check if it's the last hole (hole 18) and set isSubmitted to true
-        if (currentHoleNumber >= 18) {
-            socket.emit('gameCompleted');
-            setIsSubmitted(true);
+    //     setPlayerScores({
+    //         [user.username]: 0,
+    //         [players[1]]: 0,
+    //         [players[2]]: 0,
+    //         [players[3]]: 0
+    //     });
+    //     // Check if it's the last hole (hole 18) and set isSubmitted to true
+    //     if (currentHoleNumber >= 18) {
+    //         socket.emit('gameCompleted');
+    //         setIsSubmitted(true);
 
-            const gameResult = handleWinners();
+    //         const gameResult = handleWinners();
 
-            // Await here to make sure the payouts are executed before moving to next lines
-            await executePayouts(gameResult);
-            // Now we should save round data since the payouts have been calculated and sent
-        }
-    }
-
-
-    useEffect(() => {
-        const storedBettingAmount = localStorage.getItem('bettingAmount');
-        if (storedBettingAmount) {
-            setBettingAmount(parseInt(JSON.parse(storedBettingAmount)) * (players.length - 1));
-        }
-    }, []);
+    //         // Await here to make sure the payouts are executed before moving to next lines
+    //         await executePayouts(gameResult);
+    //         // Now we should save round data since the payouts have been calculated and sent
+    //     }
+    // }
 
 
-    const saveRoundData = async () => {
-        try {
-            // Create Object to save rounds
-            const roundData = {
-                players: calculatedPoints.map(player => ({
-                    name: player.player,
-                    score: totalScores[player.player],
-                    points: player.points,
-                })),
-                winners: handleWinners().winners.map(player => player.player),
-                payout: handleWinners().payout,
-                amountBet: bettingAmount,
-                game: gamePicked,
-                coursePicked: coursePicked,
-            };
-            // // Create payout data object
-            const payoutData = {
-                userId: user.id,  // The ID of the user who won
-                amount: handleWinners().payout // The amount to pay out
-            }
-            // console.log(roundData);
-            // Make a POST request to the backend to save the round data
-            await axios.post('http://localhost:8000/api/rounds/new', roundData);
-            navigate("/home");
+    // useEffect(() => {
+    //     const storedBettingAmount = localStorage.getItem('bettingAmount');
+    //     if (storedBettingAmount) {
+    //         setBettingAmount(parseInt(JSON.parse(storedBettingAmount)) * (players.length - 1));
+    //     }
+    // }, []);
 
 
-        } catch (error) {
-            console.log('Error saving round data:', error);
-            // Handle any errors that might occur during the API call
-            // ...
-        }
-    };
+    // const saveRoundData = async () => {
+    //     try {
+    //         // Create Object to save rounds
+    //         const roundData = {
+    //             players: calculatedPoints.map(player => ({
+    //                 name: player.player,
+    //                 score: totalScores[player.player],
+    //                 points: player.points,
+    //             })),
+    //             winners: handleWinners().winners.map(player => player.player),
+    //             payout: handleWinners().payout,
+    //             amountBet: bettingAmount,
+    //             game: gamePicked,
+    //             coursePicked: coursePicked,
+    //         };
+    //         // // Create payout data object
+    //         const payoutData = {
+    //             userId: user.id,  // The ID of the user who won
+    //             amount: handleWinners().payout // The amount to pay out
+    //         }
+    //         // console.log(roundData);
+    //         // Make a POST request to the backend to save the round data
+    //         await axios.post('http://localhost:8000/api/rounds/new', roundData);
+    //         navigate("/home");
 
 
-
-
-
+    //     } catch (error) {
+    //         console.log('Error saving round data:', error);
+    //         // Handle any errors that might occur during the API call
+    //         // ...
+    //     }
+    // };
 
     return (
         <main>
@@ -248,91 +267,34 @@ const ScoreCard = () => {
                                 <th style={{ width: '70%' }}>Record Score</th>
                             </tr>
                         </thead>
-                        {/* <tbody>
+                        <tbody>
                             {
                                 players.map((player) => {
                                     return (
                                         <tr>
                                             <td>{player.username}</td>
-                                            <td>{playerScores[user.username]}</td>
+                                            <td>{selectedPlayer[player.username].score}</td>
                                             <td>
                                                 <div className="d-flex justify-content-between">
-                                                    <button type="button" className="btn btn-primary" value={-2} onClick={() => handleScoreUpdate(user.username, -2)} disabled={!isCreator}>Eagle</button>
-                                                    <button type="button" className="btn btn-secondary" value={-1} onClick={() => handleScoreUpdate(user.username, -1)} disabled={!isCreator}>Birdie</button>
-                                                    <button type="button" className="btn btn-dark" value={0} onClick={() => handleScoreUpdate(user.username, 0)} disabled={!isCreator}>Par</button>
-                                                    <button type="button" className="btn btn-info" value={1} onClick={() => handleScoreUpdate(user.username, 1)} disabled={!isCreator}>Bogie</button>
-                                                    <button type="button" className="btn btn-warning" value={2} onClick={() => handleScoreUpdate(user.username, 2)} disabled={!isCreator}>Double Bogey</button>
-                                                    <button type="button" className="btn btn-danger" value={10} onClick={() => handleScoreUpdate(user.username, 10)} disabled={!isCreator}>X</button>
+                                                    <button type="button" className="btn btn-primary" value={-2} onClick={() => handleScoreUpdate(player.username, -2)} disabled={!isCreator}>Eagle</button>
+                                                    <button type="button" className="btn btn-secondary" value={-1} onClick={() => handleScoreUpdate(player.username, -1)} disabled={!isCreator}>Birdie</button>
+                                                    <button type="button" className="btn btn-dark" value={0} onClick={() => handleScoreUpdate(player.username, 0)} disabled={!isCreator}>Par</button>
+                                                    <button type="button" className="btn btn-info" value={1} onClick={() => handleScoreUpdate(player.username, 1)} disabled={!isCreator}>Bogie</button>
+                                                    <button type="button" className="btn btn-warning" value={2} onClick={() => handleScoreUpdate(player.username, 2)} disabled={!isCreator}>Double Bogey</button>
+                                                    <button type="button" className="btn btn-danger" value={10} onClick={() => handleScoreUpdate(player.username, 10)} disabled={!isCreator}>X</button>
                                                 </div>
                                             </td>
                                         </tr>
                                     )
                                 })
                             }
-                        </tbody> */}
-                        <tbody>
-                            <tr>
-                                <td>{players[0] ? players[0].username : 'Loading...'}</td>
-                                <td>{playerScores[user.username]}</td>
-                                <td>
-                                    <div className="d-flex justify-content-between">
-                                        <button type="button" className="btn btn-primary" value={-2} onClick={() => handleScoreUpdate(user.username, -2)} disabled={isCreator === false}>Eagle</button>
-                                        <button type="button" className="btn btn-secondary" value={-1} onClick={() => handleScoreUpdate(user.username, -1)} disabled={isCreator === false}>Birdie</button>
-                                        <button type="button" className="btn btn-dark" value={0} onClick={() => handleScoreUpdate(user.username, 0)} disabled={isCreator === false}>Par</button>
-                                        <button type="button" className="btn btn-info" value={1} onClick={() => handleScoreUpdate(user.username, 1)} disabled={isCreator === false}>Bogie</button>
-                                        <button type="button" className="btn btn-warning" value={2} onClick={() => handleScoreUpdate(user.username, 2)} disabled={isCreator === false}>Double Bogey</button>
-                                        <button type="button" className="btn btn-danger" value={10} onClick={() => handleScoreUpdate(user.username, 10)} disabled={isCreator === false}>X</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>{players[1] ? players[1].username : 'Loading...'}</td>
-                                <td>{playerScores[players[1]]}</td>
-                                <td>
-                                    <div className="d-flex justify-content-between">
-                                        <button type="button" className="btn btn-primary" value={-2} onClick={() => handleScoreUpdate(players[1], -2)} disabled={!isCreator}>Eagle</button>
-                                        <button type="button" className="btn btn-secondary" value={-1} onClick={() => handleScoreUpdate(players[1], -1)} disabled={!isCreator}>Birdie</button>
-                                        <button type="button" className="btn btn-dark" value={0} onClick={() => handleScoreUpdate(players[1], 0)} disabled={!isCreator}>Par</button>
-                                        <button type="button" className="btn btn-info" value={1} onClick={() => handleScoreUpdate(players[1], 1)} disabled={!isCreator}>Bogie</button>
-                                        <button type="button" className="btn btn-warning" value={2} onClick={() => handleScoreUpdate(players[1], 2)} disabled={!isCreator}>Double Bogey</button>
-                                        <button type="button" className="btn btn-danger" value={10} onClick={() => handleScoreUpdate(players[1], 10)} disabled={!isCreator}>X</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>{players[2] ? players[2].username : 'Loading...'}</td>
-                                <td>{playerScores[players[2]]}</td>
-                                <td>
-                                    <div className="d-flex justify-content-between">
-                                        <button type="button" className="btn btn-primary" value={-2} onClick={() => handleScoreUpdate(players[2], -2)} disabled={!isCreator}>Eagle</button>
-                                        <button type="button" className="btn btn-secondary" value={-1} onClick={() => handleScoreUpdate(players[2], -1)} disabled={!isCreator}>Birdie</button>
-                                        <button type="button" className="btn btn-dark" value={0} onClick={() => handleScoreUpdate(players[2], 0)} disabled={!isCreator}>Par</button>
-                                        <button type="button" className="btn btn-info" value={1} onClick={() => handleScoreUpdate(players[2], 1)} disabled={!isCreator}>Bogie</button>
-                                        <button type="button" className="btn btn-warning" value={2} onClick={() => handleScoreUpdate(players[2], 2)} disabled={!isCreator}>Double Bogey</button>
-                                        <button type="button" className="btn btn-danger" value={10} onClick={() => handleScoreUpdate(players[2], 10)} disabled={!isCreator}>X</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>{players[3] ? players[3].username : 'Loading...'}</td>
-                                <td>{playerScores[players[3]]}</td>
-                                <td>
-                                    <div className="d-flex justify-content-between">
-                                        <button type="button" className="btn btn-primary" value={-2} onClick={() => handleScoreUpdate(players[3], -2)} disabled={!isCreator}>Eagle</button>
-                                        <button type="button" className="btn btn-secondary" value={-1} onClick={() => handleScoreUpdate(players[3], -1)} disabled={!isCreator}>Birdie</button>
-                                        <button type="button" className="btn btn-dark" value={0} onClick={() => handleScoreUpdate(players[3], 0)} disabled={!isCreator}>Par</button>
-                                        <button type="button" className="btn btn-info" value={1} onClick={() => handleScoreUpdate(players[3], 1)} disabled={!isCreator}>Bogie</button>
-                                        <button type="button" className="btn btn-warning" value={2} onClick={() => handleScoreUpdate(players[3], 2)} disabled={!isCreator}>Double Bogey</button>
-                                        <button type="button" className="btn btn-danger" value={10} onClick={() => handleScoreUpdate(players[3], 10)} disabled={!isCreator}>X</button>
-                                    </div>
-                                </td>
-                            </tr>
                         </tbody>
+
                     </table>
                     <div className="row justify-content-center">
                         <div className="col-6 text-center">
 
-                            <button style={{ margin: "20px" }} type="submit" onClick={submitHandler} className="btn btn-success" disabled={!isCreator}>Submit Score</button>
+                            <button style={{ margin: "20px" }} type="submit" onClick={submitScore} className="btn btn-success" disabled={!isCreator}>Submit Score</button>
                         </div>
                     </div>
                     <div className="container" style={{ marginLeft: "600px" }} >
@@ -349,6 +311,19 @@ const ScoreCard = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        {
+                                            scorePoints.map((player) => {
+                                                return (
+                                                    <tr>
+                                                        <td>{player.user}</td>
+                                                        <td>{player.score}</td>
+                                                        <td>{player.point}</td>
+                                                    </tr>
+                                                )
+                                            })
+                                        }
+                                    </tbody>
+                                    {/* <tbody>
                                         <tr>
                                             <td>{players[0].username}</td>
                                             <td>{scoreUpdating[0]}</td>
@@ -371,7 +346,7 @@ const ScoreCard = () => {
                                             <td>{scoreUpdating[3]}</td>
                                             <td>{calculatedPoints[3].points}</td>
                                         </tr>
-                                    </tbody>
+                                    </tbody> */}
                                 </table>
                             </div>
                         </div>
@@ -419,7 +394,7 @@ const ScoreCard = () => {
                             </tr>
                         </tbody>
                     </table>
-                    <div style={{ textAlign: "center" }} >
+                    {/* <div style={{ textAlign: "center" }} >
                         {handleWinners().length === 1 ? (
 
                             <h3 colSpan="4">Winner: {handleWinners().winners[0]}</h3>
@@ -431,7 +406,7 @@ const ScoreCard = () => {
                         <button className="btn btn-primary" onClick={saveRoundData}>
                             Save Round
                         </button>
-                    </div>
+                    </div> */}
 
 
                 </div>
@@ -451,90 +426,204 @@ export default ScoreCard;
 
 
 
-    // ============================================================================
-    // Function to handle form submission
-    // const submitHandler = async (e) => {
-    //     e.preventDefault();
+// ============================================================================
+// Function to handle form submission
+// const submitHandler = async (e) => {
+//     e.preventDefault();
 
-    //     // Execute the function to calculate total scores
-    //     handleTotalScore();
+//     // Execute the function to calculate total scores
+//     handleTotalScore();
 
-    //     // Calculate points for each player based on their total scores
-    //     const updatedCalculatedPoints = calculatedPoints.map((playerObj) => {
-    //         const playerName = playerObj.player;
-    //         const currPoints = playerObj.points;
-    //         const newPoints = handleTotalPoints(playerScores[playerObj.player], playerObj.points);
+//     // Calculate points for each player based on their total scores
+//     const updatedCalculatedPoints = calculatedPoints.map((playerObj) => {
+//         const playerName = playerObj.player;
+//         const currPoints = playerObj.points;
+//         const newPoints = handleTotalPoints(playerScores[playerObj.player], playerObj.points);
 
-    //         return {
-    //             player: playerName,
-    //             points: newPoints
-    //         }
-    //     });
+//         return {
+//             player: playerName,
+//             points: newPoints
+//         }
+//     });
 
-    //     // Update the current hole number
-    //     setCurrentHoleNumber(currentHoleNumber => currentHoleNumber + 1);
+//     // Update the current hole number
+//     setCurrentHoleNumber(currentHoleNumber => currentHoleNumber + 1);
 
-    //     // Update the calculated points
-    //     setCalculatedPoints(updatedCalculatedPoints);
+//     // Update the calculated points
+//     setCalculatedPoints(updatedCalculatedPoints);
 
-    //     // Store the submitted scores in session storage
-    //     sessionStorage.setItem('submittedScores', JSON.stringify(totalScores));
+//     // Store the submitted scores in session storage
+//     sessionStorage.setItem('submittedScores', JSON.stringify(totalScores));
 
-    //     // Reset the player scores for the next round
-    //     setPlayerScores({
-    //         [user.username]: 0,
-    //         [players[1]]: 0,
-    //         [players[2]]: 0,
-    //         [players[3]]: 0
-    //     });
+//     // Reset the player scores for the next round
+//     setPlayerScores({
+//         [user.username]: 0,
+//         [players[1]]: 0,
+//         [players[2]]: 0,
+//         [players[3]]: 0
+//     });
 
-    //     // Check if it's the last hole (hole 18) and set isSubmitted to true
-    //     if (currentHoleNumber >= 18) {
-    //         setIsSubmitted(true);
+//     // Check if it's the last hole (hole 18) and set isSubmitted to true
+//     if (currentHoleNumber >= 18) {
+//         setIsSubmitted(true);
 
-    //         const gameResult = handleWinners();
+//         const gameResult = handleWinners();
 
-    //         // Await here to make sure the payouts are executed before moving to next lines
-    //         await executePayouts(gameResult);
-    //         // Now we should save round data since the payouts have been calculated and sent
-    //         await saveRoundData();
-    //     };
+//         // Await here to make sure the payouts are executed before moving to next lines
+//         await executePayouts(gameResult);
+//         // Now we should save round data since the payouts have been calculated and sent
+//         await saveRoundData();
+//     };
 
-    //     const executePayouts = async (gameResult) => {
-    //         try {
-    //             await axios.post(`http://localhost:8000/api/execute-payouts`, gameResult);
-    //             // This URL should be replaced with the endpoint in your backend that handles payouts
-    //         } catch (error) {
-    //             console.error(`Error while executing payouts: ${error}`);
-    //         }
-    //     };
+//     const executePayouts = async (gameResult) => {
+//         try {
+//             await axios.post(`http://localhost:8000/api/execute-payouts`, gameResult);
+//             // This URL should be replaced with the endpoint in your backend that handles payouts
+//         } catch (error) {
+//             console.error(`Error while executing payouts: ${error}`);
+//         }
+//     };
 
-    //     const handleWinners = () => {
-    //         const maxPoints = Math.max(...calculatedPoints.map((player) => player.points));
-    //         const playersWon = calculatedPoints.filter(player => player.points === maxPoints);
-    //         const earnings = Math.floor(bettingAmount / playersWon.length)
+//     const handleWinners = () => {
+//         const maxPoints = Math.max(...calculatedPoints.map((player) => player.points));
+//         const playersWon = calculatedPoints.filter(player => player.points === maxPoints);
+//         const earnings = Math.floor(bettingAmount / playersWon.length)
 
-    //         return { winners: playersWon, payout: earnings }
-    //     };
+//         return { winners: playersWon, payout: earnings }
+//     };
 
-    //     // Extracting the scores from the totalScores object as an array
-
-
+//     // Extracting the scores from the totalScores object as an array
 
 
-    //     const maxPoints = Math.max(...calculatedPoints.map((player) => player.points)); //this will return a winner
-    //     // const winners = [];
 
-    //     // for (const player of calculatedPoints) {
-    //     //     if (player.points === maxPoints) {
-    //     //         winners.push(player.player); //if there is a tie, we add to the winners which is good
 
-    //     //     }
-    //     // }
-    //     const playersWon = calculatedPoints.filter(player => player.points === maxPoints);
-    //     // console.log(playersWon);
-    //     //setWinners((prev) => ([...prev, playersWon]));
-    //     const earnings = Math.floor(bettingAmount / playersWon.length)
-    //     // setWinners(playersWon)
-    //     return { winners: playersWon, payout: earnings }//{ winners: [], payout: int}
+//     const maxPoints = Math.max(...calculatedPoints.map((player) => player.points)); //this will return a winner
+//     // const winners = [];
 
+//     // for (const player of calculatedPoints) {
+//     //     if (player.points === maxPoints) {
+//     //         winners.push(player.player); //if there is a tie, we add to the winners which is good
+
+//     //     }
+//     // }
+//     const playersWon = calculatedPoints.filter(player => player.points === maxPoints);
+//     // console.log(playersWon);
+//     //setWinners((prev) => ([...prev, playersWon]));
+//     const earnings = Math.floor(bettingAmount / playersWon.length)
+//     // setWinners(playersWon)
+//     return { winners: playersWon, payout: earnings }//{ winners: [], payout: int}
+
+
+
+
+
+// ============================================================================
+// Function to handle form submission
+// const submitHandler = async (e) => {
+//     e.preventDefault();
+
+//     // Execute the function to calculate total scores
+//     handleTotalScore();
+
+//     // Calculate points for each player based on their total scores
+//     const updatedCalculatedPoints = calculatedPoints.map((playerObj) => {
+//         const playerName = playerObj.player;
+//         const currPoints = playerObj.points;
+//         const newPoints = handleTotalPoints(playerScores[playerObj.player], playerObj.points);
+
+//         return {
+//             player: playerName,
+//             points: newPoints
+//         }
+//     });
+
+//     // Update the current hole number
+//     setCurrentHoleNumber(currentHoleNumber => currentHoleNumber + 1);
+
+//     // Update the calculated points
+//     setCalculatedPoints(updatedCalculatedPoints);
+
+//     // Store the submitted scores in session storage
+//     sessionStorage.setItem('submittedScores', JSON.stringify(totalScores));
+
+//     // Reset the player scores for the next round
+//     setPlayerScores({
+//         [user.username]: 0,
+//         [players[1]]: 0,
+//         [players[2]]: 0,
+//         [players[3]]: 0
+//     });
+
+//     // Check if it's the last hole (hole 18) and set isSubmitted to true
+//     if (currentHoleNumber >= 18) {
+//         setIsSubmitted(true);
+
+//         const gameResult = handleWinners();
+
+//         // Await here to make sure the payouts are executed before moving to next lines
+//         await executePayouts(gameResult);
+//         // Now we should save round data since the payouts have been calculated and sent
+//         await saveRoundData();
+//     };
+
+//     const executePayouts = async (gameResult) => {
+//         try {
+//             await axios.post(`http://localhost:8000/api/execute-payouts`, gameResult);
+//             // This URL should be replaced with the endpoint in your backend that handles payouts
+//         } catch (error) {
+//             console.error(`Error while executing payouts: ${error}`);
+//         }
+//     };
+
+//     const handleWinners = () => {
+//         const maxPoints = Math.max(...calculatedPoints.map((player) => player.points));
+//         const playersWon = calculatedPoints.filter(player => player.points === maxPoints);
+//         const earnings = Math.floor(bettingAmount / playersWon.length)
+
+//         return { winners: playersWon, payout: earnings }
+//     };
+
+//     // Extracting the scores from the totalScores object as an array
+
+
+
+
+//     const maxPoints = Math.max(...calculatedPoints.map((player) => player.points)); //this will return a winner
+//     // const winners = [];
+
+//     // for (const player of calculatedPoints) {
+//     //     if (player.points === maxPoints) {
+//     //         winners.push(player.player); //if there is a tie, we add to the winners which is good
+
+//     //     }
+//     // }
+//     const playersWon = calculatedPoints.filter(player => player.points === maxPoints);
+//     // console.log(playersWon);
+//     //setWinners((prev) => ([...prev, playersWon]));
+//     const earnings = Math.floor(bettingAmount / playersWon.length)
+//     // setWinners(playersWon)
+//     return { winners: playersWon, payout: earnings }//{ winners: [], payout: int}
+
+
+{/* <tbody>
+                            {
+                                players.map((player) => {
+                                    return (
+                                        <tr>
+                                            <td>{player.username}</td>
+                                            <td>{playerScores[user.username]}</td>
+                                            <td>
+                                                <div className="d-flex justify-content-between">
+                                                    <button type="button" className="btn btn-primary" value={-2} onClick={() => handleScoreUpdate(user.username, -2)} disabled={!isCreator}>Eagle</button>
+                                                    <button type="button" className="btn btn-secondary" value={-1} onClick={() => handleScoreUpdate(user.username, -1)} disabled={!isCreator}>Birdie</button>
+                                                    <button type="button" className="btn btn-dark" value={0} onClick={() => handleScoreUpdate(user.username, 0)} disabled={!isCreator}>Par</button>
+                                                    <button type="button" className="btn btn-info" value={1} onClick={() => handleScoreUpdate(user.username, 1)} disabled={!isCreator}>Bogie</button>
+                                                    <button type="button" className="btn btn-warning" value={2} onClick={() => handleScoreUpdate(user.username, 2)} disabled={!isCreator}>Double Bogey</button>
+                                                    <button type="button" className="btn btn-danger" value={10} onClick={() => handleScoreUpdate(user.username, 10)} disabled={!isCreator}>X</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    )
+                                })
+                            }
+                        </tbody> */}
