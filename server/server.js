@@ -111,27 +111,26 @@ io.on("connection", (socket) => {
         }
     })
 
-    socket.on('submitScore', () => {
+    socket.on('submitScore', (data) => {
         console.log('i got called');
-        io.emit('alertUsers');
+        io.emit('alertUsers', data);
     });
 
     socket.on('holeNumber', (data) => {
         io.emit('holeNumberReceived', data + 1);
     });
 
-    socket.on('calcPoint', (data) => {
-        io.emit('calcPointReceived', data);
+    socket.on('points', (data) => {
+        io.emit('pointsReceived', data);
     });
 
-    socket.on('scoreValue', (data) => {
-        io.emit('scoreValueReceived', data);
+    socket.on('players', (data) => {
+        console.log(data);
+        io.emit('playersReceived', data);
     });
 
 
-    socket.on('totalScore', (data) => {
-        io.emit('totalScoreReceived',);
-    });
+
 
 
     socket.on('gameCompleted', () => {

@@ -15,8 +15,7 @@ const ScoreCard = () => {
         return storedPlayers ? JSON.parse(storedPlayers) : [];
     });
     const [isCreator, setIsCreator] = useState(JSON.parse(localStorage.getItem('creator')));
-    console.log('player value', players);
-    console.log('creator value', isCreator);
+
 
     const [scorePoints, setScorePoints] = useState([]);
 
@@ -67,6 +66,13 @@ const ScoreCard = () => {
                 point: points
             }
         }));
+
+        const playerToUpdate = selectedPlayer;
+        playerToUpdate[player].score = score;
+        playerToUpdate[player].point = points;
+        socket.emit('scoreUpdate', currentHoleNumber);
+        socket.emit('players', playerToUpdate);
+
     };
 
 
@@ -79,10 +85,23 @@ const ScoreCard = () => {
             score: scorePoint.score + selectedPlayer[scorePoint.user].score,
             point: scorePoint.point + selectedPlayer[scorePoint.user].point
         }));
+
         setScorePoints(updatedScorePoints);
-        setSelectedPlayer(Object.fromEntries(players.map(player => [player.username, { score: 0, point: 0 }])));
+        const updatedPlayers = Object.fromEntries(players.map(player => [player.username, { score: 0, point: 0 }]))
+        setSelectedPlayer(updatedPlayers);
         setCurrentHoleNumber(currentHoleNumber => currentHoleNumber + 1);
+
+
+        // Store the submitted scores in session storage
+        sessionStorage.setItem('updatedScorePoints', JSON.stringify(totalScores));
+
+
+        socket.emit('holeNumber', currentHoleNumber);
+        socket.emit('points', updatedScorePoints);
+        //socket.emit('players', updatedPlayers);
+
         if (currentHoleNumber >= 18) {
+            console.log("isSubmitted", true);
             setIsSubmitted(true);
         }
     }
@@ -103,18 +122,22 @@ const ScoreCard = () => {
 
 
     useEffect(() => {
-
         if (socket) {
             socket.on('holeNumberReceived', (data) => {
                 setCurrentHoleNumber(data);
             });
 
-            socket.on('calcPointReceived', (data) => {
-                setCalculatedPoints(data);
+            socket.on('pointsReceived', (data) => {
+                setScorePoints(data);
             });
 
-            socket.on('scoreValueReceived', (data) => {
-                setTotalScores(data);
+            socket.on('playersReceived', (data) => {
+                console.log('data', data)
+                setSelectedPlayer(data);
+            });
+
+            socket.on('scorePointsReceived', (data) => {
+                setScorePoints(data);
             });
 
             socket.on('gameCompleted', () => {
@@ -136,7 +159,7 @@ const ScoreCard = () => {
 
     // useEffect to get stored scores from session storage
     useEffect(() => {
-        const storedScores = sessionStorage.getItem('submittedScores');
+        const storedScores = sessionStorage.getItem('updatedScorePoints');
         if (storedScores) {
             setTotalScores(JSON.parse(storedScores));
         }
