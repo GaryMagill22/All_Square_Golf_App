@@ -39,6 +39,7 @@ const LobbyPage = () => {
     const navigate = useNavigate()
 
     const [roomKey, setRoomKey] = useState('');
+    const [isCreator, setIsCreator] = useState(false);
 
 
 
@@ -52,13 +53,19 @@ const LobbyPage = () => {
                 localStorage.setItem('players', JSON.stringify(response.players.players));
                 const userId = JSON.parse(localStorage.getItem('user_id'));
                 if (userId === response.players.creatorId) {
+                    setIsCreator(true)
                     localStorage.setItem('creator', true);
                 } else {
                     localStorage.setItem('creator', false);
                 }
                 setCreator(response.players.creatorId);
                 setPlayers(response.players.players);
-            })
+            });
+
+            socket.on('proceedToGameReceived', () => {
+                handleBettingAmount();
+                navigate('/new/game');
+            });
         }
     }, [socket])
 
@@ -119,7 +126,6 @@ const LobbyPage = () => {
     const handleBettingAmount = () => {
         // Store the betting amount in local storage
         localStorage.setItem('bettingAmount', JSON.stringify(bettingAmount));
-
     }
 
 
@@ -168,8 +174,9 @@ const LobbyPage = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        handleBettingAmount();
-        navigate('/new/game');
+        // store player data in storage
+        localStorage.setItem('players', JSON.stringify(players));
+        socket.emit('proceedToGame');
     }
 
 
@@ -192,16 +199,17 @@ const LobbyPage = () => {
                 }
             </div>
 
-            <form className="mb-3" onClick={handleSubmit} >
+            <form className="mb-3">
                 <label htmlFor="bettingAmount" className="form-label">Money to bet (18 Holes)</label>
                 <input
                     type="number"
                     className="form-control"
                     name="bettingAmount"
                     value={bettingAmount}
+                    disabled={!isCreator}
                     onChange={(e) => setBettingAmount(parseInt(e.target.value))}
                 />
-                <button type="submit" className="btn btn-primary">Submit</button>
+                <button type="submit" className="btn btn-primary" disabled={!isCreator} onClick={handleSubmit}>Submit</button>
             </form>
             <div>
                 <Link to="/home" className="btn btn-outline-primary btn-sm m-2">

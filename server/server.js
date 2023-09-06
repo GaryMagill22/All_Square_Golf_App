@@ -125,9 +125,16 @@ io.on("connection", (socket) => {
     });
 
     socket.on('players', (data) => {
-        console.log(data);
         io.emit('playersReceived', data);
     });
+
+    socket.on('gameCompleted', () => {
+        io.emit('gameCompletedReceived');
+    });
+
+    socket.on('proceedToGame', () => {
+        io.emit('proceedToGameReceived');
+    })
 
 
 
