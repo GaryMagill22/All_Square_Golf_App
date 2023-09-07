@@ -140,28 +140,10 @@ const ScoreCard = () => {
         socket.emit('points', updatedScorePoints);
 
         if (currentHoleNumber >= 18) {
+            // handleWinners();
             socket.emit('gameCompleted')
         }
-        const handleWinners = () => {
 
-
-
-            const maxPoints = Math.max(...updatedScorePoints.map((player) => player.points)); //this will return a winner
-            const winners = [];
-
-            for (const player of selectedPlayer) {
-                if (player.points === maxPoints) {
-                    winners.push(player.player); //if there is a tie, we add to the winners which is good
-
-                }
-            }
-            const playersWon = updatedScorePoints.filter(player => player.points === maxPoints);
-            setWinners((prev) => ([...prev, playersWon]));
-            const earnings = Math.floor(bettingAmount / playersWon.length)
-            return { winners: playersWon, payout: earnings }//{ winners: [], payout: int}
-
-
-        };
     }
 
 
@@ -179,7 +161,24 @@ const ScoreCard = () => {
         setScorePoints(scoreValues);
     }, [])
 
+    // const handleWinners = () => {
 
+    //     const maxPoints = Math.max(...updatedScorePoints.map((player) => player.points)); //this will return a winner
+    //     const winners = [];
+
+    //     for (const player of selectedPlayer) {
+    //         if (player.points === maxPoints) {
+    //             winners.push(player.player); //if there is a tie, we add to the winners which is good
+
+    //         }
+    //     }
+    //     const playersWon = updatedScorePoints.filter(player => player.points === maxPoints);
+    //     setWinners((prev) => ([...prev, playersWon]));
+    //     const earnings = Math.floor(bettingAmount / playersWon.length)
+    //     return { winners: playersWon, payout: earnings }//{ winners: [], payout: int}
+
+
+    // };
 
 
     useEffect(() => {
