@@ -82,36 +82,36 @@ const ScoreCard = () => {
 
 
 
-    // const saveRoundData = async () => {
-    //     try {
-    //         // Create Object to save rounds
-    //         const roundData = {
-    //             players: calculatedPoints.map(player => ({
-    //                 name: player.player,
-    //                 score: totalScores[player.player],
-    //                 points: player.points,
-    //             })),
-    //             winners: handleWinners().winners.map(player => player.player),
-    //             payout: handleWinners().payout,
-    //             amountBet: bettingAmount,
-    //             game: gamePicked,
-    //             coursePicked: coursePicked,
-    //         };
-    //         // // Create payout data object
-    //         const payoutData = {
-    //             userId: user.id,  // The ID of the user who won
-    //             amount: handleWinners().payout // The amount to pay out
-    //         }
-    //         // console.log(roundData);
-    //         // Make a POST request to the backend to save the round data
-    //         await axios.post('http://localhost:8000/api/rounds/new', roundData);
-    //         navigate("/home");
-    //     } catch (error) {
-    //         console.log('Error saving round data:', error);
-    //         // Handle any errors that might occur during the API call
-    //         // ...
-    //     }
-    // };
+    const saveRoundData = async () => {
+        try {
+            // Create Object to save rounds
+            const roundData = {
+                players: calculatedPoints.map(player => ({
+                    name: player.player,
+                    score: totalScores[player.player],
+                    points: player.points,
+                })),
+                winners: handleWinners().winners.map(player => player.player),
+                payout: handleWinners().payout,
+                amountBet: bettingAmount,
+                game: gamePicked,
+                coursePicked: coursePicked,
+            };
+            // // Create payout data object
+            const payoutData = {
+                userId: user.id,  // The ID of the user who won
+                amount: handleWinners().payout // The amount to pay out
+            }
+            // console.log(roundData);
+            // Make a POST request to the backend to save the round data
+            await axios.post('http://localhost:8000/api/rounds/new', roundData);
+            navigate("/home");
+        } catch (error) {
+            console.log('Error saving round data:', error);
+            // Handle any errors that might occur during the API call
+            // ...  
+        }
+    };
 
 
 
@@ -178,50 +178,6 @@ const ScoreCard = () => {
     }, []);
 
 
-
-    // const handleWinners = () => {
-    //     // Step 1: Find max points
-    //     const maxPoints = Math.max(...scorePoints.map((player) => player.point));
-
-    //     // Get betting amount
-    //     const storedBettingAmount = parseInt(localStorage.getItem('bettingAmount')) || 0;
-
-    //     // Step 2: Calculate total pool
-    //     const totalPool = storedBettingAmount * scorePoints.length;
-
-
-
-    //     let winnersCount = 0;
-    //     for (const player of scorePoints) {
-    //         if (player.point === maxPoints) {
-    //             if (!player.user) {
-    //                 console.error("Found player with undefined username:", player);
-    //             }
-    //             winnersList.push({ player: player.user, points: player.point });
-    //             winnersCount++;
-    //         }
-    //     }
-    //     // Step 3: Calculate potential earnings total pool minus users betting amount
-    //     const potentialEarnings = totalPool - storedBettingAmount;
-
-    //     // Step 4: Calculate earnings per winner
-    //     const earningsPerWinner = Math.floor(totalPool / winnersCount);
-
-    //     // Update payout for each winner
-    //     const playersWithPayout = scorePoints.map(player => {
-    //         if (player.point === maxPoints) {
-    //             return { ...player, payout: earningsPerWinner };
-    //         }
-    //         setEarnings(earningsPerWinner);
-
-    //         return earningsPerWinner;
-    //     });
-
-
-    //     setWinners(playersWithPayout);
-
-    //     return winnersList;
-    // };
 
     const handleWinners = () => {
         // Step 1: Find max points
