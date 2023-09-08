@@ -37,6 +37,7 @@ const ScoreCard = () => {
     const [coursePicked, setCoursePicked] = useState('');
     const [winnersList, setWinnersList] = useState([]); // State variable to track winners
     const [earnings, setEarnings] = useState(0); // set state for earnings 
+    const [earningsPerWinner, setEarningsPerWinner] = useState(0); // set state for earnings 
 
 
     const [roundData, setRoundData] = useState({});
@@ -177,31 +178,97 @@ const ScoreCard = () => {
     }, []);
 
 
-    const handleWinners = () => {
-        const maxPoints = Math.max(...scorePoints.map((player) => player.point)); //this will return user with max points.
+    // const handleWinners = () => {
+    //     const maxPoints = Math.max(...scorePoints.map((player) => player.point)); //this will return user with max points.
 
-        const storedBettingAmount = parseInt(localStorage.getItem('bettingAmount')) || 0;  // to handle NaN
+    //     const storedBettingAmount = parseInt(localStorage.getItem('bettingAmount')) || 0;  // to handle NaN
+    //     const totalPool = storedBettingAmount * scorePoints.length;
+    //     const potentialEarnings = totalPool - storedBettingAmount;
+
+
+
+
+    //     for (const player of scorePoints) {
+    //         if (player.point === maxPoints) {
+    //             // Player obj from 'scorePoints' has property name 'user' instead of 'username'
+    //             if (!player.user) {
+    //                 console.error("Found player with undefined username:", player);
+    //             }
+    //             winnersList.push({ player: player.user, points: player.point });
+    //         }
+    //     }
+
+
+    //     // making sure if tied they split pot
+    //     if (winnersList.length === 1) {
+    //         const potentialEarnings = totalPool - storedBettingAmount;
+    //     } else {
+    //         const potentialEarnings = totalPool / winnersList.length;
+    //     }
+
+
+
+
+    //     const earnings = Math.floor(potentialEarnings / winnersList.length);
+
+    //     const playersWithPayout = scorePoints.map(player => {
+    //         if (player.point === maxPoints) {
+    //             return { ...player, payout: earnings };
+    //         }
+    //         return player;
+    //     });
+    //     setEarnings(earnings);
+    //     // const playersWon = scorePoints.map(player => ({ ...player, payout: earningsPerWinner }));
+    //     setWinners(winnersList);
+
+    //     return winnersList;
+    // };
+
+    // NEW  //
+
+    const handleWinners = () => {
+        // Step 1: Find max points
+        const maxPoints = Math.max(...scorePoints.map((player) => player.point));
+
+        // Get betting amount
+        const storedBettingAmount = parseInt(localStorage.getItem('bettingAmount')) || 0;
+
+        // Step 2: Calculate total pool
         const totalPool = storedBettingAmount * scorePoints.length;
-        const potentialEarnings = totalPool - storedBettingAmount;
+
+
 
 
         for (const player of scorePoints) {
             if (player.point === maxPoints) {
-                // Player obj from 'scorePoints' has property name 'user' instead of 'username'
                 if (!player.user) {
                     console.error("Found player with undefined username:", player);
                 }
                 winnersList.push({ player: player.user, points: player.point });
             }
         }
+        // Step 3: Calculate potential earnings total pool minus users betting amount
+        const potentialEarnings = totalPool - storedBettingAmount;
 
-        const earningsPerWinner = Math.floor(potentialEarnings / winnersList.length);
-        setEarnings(earningsPerWinner);
-        const playersWon = scorePoints.map(player => ({ ...player, payout: earnings }));
-        setWinners(playersWon);
+        // Step 4: Calculate earnings per winner
+        const earningsPerWinner = Math.floor(totalPool / winnersList.length);
+
+        // Update payout for each winner
+        const playersWithPayout = scorePoints.map(player => {
+            if (player.point === maxPoints) {
+                return { ...player, payout: earningsPerWinner };
+            }
+            setEarnings(earningsPerWinner);
+            return earningsPerWinner;
+        });
+
+
+        setWinners(playersWithPayout);
 
         return winnersList;
     };
+
+
 
     useEffect(() => {
         if (socket) {
@@ -367,10 +434,7 @@ const ScoreCard = () => {
                             <h3 colSpan="4">Winner: {winnersList[0].player} won ${earnings}</h3>
                         ) : (
                             <h3 style={{ color: "red" }} colSpan="4">
-                                {Array.isArray(winnersList) && winnersList.length > 0 ?
-                                    `Winners: ${winnersList.map(player => player.player).join(", ")} each won $${earnings}`
-                                    : ""
-                                }
+                                Winners: {winnersList.map(winner => winner.player).join(", ")} each won ${earnings}
                             </h3>
                         )}
                         <button className="btn btn-primary">
@@ -378,20 +442,18 @@ const ScoreCard = () => {
                         </button>
                     </div>
 
-
-
-
-
-
-
-
-                    {/* <div style={{ textAlign: "center" }} >
+                    {/* <div style={{ textAlign: "center", color: "purple" }}>
                         {Array.isArray(winnersList) && winnersList.length === 1 ? (
-                            <h3 colSpan="4">Winner: {winnersList[0].player}</h3>
+                            <h3 colSpan="4">Winner: {winnersList[0].player} won ${earnings}</h3>
                         ) : (
-                            <h3 style={{ color: "red" }} colSpan="4">Winners: {Array.isArray(winnersList) && winnersList.length > 0 ? winnersList.map(player => player.user).join(", ") + " won $" + winnersList[0].payout : ""}</h3>
+                            <h3 style={{ textAlign: "center", color: "purple" }} colSpan="4">
+                                {Array.isArray(winnersList) && winnersList.length > 0 ?
+                                    `Winners: ${winnersList.map(player => player.player).join(", ")} each won $${earnings}`
+                                    : ""
+                                }
+                            </h3>
                         )}
-                        <button className="btn btn-primary" >
+                        <button className="btn btn-primary">
                             Save Round
                         </button>
                     </div> */}
