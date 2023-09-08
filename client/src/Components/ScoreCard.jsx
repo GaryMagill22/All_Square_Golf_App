@@ -180,9 +180,9 @@ const ScoreCard = () => {
     const handleWinners = () => {
         const maxPoints = Math.max(...scorePoints.map((player) => player.point)); //this will return user with max points.
 
-        const storedBettingAmount = parseInt(localStorage.getItem('bettingAmount'));  // to handle NaN
-        console.log("bettingAmount:", storedBettingAmount);
-
+        const storedBettingAmount = parseInt(localStorage.getItem('bettingAmount')) || 0;  // to handle NaN
+        const totalPool = storedBettingAmount * scorePoints.length;
+        const potentialEarnings = totalPool - storedBettingAmount;
 
 
         for (const player of scorePoints) {
@@ -195,14 +195,10 @@ const ScoreCard = () => {
             }
         }
 
-        const earnings = Math.floor(storedBettingAmount / scorePoints.length);
-        setEarnings(earnings);
-        console.log("earnings:", earnings);
-        console.log('winners list====>', winnersList);
+        const earningsPerWinner = Math.floor(potentialEarnings / winnersList.length);
+        setEarnings(earningsPerWinner);
         const playersWon = scorePoints.map(player => ({ ...player, payout: earnings }));
         setWinners(playersWon);
-        console.log('players won:==', playersWon)
-        console.log("Is scorePoints an array?", Array.isArray(scorePoints));
 
         return winnersList;
     };
