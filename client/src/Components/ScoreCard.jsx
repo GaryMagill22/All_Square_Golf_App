@@ -178,53 +178,50 @@ const ScoreCard = () => {
     }, []);
 
 
+
     // const handleWinners = () => {
-    //     const maxPoints = Math.max(...scorePoints.map((player) => player.point)); //this will return user with max points.
+    //     // Step 1: Find max points
+    //     const maxPoints = Math.max(...scorePoints.map((player) => player.point));
 
-    //     const storedBettingAmount = parseInt(localStorage.getItem('bettingAmount')) || 0;  // to handle NaN
+    //     // Get betting amount
+    //     const storedBettingAmount = parseInt(localStorage.getItem('bettingAmount')) || 0;
+
+    //     // Step 2: Calculate total pool
     //     const totalPool = storedBettingAmount * scorePoints.length;
-    //     const potentialEarnings = totalPool - storedBettingAmount;
 
 
 
-
+    //     let winnersCount = 0;
     //     for (const player of scorePoints) {
     //         if (player.point === maxPoints) {
-    //             // Player obj from 'scorePoints' has property name 'user' instead of 'username'
     //             if (!player.user) {
     //                 console.error("Found player with undefined username:", player);
     //             }
     //             winnersList.push({ player: player.user, points: player.point });
+    //             winnersCount++;
     //         }
     //     }
+    //     // Step 3: Calculate potential earnings total pool minus users betting amount
+    //     const potentialEarnings = totalPool - storedBettingAmount;
 
+    //     // Step 4: Calculate earnings per winner
+    //     const earningsPerWinner = Math.floor(totalPool / winnersCount);
 
-    //     // making sure if tied they split pot
-    //     if (winnersList.length === 1) {
-    //         const potentialEarnings = totalPool - storedBettingAmount;
-    //     } else {
-    //         const potentialEarnings = totalPool / winnersList.length;
-    //     }
-
-
-
-
-    //     const earnings = Math.floor(potentialEarnings / winnersList.length);
-
+    //     // Update payout for each winner
     //     const playersWithPayout = scorePoints.map(player => {
     //         if (player.point === maxPoints) {
-    //             return { ...player, payout: earnings };
+    //             return { ...player, payout: earningsPerWinner };
     //         }
-    //         return player;
+    //         setEarnings(earningsPerWinner);
+
+    //         return earningsPerWinner;
     //     });
-    //     setEarnings(earnings);
-    //     // const playersWon = scorePoints.map(player => ({ ...player, payout: earningsPerWinner }));
-    //     setWinners(winnersList);
+
+
+    //     setWinners(playersWithPayout);
 
     //     return winnersList;
     // };
-
-    // NEW  //
 
     const handleWinners = () => {
         // Step 1: Find max points
@@ -236,37 +233,41 @@ const ScoreCard = () => {
         // Step 2: Calculate total pool
         const totalPool = storedBettingAmount * scorePoints.length;
 
+        // Reset winners list
+        winnersList.length = 0;
 
-
-
+        let winnersCount = 0;
         for (const player of scorePoints) {
             if (player.point === maxPoints) {
                 if (!player.user) {
                     console.error("Found player with undefined username:", player);
                 }
                 winnersList.push({ player: player.user, points: player.point });
+                winnersCount++;
             }
         }
-        // Step 3: Calculate potential earnings total pool minus users betting amount
-        const potentialEarnings = totalPool - storedBettingAmount;
 
-        // Step 4: Calculate earnings per winner
-        const earningsPerWinner = Math.floor(totalPool / winnersList.length);
+        let earningsPerWinner;
+        if (winnersCount === 1) {
+            earningsPerWinner = totalPool - storedBettingAmount;
+        } else {
+            earningsPerWinner = Math.floor(totalPool / winnersCount);
+        }
 
         // Update payout for each winner
         const playersWithPayout = scorePoints.map(player => {
             if (player.point === maxPoints) {
                 return { ...player, payout: earningsPerWinner };
             }
-            setEarnings(earningsPerWinner);
-            return earningsPerWinner;
+            return player;
         });
 
-
+        setEarnings(earningsPerWinner);
         setWinners(playersWithPayout);
 
         return winnersList;
     };
+
 
 
 
@@ -429,11 +430,11 @@ const ScoreCard = () => {
                             }
                         </tbody>
                     </table>
-                    <div style={{ textAlign: "center" }}>
+                    <div style={{ textAlign: "center", color: "purple" }}>
                         {Array.isArray(winnersList) && winnersList.length === 1 ? (
                             <h3 colSpan="4">Winner: {winnersList[0].player} won ${earnings}</h3>
                         ) : (
-                            <h3 style={{ color: "red" }} colSpan="4">
+                            <h3 style={{ textAlign: "center", color: "purple" }} colSpan="4">
                                 Winners: {winnersList.map(winner => winner.player).join(", ")} each won ${earnings}
                             </h3>
                         )}
@@ -441,22 +442,6 @@ const ScoreCard = () => {
                             Save Round
                         </button>
                     </div>
-
-                    {/* <div style={{ textAlign: "center", color: "purple" }}>
-                        {Array.isArray(winnersList) && winnersList.length === 1 ? (
-                            <h3 colSpan="4">Winner: {winnersList[0].player} won ${earnings}</h3>
-                        ) : (
-                            <h3 style={{ textAlign: "center", color: "purple" }} colSpan="4">
-                                {Array.isArray(winnersList) && winnersList.length > 0 ?
-                                    `Winners: ${winnersList.map(player => player.player).join(", ")} each won $${earnings}`
-                                    : ""
-                                }
-                            </h3>
-                        )}
-                        <button className="btn btn-primary">
-                            Save Round
-                        </button>
-                    </div> */}
 
                 </div>
 
@@ -470,263 +455,4 @@ const ScoreCard = () => {
 
 };
 export default ScoreCard;
-
-
-
-
-
-// ============================================================================
-// Function to handle form submission
-// const submitHandler = async (e) => {
-//     e.preventDefault();
-
-//     // Execute the function to calculate total scores
-//     handleTotalScore();
-
-//     // Calculate points for each player based on their total scores
-//     const updatedCalculatedPoints = calculatedPoints.map((playerObj) => {
-//         const playerName = playerObj.player;
-//         const currPoints = playerObj.points;
-//         const newPoints = handleTotalPoints(playerScores[playerObj.player], playerObj.points);
-
-//         return {
-//             player: playerName,
-//             points: newPoints
-//         }
-//     });
-
-//     // Update the current hole number
-//     setCurrentHoleNumber(currentHoleNumber => currentHoleNumber + 1);
-
-//     // Update the calculated points
-//     setCalculatedPoints(updatedCalculatedPoints);
-
-//     // Store the submitted scores in session storage
-//     sessionStorage.setItem('submittedScores', JSON.stringify(totalScores));
-
-//     // Reset the player scores for the next round
-//     setPlayerScores({
-//         [user.username]: 0,
-//         [players[1]]: 0,
-//         [players[2]]: 0,
-//         [players[3]]: 0
-//     });
-
-//     // Check if it's the last hole (hole 18) and set isSubmitted to true
-//     if (currentHoleNumber >= 18) {
-//         setIsSubmitted(true);
-
-//         const gameResult = handleWinners();
-
-//         // Await here to make sure the payouts are executed before moving to next lines
-//         await executePayouts(gameResult);
-//         // Now we should save round data since the payouts have been calculated and sent
-//         await saveRoundData();
-//     };
-
-//     const executePayouts = async (gameResult) => {
-//         try {
-//             await axios.post(`http://localhost:8000/api/execute-payouts`, gameResult);
-//             // This URL should be replaced with the endpoint in your backend that handles payouts
-//         } catch (error) {
-//             console.error(`Error while executing payouts: ${error}`);
-//         }
-//     };
-
-//     const handleWinners = () => {
-//         const maxPoints = Math.max(...calculatedPoints.map((player) => player.points));
-//         const playersWon = calculatedPoints.filter(player => player.points === maxPoints);
-//         const earnings = Math.floor(bettingAmount / playersWon.length)
-
-//         return { winners: playersWon, payout: earnings }
-//     };
-
-//     // Extracting the scores from the totalScores object as an array
-
-
-
-
-//     const maxPoints = Math.max(...calculatedPoints.map((player) => player.points)); //this will return a winner
-//     // const winners = [];
-
-//     // for (const player of calculatedPoints) {
-//     //     if (player.points === maxPoints) {
-//     //         winners.push(player.player); //if there is a tie, we add to the winners which is good
-
-//     //     }
-//     // }
-//     const playersWon = calculatedPoints.filter(player => player.points === maxPoints);
-//     // console.log(playersWon);
-//     //setWinners((prev) => ([...prev, playersWon]));
-//     const earnings = Math.floor(bettingAmount / playersWon.length)
-//     // setWinners(playersWon)
-//     return { winners: playersWon, payout: earnings }//{ winners: [], payout: int}
-
-
-
-
-
-// ============================================================================
-// Function to handle form submission
-// const submitHandler = async (e) => {
-//     e.preventDefault();
-
-//     // Execute the function to calculate total scores
-//     handleTotalScore();
-
-//     // Calculate points for each player based on their total scores
-//     const updatedCalculatedPoints = calculatedPoints.map((playerObj) => {
-//         const playerName = playerObj.player;
-//         const currPoints = playerObj.points;
-//         const newPoints = handleTotalPoints(playerScores[playerObj.player], playerObj.points);
-
-//         return {
-//             player: playerName,
-//             points: newPoints
-//         }
-//     });
-
-//     // Update the current hole number
-//     setCurrentHoleNumber(currentHoleNumber => currentHoleNumber + 1);
-
-//     // Update the calculated points
-//     setCalculatedPoints(updatedCalculatedPoints);
-
-//     // Store the submitted scores in session storage
-//     sessionStorage.setItem('submittedScores', JSON.stringify(totalScores));
-
-//     // Reset the player scores for the next round
-//     setPlayerScores({
-//         [user.username]: 0,
-//         [players[1]]: 0,
-//         [players[2]]: 0,
-//         [players[3]]: 0
-//     });
-
-//     // Check if it's the last hole (hole 18) and set isSubmitted to true
-//     if (currentHoleNumber >= 18) {
-//         setIsSubmitted(true);
-
-//         const gameResult = handleWinners();
-
-//         // Await here to make sure the payouts are executed before moving to next lines
-//         await executePayouts(gameResult);
-//         // Now we should save round data since the payouts have been calculated and sent
-//         await saveRoundData();
-//     };
-
-//     const executePayouts = async (gameResult) => {
-//         try {
-//             await axios.post(`http://localhost:8000/api/execute-payouts`, gameResult);
-//             // This URL should be replaced with the endpoint in your backend that handles payouts
-//         } catch (error) {
-//             console.error(`Error while executing payouts: ${error}`);
-//         }
-//     };
-
-//     const handleWinners = () => {
-//         const maxPoints = Math.max(...calculatedPoints.map((player) => player.points));
-//         const playersWon = calculatedPoints.filter(player => player.points === maxPoints);
-//         const earnings = Math.floor(bettingAmount / playersWon.length)
-
-//         return { winners: playersWon, payout: earnings }
-//     };
-
-//     // Extracting the scores from the totalScores object as an array
-
-
-
-
-//     const maxPoints = Math.max(...calculatedPoints.map((player) => player.points)); //this will return a winner
-//     // const winners = [];
-
-//     // for (const player of calculatedPoints) {
-//     //     if (player.points === maxPoints) {
-//     //         winners.push(player.player); //if there is a tie, we add to the winners which is good
-
-//     //     }
-//     // }
-//     const playersWon = calculatedPoints.filter(player => player.points === maxPoints);
-//     // console.log(playersWon);
-//     //setWinners((prev) => ([...prev, playersWon]));
-//     const earnings = Math.floor(bettingAmount / playersWon.length)
-//     // setWinners(playersWon)
-//     return { winners: playersWon, payout: earnings }//{ winners: [], payout: int}
-
-
-{/* <tbody>
-                            {
-                                players.map((player) => {
-                                    return (
-                                        <tr>
-                                            <td>{player.username}</td>
-                                            <td>{playerScores[user.username]}</td>
-                                            <td>
-                                                <div className="d-flex justify-content-between">
-                                                    <button type="button" className="btn btn-primary" value={-2} onClick={() => handleScoreUpdate(user.username, -2)} disabled={!isCreator}>Eagle</button>
-                                                    <button type="button" className="btn btn-secondary" value={-1} onClick={() => handleScoreUpdate(user.username, -1)} disabled={!isCreator}>Birdie</button>
-                                                    <button type="button" className="btn btn-dark" value={0} onClick={() => handleScoreUpdate(user.username, 0)} disabled={!isCreator}>Par</button>
-                                                    <button type="button" className="btn btn-info" value={1} onClick={() => handleScoreUpdate(user.username, 1)} disabled={!isCreator}>Bogie</button>
-                                                    <button type="button" className="btn btn-warning" value={2} onClick={() => handleScoreUpdate(user.username, 2)} disabled={!isCreator}>Double Bogey</button>
-                                                    <button type="button" className="btn btn-danger" value={10} onClick={() => handleScoreUpdate(user.username, 10)} disabled={!isCreator}>X</button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    )
-                                })
-                            }
-                        </tbody> */}
-
-
-
-
-    // const submitHandler = async (e) => {
-    //     e.preventDefault();
-    //     // Calculate points for each player based on their total scores
-    //     const updatedCalculatedPoints = calculatedPoints.map((playerObj) => {
-    //         const playerName = playerObj.player;
-    //         console.log('player name', playerObj);
-    //         const currPoints = playerObj.points;
-    //         const newPoints = handleTotalPoints(playerScores[playerObj.player], playerObj.points);
-
-    //         return {
-    //             player: playerName,
-    //             points: newPoints
-    //         }
-    //     });
-
-    //     // Update the current hole number
-    //     socket.emit('holeNumber', currentHoleNumber);
-    //     //setCurrentHoleNumber(currentHoleNumber => currentHoleNumber + 1);
-
-    //     // Execute the function to calculate total scores
-    //     handleTotalScore();
-
-    //     // Update the calculated points
-    //     socket.emit('calcPoint', updatedCalculatedPoints);
-    //     setCalculatedPoints(updatedCalculatedPoints);
-
-    //     // Store the submitted scores in session storage
-    //     sessionStorage.setItem('submittedScores', JSON.stringify(totalScores));
-
-    //     setPlayerScores({
-    //         [user.username]: 0,
-    //         [players[1]]: 0,
-    //         [players[2]]: 0,
-    //         [players[3]]: 0
-    //     });
-    //     // Check if it's the last hole (hole 18) and set isSubmitted to true
-    //     if (currentHoleNumber >= 18) {
-    //         socket.emit('gameCompleted');
-    //         setIsSubmitted(true);
-
-    //         const gameResult = handleWinners();
-
-    //         // Await here to make sure the payouts are executed before moving to next lines
-    //         await executePayouts(gameResult);
-    //         // Now we should save round data since the payouts have been calculated and sent
-    //     }
-    // }
-
-
 
