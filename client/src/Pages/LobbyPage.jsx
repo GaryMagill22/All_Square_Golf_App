@@ -63,7 +63,6 @@ const LobbyPage = () => {
             });
 
             socket.on('proceedToGameReceived', () => {
-                handleBettingAmount();
                 navigate('/new/game');
             });
         }
@@ -87,13 +86,6 @@ const LobbyPage = () => {
             .get(`http://localhost:8000/api/users/getUser`, { withCredentials: true })
             .then((res) => setUser(res.data))
             .catch((error) => console.log(error));
-
-        // Retrieve player data from local storage
-        // const storedPlayers = localStorage.getItem('players');
-        // if (storedPlayers) {
-        //     //   if cannot find stored players in storage - use this empty array instead
-        //     setPlayers(storedPlayers ? JSON.parse(storedPlayers) : []);
-        // }
     }, []);
 
     useEffect(() => {
@@ -126,6 +118,7 @@ const LobbyPage = () => {
     const handleBettingAmount = () => {
         // Store the betting amount in local storage
         localStorage.setItem('bettingAmount', JSON.stringify(bettingAmount));
+        // Debugging: Immediately retrieve and log the value
     }
 
 
@@ -144,6 +137,7 @@ const LobbyPage = () => {
                 console.log(`Error fetching games: ${err}`);
             });
     }, []);
+
 
 
 
@@ -176,6 +170,7 @@ const LobbyPage = () => {
         e.preventDefault()
         // store player data in storage
         localStorage.setItem('players', JSON.stringify(players));
+        handleBettingAmount();
         socket.emit('proceedToGame');
     }
 
@@ -199,7 +194,7 @@ const LobbyPage = () => {
                 }
             </div>
 
-            <form className="mb-3">
+            <form className="mb-3" onSubmit={handleSubmit} >
                 <label htmlFor="bettingAmount" className="form-label">Money to bet (18 Holes)</label>
                 <input
                     type="number"
@@ -209,7 +204,7 @@ const LobbyPage = () => {
                     disabled={!isCreator}
                     onChange={(e) => setBettingAmount(parseInt(e.target.value))}
                 />
-                <button type="submit" className="btn btn-primary" disabled={!isCreator} onClick={handleSubmit}>Submit</button>
+                <button type="submit" className="btn btn-primary" disabled={!isCreator} >Submit</button>
             </form>
             <div>
                 <Link to="/home" className="btn btn-outline-primary btn-sm m-2">

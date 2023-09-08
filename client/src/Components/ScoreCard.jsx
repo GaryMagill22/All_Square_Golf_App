@@ -32,9 +32,11 @@ const ScoreCard = () => {
     const [isSubmitted, setIsSubmitted] = useState(false); // State variable to track if the score is submitted
     const [totalScores, setTotalScores] = useState({}); // State variable for the total scores
     const [winners, setWinners] = useState([]); // State variable to track winners
-    const [bettingAmount, setBettingAmount] = useState(0); // State for how much money betting.
+    const [bettingAmount, setBettingAmount] = useState(); // State for how much money betting.
     const [gamePicked, setGamePicked] = useState();
     const [coursePicked, setCoursePicked] = useState('');
+    const [winnersList, setWinnersList] = useState([]); // State variable to track winners
+    const [earnings, setEarnings] = useState(0); // set state for earnings 
 
 
     const [roundData, setRoundData] = useState({});
@@ -76,12 +78,7 @@ const ScoreCard = () => {
     };
 
 
-    useEffect(() => {
-        const storedBettingAmount = localStorage.getItem('bettingAmount');
-        if (storedBettingAmount) {
-            setBettingAmount(parseInt(JSON.parse(storedBettingAmount)) * (players.length - 1));
-        }
-    }, []);
+
 
 
     // const saveRoundData = async () => {
@@ -140,8 +137,8 @@ const ScoreCard = () => {
         socket.emit('points', updatedScorePoints);
 
         if (currentHoleNumber >= 18) {
-            // handleWinners();
             socket.emit('gameCompleted')
+            handleWinners();
         }
 
     }
@@ -159,27 +156,56 @@ const ScoreCard = () => {
             }
         ))
         setScorePoints(scoreValues);
-    }, [])
+    }, []);
 
-    // const handleWinners = () => {
-
-    //     const maxPoints = Math.max(...updatedScorePoints.map((player) => player.points)); //this will return a winner
-    //     const winners = [];
-
-    //     for (const player of selectedPlayer) {
-    //         if (player.points === maxPoints) {
-    //             winners.push(player.player); //if there is a tie, we add to the winners which is good
-
-    //         }
-    //     }
-    //     const playersWon = updatedScorePoints.filter(player => player.points === maxPoints);
-    //     setWinners((prev) => ([...prev, playersWon]));
-    //     const earnings = Math.floor(bettingAmount / playersWon.length)
-    //     return { winners: playersWon, payout: earnings }//{ winners: [], payout: int}
+    // useEffect to fetch user data from the server
+    useEffect(() => {
+        axios
+            .get(`http://localhost:8000/api/users/getUser`, { withCredentials: true })
+            .then((res) => setUser(res.data))
+            .catch((error) => console.log(error));
+    }, []);
 
 
-    // };
 
+    // useEffect to get stored betting Amount from local storage
+    useEffect(() => {
+        const storedBettingAmount = localStorage.getItem('bettingAmount');
+        if (storedBettingAmount) {
+            setBettingAmount(storedBettingAmount);
+        }
+    }, []);
+
+
+    const handleWinners = () => {
+        const maxPoints = Math.max(...scorePoints.map((player) => player.point)); //this will return user with max points.
+
+        const storedBettingAmount = parseInt(localStorage.getItem('bettingAmount'));  // to handle NaN
+        console.log("bettingAmount:", storedBettingAmount);
+
+
+
+        for (const player of scorePoints) {
+            if (player.point === maxPoints) {
+                // Player obj from 'scorePoints' has property name 'user' instead of 'username'
+                if (!player.user) {
+                    console.error("Found player with undefined username:", player);
+                }
+                winnersList.push({ player: player.user, points: player.point });
+            }
+        }
+
+        const earnings = Math.floor(storedBettingAmount / scorePoints.length);
+        setEarnings(earnings);
+        console.log("earnings:", earnings);
+        console.log('winners list====>', winnersList);
+        const playersWon = scorePoints.map(player => ({ ...player, payout: earnings }));
+        setWinners(playersWon);
+        console.log('players won:==', playersWon)
+        console.log("Is scorePoints an array?", Array.isArray(scorePoints));
+
+        return winnersList;
+    };
 
     useEffect(() => {
         if (socket) {
@@ -208,21 +234,6 @@ const ScoreCard = () => {
 
 
 
-    // useEffect to fetch user data from the server
-    useEffect(() => {
-        axios
-            .get(`http://localhost:8000/api/users/getUser`, { withCredentials: true })
-            .then((res) => setUser(res.data))
-            .catch((error) => console.log(error));
-    }, []);
-
-    // useEffect to get stored scores from session storage
-    useEffect(() => {
-        const storedScores = sessionStorage.getItem('updatedScorePoints');
-        if (storedScores) {
-            setTotalScores(JSON.parse(storedScores));
-        }
-    }, []);
 
 
 
@@ -319,6 +330,9 @@ const ScoreCard = () => {
                             </div>
                         </div>
                     </div>
+                    <div>
+                        Betting Amount: ${bettingAmount}
+                    </div>
                     <div className="col-md-6">
                         <Chat />
                     </div>
@@ -352,13 +366,18 @@ const ScoreCard = () => {
                             }
                         </tbody>
                     </table>
-                    <div style={{ textAlign: "center" }} >
-                        {Array.isArray(winners) && winners.length === 1 ? (
-                            <h3 colSpan="4">Winner: {winners[0].player}</h3>
+                    <div style={{ textAlign: "center" }}>
+                        {Array.isArray(winnersList) && winnersList.length === 1 ? (
+                            <h3 colSpan="4">Winner: {winnersList[0].player} won ${earnings}</h3>
                         ) : (
-                            <h3 style={{ color: "red" }} colSpan="4">Winners: {Array.isArray(winners) && winners.length > 0 ? winners.map(player => player.player).join(", ") + " won $" + winners[0].payout : ""}</h3>
+                            <h3 style={{ color: "red" }} colSpan="4">
+                                {Array.isArray(winnersList) && winnersList.length > 0 ?
+                                    `Winners: ${winnersList.map(player => player.player).join(", ")} each won $${earnings}`
+                                    : ""
+                                }
+                            </h3>
                         )}
-                        <button className="btn btn-primary" >
+                        <button className="btn btn-primary">
                             Save Round
                         </button>
                     </div>
@@ -367,6 +386,19 @@ const ScoreCard = () => {
 
 
 
+
+
+
+                    {/* <div style={{ textAlign: "center" }} >
+                        {Array.isArray(winnersList) && winnersList.length === 1 ? (
+                            <h3 colSpan="4">Winner: {winnersList[0].player}</h3>
+                        ) : (
+                            <h3 style={{ color: "red" }} colSpan="4">Winners: {Array.isArray(winnersList) && winnersList.length > 0 ? winnersList.map(player => player.user).join(", ") + " won $" + winnersList[0].payout : ""}</h3>
+                        )}
+                        <button className="btn btn-primary" >
+                            Save Round
+                        </button>
+                    </div> */}
 
                 </div>
 
