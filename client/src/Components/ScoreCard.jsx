@@ -74,36 +74,7 @@ const ScoreCard = () => {
 
     };
 
-    const saveRoundData = async () => {
-        try {
-            // Create Object to save rounds
-            const roundData = {
-                players: calculatedPoints.map(player => ({
-                    name: player.player,
-                    score: totalScores[player.player],
-                    points: player.points,
-                })),
-                winners: handleWinners().winners.map(player => player.player),
-                payout: handleWinners().payout,
-                amountBet: bettingAmount,
-                game: gamePicked,
-                coursePicked: coursePicked,
-            };
-            // // Create payout data object
-            const payoutData = {
-                userId: user.id,  // The ID of the user who won
-                amount: handleWinners().payout // The amount to pay out
-            }
-            // console.log(roundData);
-            // Make a POST request to the backend to save the round data
-            await axios.post('http://localhost:8000/api/rounds/new', roundData);
-            navigate("/home");
-        } catch (error) {
-            console.log('Error saving round data:', error);
-            // Handle any errors that might occur during the API call
-            // ...  
-        }
-    };
+
 
     const submitScore = async () => {
         const updatedScorePoints = scorePoints.map(scorePoint => ({
@@ -207,6 +178,38 @@ const ScoreCard = () => {
 
         return winnersList;
     };
+
+    const saveRoundData = async () => {
+        try {
+            // Create Object to save rounds
+            const roundData = {
+                players: calculatedPoints.map(player => ({
+                    name: player.player,
+                    score: totalScores[player.player],
+                    points: player.points,
+                })),
+                winners: handleWinners().winners.map(player => player.player),
+                payout: handleWinners().payout,
+                amountBet: bettingAmount,
+                game: gamePicked,
+                coursePicked: coursePicked,
+            };
+            // Create payout data object
+            const payoutData = {
+                userId: user.id,  // The ID of the user who won
+                amount: handleWinners().payout // The amount to pay out
+            }
+            // console.log(roundData);
+            // Make a POST request to the backend to save the round data
+            await axios.post('http://localhost:8000/api/rounds/new', roundData);
+            navigate("/home");
+        } catch (error) {
+            console.log('Error saving round data:', error);
+            // Handle any errors that might occur during the API call
+            // ...  
+        }
+    };
+
 
     const handleScoreCardSigning = async () => {
         const lobby = localStorage.getItem('lobby');
@@ -392,7 +395,7 @@ const ScoreCard = () => {
                             }
                             Sign scorecard to confirm winner(s) payout
                         </button>
-                        <button className="btn btn-primary">
+                        <button className="btn btn-primary" onClick={saveRoundData} >
                             Save Round
                         </button>
                     </div>
