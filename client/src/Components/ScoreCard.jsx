@@ -4,21 +4,19 @@ import React, { useEffect, useState } from 'react'; // Importing necessary React
 import { useNavigate, Link } from 'react-router-dom'; // Importing useNavigate hook from react-router-dom
 import Chat from './Chat';
 import { getSocket } from '../helpers/socketHelper';
+import { Axios } from '../helpers/axiosHelper';
 
 const ScoreCard = () => {
     const socket = getSocket();
     const navigate = useNavigate(); // Creating a navigation function using useNavigate
     const [user, setUser] = useState([]); // State variable for the user data
-
     const [players, setPlayers] = useState(() => { // State variable for player data fetched from local storage
         const storedPlayers = localStorage.getItem('players');
         return storedPlayers ? JSON.parse(storedPlayers) : [];
     });
     const [isCreator, setIsCreator] = useState(JSON.parse(localStorage.getItem('creator')));
-
-
+    const [isLoading, setIsLoading] = useState(false);
     const [scorePoints, setScorePoints] = useState([]);
-
     const [playerScores, setPlayerScores] = useState({}); // State variable for player scores
     const [calculatedPoints, setCalculatedPoints] = useState( // State variable for calculated points for each player
         [
@@ -38,8 +36,6 @@ const ScoreCard = () => {
     const [winnersList, setWinnersList] = useState([]); // State variable to track winners
     const [earnings, setEarnings] = useState(0); // set state for earnings 
     const [earningsPerWinner, setEarningsPerWinner] = useState(0); // set state for earnings 
-
-
     const [roundData, setRoundData] = useState({});
     const [selectedPlayer, setSelectedPlayer] = useState(Object.fromEntries(players.map(player => [player.username, { score: 0, point: 0 }])))
 
@@ -78,10 +74,6 @@ const ScoreCard = () => {
 
     };
 
-
-
-
-
     const saveRoundData = async () => {
         try {
             // Create Object to save rounds
@@ -113,10 +105,6 @@ const ScoreCard = () => {
         }
     };
 
-
-
-
-
     const submitScore = async () => {
         const updatedScorePoints = scorePoints.map(scorePoint => ({
             ...scorePoint,
@@ -141,11 +129,7 @@ const ScoreCard = () => {
             socket.emit('gameCompleted')
             handleWinners();
         }
-
     }
-
-
-
 
     useEffect(() => {
         // Set initial scorepoints value of players
@@ -167,12 +151,11 @@ const ScoreCard = () => {
             .catch((error) => console.log(error));
     }, []);
 
-
-
     // useEffect to get stored betting Amount from local storage
     useEffect(() => {
         const storedBettingAmount = localStorage.getItem('bettingAmount');
         if (storedBettingAmount) {
+            console.log('i am here');
             setBettingAmount(storedBettingAmount);
         }
     }, []);
@@ -220,12 +203,34 @@ const ScoreCard = () => {
 
         setEarnings(earningsPerWinner);
         setWinners(playersWithPayout);
+        socket.emit('winnersList', [winnersList, earningsPerWinner, localStorage.getItem('lobby')]);
 
         return winnersList;
     };
 
+    const handleScoreCardSigning = async () => {
+        const lobby = localStorage.getItem('lobby');
+        setIsLoading(true);
+        try {
+            const response = await Axios({
+                url: `/games/signscorecard/${lobby}`,
+                method: 'patch',
+            });
 
+            setIsLoading(false);
+            if (!response.status) {
+                alert(response.message);
+                return;
+            }
 
+            alert(response.message);
+            socket.emit('checkScoreCard', lobby);
+            return;
+        } catch (err) {
+            alert('Unable to sign scorecard');
+            setIsLoading(false);
+        }
+    }
 
     useEffect(() => {
         if (socket) {
@@ -249,31 +254,21 @@ const ScoreCard = () => {
                 setIsSubmitted(true);
             });
 
+            socket.on('winnersListReceived', (data) => {
+                setWinnersList(data[0]);
+                setEarnings(data[1]);
+                localStorage.removeItem('players');
+                localStorage.setItem('players', localStorage.getItem('user_id'));
+            });
+
+            socket.on('payoutIsConfirmedByAllParticipants', () => {
+                const lobby = localStorage.getItem('lobby');
+                socket.emit('payWinners', {lobby, winners: winnersList, amount: earnings});
+                alert('All users has signed scorecard. Payout will be sent to winners shortly');
+            });
+
         }
     }, [socket])
-
-
-
-
-
-
-
-
-
-
-    // const executePayouts = async (gameResult) => {
-    //     try {
-    //         await axios.post(`http://localhost:8000/api/execute-payouts`, gameResult);
-    //         // This URL should be replaced with the endpoint in your backend that handles payouts
-    //     } catch (error) {
-    //         console.error(`Error while executing payouts: ${error}`);
-    //     }
-    // };
-
-
-
-
-
 
     return (
         <main>
@@ -351,7 +346,7 @@ const ScoreCard = () => {
                         </div>
                     </div>
                     <div>
-                        Betting Amount: ${bettingAmount}
+                        <h4>Betting Amount: ${bettingAmount}</h4>
                     </div>
                     <div className="col-md-6">
                         <Chat />
@@ -394,6 +389,12 @@ const ScoreCard = () => {
                                 Winners: {winnersList.map(winner => winner.player).join(", ")} each won ${earnings}
                             </h3>
                         )}
+                        <button className='btn btn-success mr-2' onClick={handleScoreCardSigning}>
+                            {
+                                isLoading && <span className='spinner-border spinner-border-sm mr-2' role='status' aria-hidden="true"></span>
+                            }
+                            Sign scorecard to confirm winner(s) payout
+                        </button>
                         <button className="btn btn-primary">
                             Save Round
                         </button>

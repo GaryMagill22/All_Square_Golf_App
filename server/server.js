@@ -4,6 +4,9 @@ require('dotenv').config()
 const port = 8000;
 const cookieParser = require('cookie-parser');
 const cors = require("cors");
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const { Wallet } = require('./models/wallet.model');
+const GameScoreCard = require('./models/gameScorecard.model');
 
 
 // CONFIG EXPRESS ===================================================================
@@ -11,7 +14,33 @@ app.use(cors({
     credentials: true,
     origin: 'http://localhost:3000'
 }));
-app.use(express.json(), express.urlencoded({ extended: true }));  // POST METHOD
+
+// app.post('/webhook', express.raw({ type: 'application/json' }), (req, res) => {
+//     const endpointSecret = "whsec_8b9dfaabfadd510e27cb2d38c3663f50ce5c82a4fa75648feda9d5f54da2880d";
+//     const sig = req.headers['stripe-signature'];
+//     let event;
+
+//     try {
+//         event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+//         console.log('--- event ---', event);
+//     } catch (err) {
+//         console.log('error', err.message);
+//         res.status(400).send(`Webhook Error: ${err.message}`);
+//         return;
+//     }
+
+//     res.send().end();
+// });
+app.use(express.json({
+    // Because Stripe needs the raw body, we compute it but only when hitting the Stripe callback URL.
+    verify: function(req,res,buf) {
+        var url = req.originalUrl;
+        if (url.startsWith('/api/wallet/payment-webhook')) {
+            req.rawBody = buf.toString()
+        }
+    }})
+);
+app.use(express.urlencoded({ extended: true }));  // POST METHOD
 app.use(cookieParser());
 
 
@@ -26,14 +55,16 @@ const { userRoutes } = require('./routes/user.routes')
 const { gameRoutes } = require('./routes/game.routes')
 const { lobbyRoutes } = require('./routes/lobby.routes')
 const { courseRoutes } = require('./routes/course.routes')
-const { roundRoutes } = require('./routes/round.routes')
+const { roundRoutes } = require('./routes/round.routes');
+const { walletRoutes } = require('./routes/wallet.routes');
 
 
-app.use('/api/lobbys', lobbyRoutes)
-app.use('/api/users', userRoutes)
-app.use('/api/games', gameRoutes)
-app.use('/api/courses', courseRoutes)
-app.use('/api/rounds', roundRoutes)
+app.use('/api/lobbys', lobbyRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/games', gameRoutes);
+app.use('/api/courses', courseRoutes);
+app.use('/api/rounds', roundRoutes);
+app.use('/api/wallet', walletRoutes);
 
 require("./config/mongoose.config");
 
@@ -75,6 +106,86 @@ const server = app.listen(port, () => console.log(`Listening on port: ${port}`))
 // // importing socket.io module and attatching it to our server
 const { Server } = require("socket.io");
 const io = new Server(server, { cors: true });
+
+const initiateGamePlay = async (payload) => {
+    const { players, amount } = payload;
+
+    // Use Promise.all to await all asynchronous calls
+    const usersEligibilityStatus = await Promise.all(players.map(async (player) => {
+        const userWalletData = await Wallet.findOne({ user: player._id });
+        if (userWalletData.amount >= amount) {
+            return {
+                ...player,
+                isEligible: true
+            };
+        } else {
+            return {
+                ...player,
+                isEligible: false
+            };
+        }
+    }));
+
+    return usersEligibilityStatus;
+};
+
+function findNonEligibleUsers(data) {
+    const nonEligibleUsers = data.filter(user => !user.isEligible);
+    
+    if (nonEligibleUsers.length === 0) {
+      return {
+        status: true,
+        message: "All users are eligible."
+      };
+    } else {
+      const userNames = nonEligibleUsers.map(user => user.username);
+      const message = `users: ${userNames.join(', ')} cannot participate in the game due to low wallet balance`;
+      return {
+        status: false,
+        message
+      };
+    }
+}
+
+const createGameScoreCard = async (players, lobbyId) => {
+    try {
+        await GameScoreCard.create({
+            lobbyId,
+            players: players.map((player) => ({ user_id: player._id, username: player.username, isConfirmed: false })),
+        });
+    
+        console.log('New GameScorecard created for starting game on lobby:', lobbyId);
+    } catch (err) {
+        console.error('Error:', error);
+    }
+}
+
+const checkScoreCard = async (lobbyId) => {
+    try {
+        const result = await GameScoreCard.aggregate([
+          {
+            $match: { lobbyId: lobbyId }
+          },
+          {
+            $project: {
+              _id: 0,
+              allUsersConfirmed: {
+                $allElementsTrue: "$players.isConfirmed"
+              }
+            }
+          }
+        ]);
+    
+        if (result.length === 0) {
+          return false;
+        }
+    
+        return result[0].allUsersConfirmed;
+    } catch (error) {
+        console.error("Error checking confirmation status:", error);
+        return false;
+    }
+}
 
 
 const rooms = [];
@@ -128,20 +239,73 @@ io.on("connection", (socket) => {
         io.emit('playersReceived', data);
     });
 
+    socket.on('setBettingAmount', (data) => {
+        io.emit('setBettingAmountReceived', data);
+    });
+
     socket.on('gameCompleted', () => {
         io.emit('gameCompletedReceived');
     });
 
-    socket.on('proceedToGame', () => {
-        io.emit('proceedToGameReceived');
-    })
+    socket.on('proceedToGame', async (data) => {
+        const gameplayResponse = await initiateGamePlay(data);
+        const response = findNonEligibleUsers(gameplayResponse);
 
+        // Create gamescorecard for users
+        if (response.status) {
+            createGameScoreCard(data.players, data.lobby);
+        }
 
+        io.emit('proceedToGameReceived', response);
+    });
 
+    socket.on('winnersList', async (data) => {
+        // Update score card
+        const players = data[0].map(data => data.player);
+        await GameScoreCard.findOneAndUpdate({
+            lobbyId: data[2]
+        }, {$set: {winners: players, winningAmount: data[1]}});
 
+        io.emit('winnersListReceived', data);
+    });
 
-    socket.on('gameCompleted', () => {
-        io.emit('gameCompletedReceived');
+    socket.on('checkScoreCard', async (data) => {
+        const allUsersConfirmed = await checkScoreCard(data);
+        if (allUsersConfirmed) {
+            io.emit('payoutIsConfirmedByAllParticipants');
+        }
+    });
+
+    socket.on('payWinners', async (data) => {
+        // Retrieve game scorecard and necessary details
+        const gameScoreCard = await GameScoreCard.findOne({ lobbyId: data.lobby});
+        if (gameScoreCard)  {
+            const allPlayers = gameScoreCard.players;
+            const winners = gameScoreCard.winners;
+            const winningAmount = gameScoreCard.winningAmount;
+            const loosers = allPlayers.filter(player => !winners.includes(player.username));
+            const winnersNames = allPlayers.filter(player => winners.includes(player.username));
+
+            // Deduct money from losers wallet
+            loosers.forEach(async (user) => {
+                const userData = await Wallet.findOne({user: user.user_id});
+                userData.amount -= winningAmount;
+                await userData.save();
+                console.log('user wallet has been debited');
+            });
+            
+            // Credit winners wallet
+            winnersNames.forEach(async (user) => {
+                const userData = await Wallet.findOne({user: user.user_id});
+                userData.amount += winningAmount;
+                await userData.save();
+                console.log('user wallet has bene credited');
+            });
+
+            // Delete data from game scorecard collection
+            await GameScoreCard.findOneAndDelete({ lobbyId: data.lobby });
+            console.log('game scorecard deleted');
+        }
     });
 
     socket.on('logout', () => {

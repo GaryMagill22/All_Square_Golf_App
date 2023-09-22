@@ -1,9 +1,101 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Link } from 'react-router-dom';
+import { Axios } from '../helpers/axiosHelper';
 
 
 const ProfileCard = () => {
+    const navigate = useNavigate();
+
+    const [isReadyToFund, setIsReadyToFund] = useState(false);
+    const [isReadyToWithdraw, setIsReadyToWithdraw] = useState(false);
+    const [promptFundAndWithdrawal, setPromptFundAndWithdrawal] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [amount, setAmount] = useState(null);
+    const [walletBalance, setWalletBalance] = useState(0);
+
+    useEffect(() => {
+        const fetchWalletBalance = async () => {
+            const response = await Axios({
+                url: 'wallet/wallet-balance',
+                method: 'get',
+            });
+
+            setWalletBalance(response.walletDetails.amount);
+        }
+
+        fetchWalletBalance();
+    }, []);
+
+    const initiatePayment = async () => {
+        setIsLoading(true);
+        try {
+            const response = await Axios({
+                url: 'wallet/fund-wallet',
+                method: 'post',
+                body: {
+                    amount,
+                }
+            });
+            
+            setIsLoading(false);
+            if (response.status) {
+                localStorage.setItem('client_secret', response.client_secret);
+                setTimeout(() => {
+                    navigate(`/fund-wallet/${amount}`);
+                }, 2000);
+            }
+        } catch (err) {
+            setIsLoading(false);
+            alert('Unable to process wallet funding');
+        }
+    }
+
+    const initiateWithdrawal = async () => {
+        setIsLoading(true);
+        try {
+            const response = await Axios({
+                url: 'wallet/withdraw',
+                method: 'post',
+                body: {
+                    amount,
+                }
+            });
+            
+            setIsLoading(false);
+            if (response.status) {
+                if (response.data.isOnboarded) {
+                    alert(response.message);
+                    window.location.reload();
+                    return;
+                }
+
+                if (response.data.url) {
+                    alert(response.message);
+                    window.location.href = response.data.url;
+                    return;
+                }
+
+                if (!response.data.url) {
+                    alert(response.message);
+                    return;
+                }
+            }
+        } catch (err) {
+            setIsLoading(false);
+            alert(err.message);
+        }
+    }
+
+    const handleFundOrWithdraw = () => {
+        if (isReadyToFund) {
+            initiatePayment();
+        } else if (isReadyToWithdraw) {
+            initiateWithdrawal();
+        }
+    }
+
     return (
         <div>
             <section className="vh-100" style={{ backgroundColor: '#eee' }}>
@@ -31,6 +123,32 @@ const ProfileCard = () => {
                                         <p>Righty <span>|</span> Lefty</p>
                                         <p>Home Course</p>
                                         <p>Omni Interlocken Golf Club, Superior Colorado</p>
+                                    </div>
+                                    <div className='mt-4'>
+                                        <h4>Wallet Balance: ${walletBalance}</h4>
+                                        {
+                                            (isReadyToFund || isReadyToWithdraw) && <div className='mt-2 mb-2'>
+                                                <input type="number" placeholder='Enter amount' className='form-control' onChange={(e) => setAmount(e.target.value)} />
+                                            </div>
+                                        }
+                                        {
+                                            !promptFundAndWithdrawal && <div>
+                                                <button className='btn btn-primary' onClick={() => {setPromptFundAndWithdrawal(true), setIsReadyToFund(true), setIsReadyToWithdraw(false)}}>Fund wallet</button>
+                                                <button className='btn btn-info ml-2' onClick={() => {setPromptFundAndWithdrawal(true), setIsReadyToWithdraw(true), setIsReadyToFund(false)}}>Withdraw funds</button>
+                                            </div>
+                                        }
+                                        
+                                        {
+                                            promptFundAndWithdrawal && <div>
+                                                <button className='btn btn-danger mr-2' onClick={() => {setPromptFundAndWithdrawal(false), setIsReadyToFund(false), setIsReadyToWithdraw(false)}}>Cancel</button>
+                                                <button className='btn btn-primary' onClick={handleFundOrWithdraw}>
+                                                    {
+                                                        isLoading && <span className='spinner-border spinner-border-sm mr-2' role='status' aria-hidden="true"></span>
+                                                    }
+                                                    { isReadyToFund ? 'Pay now' : 'Withdraw'}
+                                                </button>
+                                            </div>
+                                        }
                                     </div>
                                     <div className="d-flex justify-content-between text-center mt-5 mb-2">
                                         <div>

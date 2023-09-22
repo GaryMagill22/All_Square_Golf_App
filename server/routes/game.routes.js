@@ -31,5 +31,8 @@ gameRoutes.put('/:id', authenticate, GameController.updateGame)
 // Delete Game
 gameRoutes.delete('/:id', authenticate, GameController.deleteGame);
 
+// Route for user to sign game scorecard
+gameRoutes.patch('/signscorecard/:lobbyId', authenticate, GameController.signScoreCard);
+
 
 module.exports = { gameRoutes }
