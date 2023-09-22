@@ -1,6 +1,5 @@
-// const { request } = require('express');
-
-const Game = require("../models/game.model")
+const Game = require("../models/game.model");
+const GameScoreCard = require('../models/gameScorecard.model');
 
 
 
@@ -47,4 +46,40 @@ module.exports.deleteGame = (req, res) => {
     Game.deleteOne({ _id: req.params.id })
         .then(deleteGame => res.json(deleteGame))
         .catch(err => res.json(err))
+}
+
+module.exports.signScoreCard = async (req, res) => {
+    try {
+        const { lobbyId } = req.params;
+        // Find the gameScoreCard document by lobbyId
+        const gameScoreCard = await GameScoreCard.findOne({ lobbyId });
+        if (!gameScoreCard) {
+            return res.status(404).json({
+                status: false,
+                message: 'GameScorecard not found.',
+            });
+        }
+
+        // Find the index of the player with the specified user ID
+        const playerIndex = gameScoreCard.players.findIndex((player) => player.user_id.toString() === req.user.id);
+        if (playerIndex === -1) {
+            return res.status(404).json({
+                status: false,
+                message: 'You are not a participant of this game.',
+            });
+        }
+
+        // Update the isConfirmed field for the specified user
+        gameScoreCard.players[playerIndex].isConfirmed = true;
+        await gameScoreCard.save();
+        return res.status(200).json({
+            status: true,
+            message: `You have successfully signed the game Scorecard.`,
+        });
+    } catch (err) {
+        res.status(500).json({
+            status: false,
+            message: 'Unable to sign scorecard',
+        })
+    }
 }

@@ -1,4 +1,5 @@
-const { User } = require("../models/user.model")
+const { User } = require("../models/user.model");
+const { Wallet } = require('../models/wallet.model');
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 
@@ -12,6 +13,19 @@ module.exports.register = async (req, res) => {
         }
 
         const user = await User.create(req.body);
+        
+        // Create user wallet
+        const newWalletPayload = {
+            user: user._id,
+            amount: 0,
+        }
+        try {
+            await Wallet.create(newWalletPayload);
+            console.log('Wallet created successfully');
+        } catch (err) {
+            console.log('Unable to create user wallet');
+        }
+        
         res
             .json({ msg: "success!", user: user });
     } catch (err) {
@@ -40,6 +54,23 @@ module.exports.login = async (req, res) => {
     if (!correctPassword) {
         return res.status(400).json({ msg: "Invalid login attempt: Incorrect password." });
     }
+    
+    // Create wallet for user if wallet doesn't exists
+    const walletDetails = await Wallet.findOne({ user: user._id});
+    if (!walletDetails) {
+        const newWalletPayload = {
+            user: user._id,
+            amount: 0,
+        }
+        try {
+            await Wallet.create(newWalletPayload);
+            console.log('Wallet created successfully');
+        } catch (err) {
+            console.log('Unable to create user wallet');
+        }
+        
+    }
+
     //create TOKEN, this token is unique, and the id
     const userToken = jwt.sign({ id: user._id }, process.env.SECRET_KEY);
     //you ship that token in the response.cookie

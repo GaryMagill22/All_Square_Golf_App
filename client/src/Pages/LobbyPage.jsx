@@ -10,9 +10,6 @@ import io from 'socket.io-client';
 
 
 const LobbyPage = () => {
-
-
-
     // grabbing the lobbyId from url of Home.jsx Page to use on this page.
     const location = useLocation();
     // const parsed = queryString.parse(location.search);
@@ -62,8 +59,18 @@ const LobbyPage = () => {
                 setPlayers(response.players.players);
             });
 
-            socket.on('proceedToGameReceived', () => {
-                navigate('/new/game');
+            socket.on('proceedToGameReceived', (data) => {
+                if (data.status) {
+                    // save lobbyId temporarily in local storage
+                    localStorage.setItem('lobby', lobbyId);
+                    navigate('/new/game');
+                } else {
+                    alert(data.message);
+                }
+            });
+
+            socket.on('setBettingAmountReceived', (data) => {
+                localStorage.setItem('bettingAmount', data);
             });
         }
     }, [socket])
@@ -117,7 +124,8 @@ const LobbyPage = () => {
 
     const handleBettingAmount = () => {
         // Store the betting amount in local storage
-        localStorage.setItem('bettingAmount', JSON.stringify(bettingAmount));
+        socket.emit('setBettingAmount', JSON.stringify(bettingAmount));
+        //localStorage.setItem('bettingAmount', JSON.stringify(bettingAmount));
         // Debugging: Immediately retrieve and log the value
     }
 
@@ -171,7 +179,13 @@ const LobbyPage = () => {
         // store player data in storage
         localStorage.setItem('players', JSON.stringify(players));
         handleBettingAmount();
-        socket.emit('proceedToGame');
+        
+        const gamePayload = {
+            players,
+            amount: bettingAmount,
+            lobby: lobbyId,
+        }
+        socket.emit('proceedToGame', gamePayload);
     }
 
 
@@ -194,17 +208,17 @@ const LobbyPage = () => {
                 }
             </div>
 
-            <form className="mb-3" onSubmit={handleSubmit} >
+            <form className="mb-3 p-4" onSubmit={handleSubmit} >
                 <label htmlFor="bettingAmount" className="form-label">Money to bet (18 Holes)</label>
                 <input
                     type="number"
                     className="form-control"
                     name="bettingAmount"
-                    value={bettingAmount}
+                    placeholder='Enter amount'
                     disabled={!isCreator}
                     onChange={(e) => setBettingAmount(parseInt(e.target.value))}
                 />
-                <button type="submit" className="btn btn-primary" disabled={!isCreator} >Submit</button>
+                <button type="submit" className="btn btn-primary mt-2" disabled={!isCreator} >Submit</button>
             </form>
             <div>
                 <Link to="/home" className="btn btn-outline-primary btn-sm m-2">
