@@ -263,7 +263,7 @@ const ScoreCard = () => {
 
             socket.on('payoutIsConfirmedByAllParticipants', () => {
                 const lobby = localStorage.getItem('lobby');
-                socket.emit('payWinners', {lobby, winners: winnersList, amount: earnings});
+                socket.emit('payWinners', { lobby, winners: winnersList, amount: earnings });
                 alert('All users has signed scorecard. Payout will be sent to winners shortly');
             });
 
@@ -344,9 +344,6 @@ const ScoreCard = () => {
                                 </table>
                             </div>
                         </div>
-                    </div>
-                    <div>
-                        <h4>Betting Amount: ${bettingAmount}</h4>
                     </div>
                     <div className="col-md-6">
                         <Chat />

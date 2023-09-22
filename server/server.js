@@ -15,30 +15,31 @@ app.use(cors({
     origin: 'http://localhost:3000'
 }));
 
-// app.post('/webhook', express.raw({ type: 'application/json' }), (req, res) => {
-//     const endpointSecret = "whsec_8b9dfaabfadd510e27cb2d38c3663f50ce5c82a4fa75648feda9d5f54da2880d";
-//     const sig = req.headers['stripe-signature'];
-//     let event;
+app.post('/webhook', express.raw({ type: 'application/json' }), (req, res) => {
+    const endpointSecret = "whsec_8b9dfaabfadd510e27cb2d38c3663f50ce5c82a4fa75648feda9d5f54da2880d";
+    const sig = req.headers['stripe-signature'];
+    let event;
 
-//     try {
-//         event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
-//         console.log('--- event ---', event);
-//     } catch (err) {
-//         console.log('error', err.message);
-//         res.status(400).send(`Webhook Error: ${err.message}`);
-//         return;
-//     }
+    try {
+        event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+        console.log('--- event ---', event);
+    } catch (err) {
+        console.log('error', err.message);
+        res.status(400).send(`Webhook Error: ${err.message}`);
+        return;
+    }
 
-//     res.send().end();
-// });
+    res.send().end();
+});
 app.use(express.json({
     // Because Stripe needs the raw body, we compute it but only when hitting the Stripe callback URL.
-    verify: function(req,res,buf) {
+    verify: function (req, res, buf) {
         var url = req.originalUrl;
         if (url.startsWith('/api/wallet/payment-webhook')) {
             req.rawBody = buf.toString()
         }
-    }})
+    }
+})
 );
 app.use(express.urlencoded({ extended: true }));  // POST METHOD
 app.use(cookieParser());
@@ -131,19 +132,19 @@ const initiateGamePlay = async (payload) => {
 
 function findNonEligibleUsers(data) {
     const nonEligibleUsers = data.filter(user => !user.isEligible);
-    
+
     if (nonEligibleUsers.length === 0) {
-      return {
-        status: true,
-        message: "All users are eligible."
-      };
+        return {
+            status: true,
+            message: "All users are eligible."
+        };
     } else {
-      const userNames = nonEligibleUsers.map(user => user.username);
-      const message = `users: ${userNames.join(', ')} cannot participate in the game due to low wallet balance`;
-      return {
-        status: false,
-        message
-      };
+        const userNames = nonEligibleUsers.map(user => user.username);
+        const message = `users: ${userNames.join(', ')} cannot participate in the game due to low wallet balance`;
+        return {
+            status: false,
+            message
+        };
     }
 }
 
@@ -153,7 +154,7 @@ const createGameScoreCard = async (players, lobbyId) => {
             lobbyId,
             players: players.map((player) => ({ user_id: player._id, username: player.username, isConfirmed: false })),
         });
-    
+
         console.log('New GameScorecard created for starting game on lobby:', lobbyId);
     } catch (err) {
         console.error('Error:', error);
@@ -163,23 +164,23 @@ const createGameScoreCard = async (players, lobbyId) => {
 const checkScoreCard = async (lobbyId) => {
     try {
         const result = await GameScoreCard.aggregate([
-          {
-            $match: { lobbyId: lobbyId }
-          },
-          {
-            $project: {
-              _id: 0,
-              allUsersConfirmed: {
-                $allElementsTrue: "$players.isConfirmed"
-              }
+            {
+                $match: { lobbyId: lobbyId }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    allUsersConfirmed: {
+                        $allElementsTrue: "$players.isConfirmed"
+                    }
+                }
             }
-          }
         ]);
-    
+
         if (result.length === 0) {
-          return false;
+            return false;
         }
-    
+
         return result[0].allUsersConfirmed;
     } catch (error) {
         console.error("Error checking confirmation status:", error);
@@ -264,7 +265,7 @@ io.on("connection", (socket) => {
         const players = data[0].map(data => data.player);
         await GameScoreCard.findOneAndUpdate({
             lobbyId: data[2]
-        }, {$set: {winners: players, winningAmount: data[1]}});
+        }, { $set: { winners: players, winningAmount: data[1] } });
 
         io.emit('winnersListReceived', data);
     });
@@ -278,8 +279,8 @@ io.on("connection", (socket) => {
 
     socket.on('payWinners', async (data) => {
         // Retrieve game scorecard and necessary details
-        const gameScoreCard = await GameScoreCard.findOne({ lobbyId: data.lobby});
-        if (gameScoreCard)  {
+        const gameScoreCard = await GameScoreCard.findOne({ lobbyId: data.lobby });
+        if (gameScoreCard) {
             const allPlayers = gameScoreCard.players;
             const winners = gameScoreCard.winners;
             const winningAmount = gameScoreCard.winningAmount;
@@ -288,15 +289,15 @@ io.on("connection", (socket) => {
 
             // Deduct money from losers wallet
             loosers.forEach(async (user) => {
-                const userData = await Wallet.findOne({user: user.user_id});
+                const userData = await Wallet.findOne({ user: user.user_id });
                 userData.amount -= winningAmount;
                 await userData.save();
                 console.log('user wallet has been debited');
             });
-            
+
             // Credit winners wallet
             winnersNames.forEach(async (user) => {
-                const userData = await Wallet.findOne({user: user.user_id});
+                const userData = await Wallet.findOne({ user: user.user_id });
                 userData.amount += winningAmount;
                 await userData.save();
                 console.log('user wallet has bene credited');
