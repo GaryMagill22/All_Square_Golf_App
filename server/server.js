@@ -15,22 +15,23 @@ app.use(cors({
     origin: 'http://localhost:3000'
 }));
 
-app.post('/webhook', express.raw({ type: 'application/json' }), (req, res) => {
-    const endpointSecret = "whsec_8b9dfaabfadd510e27cb2d38c3663f50ce5c82a4fa75648feda9d5f54da2880d";
-    const sig = req.headers['stripe-signature'];
-    let event;
+// app.post('/webhook', express.raw({ type: 'application/json' }), (req, res) => {
 
-    try {
-        event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
-        console.log('--- event ---', event);
-    } catch (err) {
-        console.log('error', err.message);
-        res.status(400).send(`Webhook Error: ${err.message}`);
-        return;
-    }
+//     const endpointSecret = "whsec_uZSM6ZUdGuk1GKcazbGUEqQ6rZvFi6a1";
+//     const sig = req.headers['stripe-signature'];
+//     let event;
 
-    res.send().end();
-});
+//     try {
+//         event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+//         console.log('--- event ---', event);
+//     } catch (err) {
+//         console.log('error', err.message);
+//         res.status(400).send(`Webhook Error: ${err.message}`);
+//         return;
+//     }
+
+//     res.send().end();
+// });
 app.use(express.json({
     // Because Stripe needs the raw body, we compute it but only when hitting the Stripe callback URL.
     verify: function (req, res, buf) {

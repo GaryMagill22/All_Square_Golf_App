@@ -22,4 +22,4 @@ const PlayGolf = () => {
     )
 }
 
-export default PlayGolf
+export default PlayGolf;

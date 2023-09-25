@@ -13,7 +13,8 @@ const GameSchema = new mongoose.Schema({
     },
     howToPlay: {
         type: String,
-    },
+    }
+
 
 
 }, { timestamps: true })

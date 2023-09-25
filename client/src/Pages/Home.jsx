@@ -77,6 +77,7 @@ const Home = () => {
     const handleSelect = (event, type) => {
         if (type === 'game') {
             setSelectedGame(event.target.value);
+            console.log(event.target.value)
             return;
         } else {
             setSelectedCourse(event.target.value);
@@ -258,5 +259,3 @@ const Home = () => {
 }
 
 export default Home
-
-

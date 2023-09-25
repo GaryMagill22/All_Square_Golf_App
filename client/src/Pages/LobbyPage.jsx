@@ -179,7 +179,7 @@ const LobbyPage = () => {
         // store player data in storage
         localStorage.setItem('players', JSON.stringify(players));
         handleBettingAmount();
-        
+
         const gamePayload = {
             players,
             amount: bettingAmount,
@@ -236,78 +236,3 @@ const LobbyPage = () => {
 
 export default LobbyPage;
 
-
-
-/* <div>
-<h1>Pick Your Game!</h1>
-<div className="d-flex flex-wrap">
-{games.map((game, i) => (
-    <button
-    key={i}
-    type="button"
-    className={`btn btn-outline-primary btn-sm m-2 btn-radio   ${gamePicked === game.name ? 'selected' : ''
-}`}
-onClick={() => handleGameSelection(game.name)}
-style={{
-                    backgroundColor: gamePicked === game.name ? 'blue' : '',
-                }}
-                >
-                {game.name}
-                </button>
-                ))}
-                </div>
-                </div>
-                
-<div>
-<h1>Choose Your Course!</h1>
-<div className="d-flex flex-wrap">
-{course.map((course, i) => (
-    <button
-    key={i}
-    type="button"
-    className={`btn btn-outline-primary btn-sm m-2 ${coursePicked === course.name ? 'selected' : ''
-}`}
-onClick={() => handleCourseSelection(course.name)}
-style={{
-    backgroundColor: coursePicked === course.name ? 'blue' : '',
-}}
->
-{course.name}
-</button>
-))}
-</div>
-</div> */
-/* <div style={{ width: "500px", margin: "0 auto" }} >
-    <h1>Add Players</h1>
-    <form onSubmit={handleSubmit} >
-        <div className="mb-3">
-            <label htmlFor="player1" className="form-label">Player 1</label>
-
-            <input type="text" className="form-control" id="player1" value={players[0]} onChange={(e) => handlePlayerChange(0, e.target.value)} />
-        </div>
-
-        <div className="mb-3">
-            <label htmlFor="player2" className="form-label">Player 2</label>
-            <input type="text" className="form-control" id="player2" value={players[1]} onChange={(e) => handlePlayerChange(1, e.target.value)} />
-        </div>
-        <div className="mb-3">
-            <label htmlFor="player3" className="form-label">Player 3</label>
-            <input type="text" className="form-control" id="player3" value={players[2]} onChange={(e) => handlePlayerChange(2, e.target.value)} />
-        </div>
-        <div className="mb-3">
-            <label htmlFor="player4" className="form-label">Player 4</label>
-            <input type="text" className="form-control" id="player4" value={players[3]} onChange={(e) => handlePlayerChange(3, e.target.value)} />
-        </div>
-        <div className="mb-3">
-            <label htmlFor="bettingAmount" className="form-label">Money to bet (18 Holes)</label>
-            <input
-                type="number"
-                className="form-control"
-                name="bettingAmount"
-                value={bettingAmount}
-                onChange={(e) => setBettingAmount(parseInt(e.target.value))}
-            />
-        </div>
-        <button type="submit" className="btn btn-primary">Submit</button>
-    </form>
-</div> */

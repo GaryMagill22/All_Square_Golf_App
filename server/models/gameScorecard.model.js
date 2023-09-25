@@ -21,6 +21,7 @@ const gameScorecardSchema = new mongoose.Schema({
             require: true,
         },
     }],
+
     winners: [
         {
             type: String,
