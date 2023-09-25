@@ -74,13 +74,16 @@ const Home = () => {
     }, []);
 
 
-    const handleSelect = (event, type) => {
+    const handleSelect = (e, type) => {
         if (type === 'game') {
-            setSelectedGame(event.target.value);
-            console.log(event.target.value)
+            setSelectedGame(e.target.value);
+            // Get the selected games name 
+            const selectedGameName = e.target.options[e.target.selectedIndex].text;
+            console.log('Selected Game ID:', e.target.value);
+            console.log('Selected Game Name:', selectedGameName);
             return;
         } else {
-            setSelectedCourse(event.target.value);
+            setSelectedCourse(e.target.value);
         }
     }
 
