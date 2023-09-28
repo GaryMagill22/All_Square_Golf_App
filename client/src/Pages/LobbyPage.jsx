@@ -7,22 +7,16 @@ import ScoreCard from '../Components/ScoreCard';
 import generateRandomRoomName from '../helpers/roomKeyGenarator';
 import { getSocket } from '../helpers/socketHelper';
 import io from 'socket.io-client';
-import TeamLobby from '../Components/TeamLobby';
+
 
 const LobbyPage = () => {
     // grabbing the lobbyId from url of Home.jsx Page to use on this page.
-    const location = useLocation();
-    // const parsed = queryString.parse(location.search);
-    // const lobbyId = parsed.id;
-    const { lobbyId } = useParams();
-
-
     const socket = getSocket();
+    const location = useLocation();
+    const { lobbyId, gameType } = useParams();
+
     // state for setting what game user picks
-
-    const [selectedGame, setSelectedGame] = useState(JSON.stringify(localStorage.getItem('selectedGameName')));
-    console.log('selectedGame===::', selectedGame);
-
+    const [gamePicked, setGamePicked] = useState('');
     // state for setting what course user picks
     const [coursePicked, setCoursePicked] = useState('');
     // state for loading in all of the db courses to choose from
@@ -38,13 +32,40 @@ const LobbyPage = () => {
     const [bettingAmount, setBettingAmount] = useState(0); // State for how much money betting.
     const navigate = useNavigate()
 
+    const [teams, setTeams] = useState([]);
+    // const [teams, setTeams] = useState([
+    //     {
+    //       teamName: 'Team A',
+    //       players: [
+    //         {
+    //           id: 'syfd636et27627w718w1',
+    //           name: 'John Doe'
+    //         },
+    //         {
+    //           id: 'bhfdjh7et27627w718w1',
+    //           name: 'Alex Fidelis'
+    //         }
+    //       ]
+    //     },
+    //     {
+    //       teamName: 'Team B',
+    //       players: [
+    //         {
+    //           id: 'bnfd636et27627w718w1',
+    //           name: 'Curator Bellis'
+    //         },
+    //         {
+    //           id: 'bhfdjh7et27627wkj8w1',
+    //           name: 'Davio Angel'
+    //         }
+    //       ]
+    //     }
+    // ]);
+    const [teamValue, setTeamValue] = useState('');
+    const [selectedTeam, setSelectedTeam] = useState('');
+    const [selectedPlayer, setSelectedPlayer] = useState('');
     const [roomKey, setRoomKey] = useState('');
     const [isCreator, setIsCreator] = useState(false);
-    // state to show or not show team lobby
-
-    const [gameMode, setGameMode] = useState('normal');
-    const [teams, setTeams] = useState([]); // For teams data
-    const [showTeamLobby, setShowTeamLobby] = useState(false);
 
 
 
@@ -67,10 +88,13 @@ const LobbyPage = () => {
                 setPlayers(response.players.players);
             });
 
-            socket.on('proceedToGameReceived', (data) => {
+            socket.on('proceedToGameReceived', (data, teamsData) => {
                 if (data.status) {
-                    // save lobbyId temporarily in local storage
+                    // Save lobbyId temporarily in local storage
                     localStorage.setItem('lobby', lobbyId);
+                    if (teamsData.length > 0) {
+                        localStorage.setItem('teams', JSON.stringify(teamsData));
+                    }
                     navigate('/new/game');
                 } else {
                     alert(data.message);
@@ -79,6 +103,10 @@ const LobbyPage = () => {
 
             socket.on('setBettingAmountReceived', (data) => {
                 localStorage.setItem('bettingAmount', data);
+            });
+
+            socket.on('addPlayerInTeamPlayReceived', (data) => {
+                setTeams(data);
             });
         }
     }, [socket])
@@ -112,9 +140,6 @@ const LobbyPage = () => {
     }, []);
 
 
-    const addPlayerToTeam = (playerId, teamId) => {
-        socket.emit('addPlayerToTeam', { playerId, teamId, lobbyId });
-    };
 
 
 
@@ -161,19 +186,19 @@ const LobbyPage = () => {
 
 
 
-    // // Function to handle game selection
-    // const handleGameSelection = (game) => {
-    //     // console.log(game)
-    //     setGamePicked(game);
-    // };
+    // Function to handle game selection
+    const handleGameSelection = (game) => {
+        // console.log(game)
+        setGamePicked(game);
+    };
 
 
-    // // Function to handle course selection
-    // const handleCourseSelection = (course) => {
-    //     // console.log(course)
-    //     setCoursePicked(course);
+    // Function to handle course selection
+    const handleCourseSelection = (course) => {
+        // console.log(course)
+        setCoursePicked(course);
 
-    // };
+    };
 
 
     // const handlePlayerChange = (index, value) => {
@@ -185,89 +210,261 @@ const LobbyPage = () => {
     //     setPlayers(updatedPlayers);
     // }
 
+    const handleCreateTeam = () => {
+        if (teams.length === 2) {
+            alert('You cannot create a new team');
+            return;
+        }
+
+        setTeams([...teams, { teamName: teamValue, players: [] }]);
+        setTeamValue('');
+        return;
+    }
+
+    const addPlayerToTeam = () => {
+        if (selectedPlayer === 'Nil' || selectedTeam === 'Nil') {
+            alert('Kindly select a team and a player to be able to add player to team.');
+            return;
+        }
+
+        // Check if player already belongs to another team
+        const isPlayerInAnyTeam = teams.some(team =>
+            team.players.some(player => player.name === selectedPlayer)
+        );
+
+        if (isPlayerInAnyTeam) {
+            alert('Player already belongs to a team');
+            return;
+        }
+
+        // Extract full data of player
+        const playerData = players.find(player => player.username === selectedPlayer);
+        const updatedTeams = [...teams];
+
+        // Find the specific team you want to update
+        const teamToUpdate = updatedTeams.find(team => team.teamName === selectedTeam);
+        teamToUpdate.players.push({
+            id: playerData._id,
+            name: playerData.username,
+        });
+        socket.emit('addPlayerInTeamPlay', updatedTeams);
+    }
+
+    const removeUserFromTeam = (id, teamName) => {
+        const clonedTeams = [...teams];
+        const teamToUpdate = clonedTeams.find(team => team.teamName === teamName);
+        if (teamToUpdate) {
+            teamToUpdate.players = teamToUpdate.players.filter(player => player.id !== id);
+            socket.emit('addPlayerInTeamPlay', clonedTeams);
+        }
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault()
         // store player data in storage
         localStorage.setItem('players', JSON.stringify(players));
         handleBettingAmount();
-
         const gamePayload = {
             players,
             amount: bettingAmount,
             lobby: lobbyId,
         }
-        socket.emit('proceedToGame', gamePayload);
+        socket.emit('proceedToGame', gamePayload, teams);
     }
 
 
-    useEffect(() => {
-        if (selectedGame) {
-            // Set the game mode based on the selected game
-            setGameMode(selectedGame.mode);
-            console.log(`selected Game Mode====: ${selectedGame.mode}`)
-        }
-    }, [selectedGame]);
-
-
-    console.log(`selected game===`, selectedGame)
-    console.log(`MATCHING ===:`, selectedGame.localeCompare("Match Play"));
-
     return (
-        <div>
-            {selectedGame.localeCompare("Match Play") == 0 ? (
-                <h1>hello<TeamLobby /></h1>
-            ) : (
-                // Render your normal lobby content here
-                <div><h1>goodbye</h1>
-                    <div>
-                        <h1>Lobby Code: {lobbyId}</h1>
-                    </div>
+        <div className='container'>
+            <div>
+                <h1>Lobby Code: {lobbyId}</h1>
 
-                    <div className="player-container">
-                        <p></p>
-                    </div>
+            </div>
+            <div className="player-container">
+                <p></p>
 
-                    <div className="loadingPlayerContainer">
-                        <h3>Players Loading...</h3>
-                        {players.map((p, i) => {
-                            return <h4 key={i}>{p.username}</h4>;
-                        })}
-                    </div>
+            </div>
+            <div className="loadingPlayerContainer" >
+                <h3>Players Loading...</h3>
+                {
+                    players.map((p, i) => {
+                        return <h4 key={i} >{p.username}</h4>
+                    })
+                }
+            </div>
 
-                    <form className="mb-3 p-4" onSubmit={handleSubmit}>
-                        <label htmlFor="bettingAmount" className="form-label">
-                            Money to bet (18 Holes)
-                        </label>
-                        <input
-                            type="number"
-                            className="form-control"
-                            name="bettingAmount"
-                            placeholder="Enter amount"
-                            disabled={!isCreator}
-                            onChange={(e) =>
-                                setBettingAmount(parseInt(e.target.value))
-                            }
-                        />
-                        <button
-                            type="submit"
-                            className="btn btn-primary mt-2"
-                            disabled={!isCreator}
-                        >
-                            Submit
-                        </button>
-                    </form>
-
-                    <div>
-                        <Link
-                            to="/home"
-                            className="btn btn-outline-primary btn-sm m-2"
-                        >
-                            Home
-                        </Link>
+            <div className='mt-5'>
+                {
+                    (isCreator && gameType === 'team') && <div>
+                        <p>Note: Create two teams and add users to each team to be able to participate in the game</p>
+                        <div style={{ width: '80%', marginLeft: 'auto', marginRight: 'auto' }}>
+                            <div className='row'>
+                                <div className='col form-group'>
+                                    <input className='form-control' placeholder='Enter team name' onChange={(e) => setTeamValue(e.target.value)} />
+                                </div>
+                                <div className='col-auto form-group'>
+                                    <button className='btn btn-success' onClick={handleCreateTeam}>Create team</button>
+                                </div>
+                            </div>
+                            <div className='row'>
+                                <h5>Add Players to team</h5>
+                                <div className='col form-group'>
+                                    <select className='form-control' onChange={(e) => { setSelectedTeam(e.target.value) }}>
+                                        <option value="Nil">Select team</option>
+                                        {
+                                            teams.map((team, index) => {
+                                                return (
+                                                    <option key={index + 1} value={team.teamName}>{team.teamName}</option>
+                                                )
+                                            })
+                                        }
+                                    </select>
+                                </div>
+                                <div className='col form-group'>
+                                    <select className='form-control' onChange={(e) => { setSelectedPlayer(e.target.value) }}>
+                                        <option value="Nil">Select player</option>
+                                        {
+                                            players.map((player, index) => {
+                                                return (
+                                                    <option value={player.username} key={index + 1}>{player.username}</option>
+                                                )
+                                            })
+                                        }
+                                    </select>
+                                </div>
+                                <div className='col-auto form-group'>
+                                    <button className='btn btn-info' onClick={addPlayerToTeam}>Add player to team</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                }
+                <div className='row'>
+                    {
+                        teams.length > 0 ? teams.map((item, index) => {
+                            return (
+                                <div className='col-md-6' key={index + 1}>
+                                    <h4>{item.teamName}</h4>
+                                    {
+                                        item.players && <ul>
+                                            {
+                                                item.players.map((data) => {
+                                                    return (
+                                                        <li key={data.id} className='mt-2'>
+                                                            {data.name}
+                                                            <button className='ml-2' onClick={() => removeUserFromTeam(data.id, item.teamName)}>x</button>
+                                                        </li>
+                                                    )
+                                                })
+                                            }
+                                        </ul>
+                                    }
+                                </div>
+                            )
+                        }) : <p>No teams available...</p>
+                    }
                 </div>
-            )}
+            </div>
+            <hr />
+            <form className="mb-3 p-4" onSubmit={handleSubmit} style={{ width: '80%', marginLeft: 'auto', marginRight: 'auto' }}>
+                <label htmlFor="bettingAmount" className="form-label">Place Money to bet (18 Holes)</label>
+                <input
+                    type="number"
+                    className="form-control"
+                    name="bettingAmount"
+                    placeholder='Enter amount'
+                    disabled={!isCreator}
+                    onChange={(e) => setBettingAmount(parseInt(e.target.value))}
+                />
+                <button type="submit" className="btn btn-primary mt-2" disabled={!isCreator} >Submit</button>
+            </form>
+            <div>
+                <Link to="/home" className="btn btn-outline-primary btn-sm m-2">
+                    Home
+                </Link>
+            </div>
         </div>
+
+
+
+
     );
 };
+
+
 export default LobbyPage;
+
+
+
+/* <div>
+<h1>Pick Your Game!</h1>
+<div className="d-flex flex-wrap">
+{games.map((game, i) => (
+    <button
+    key={i}
+    type="button"
+    className={`btn btn-outline-primary btn-sm m-2 btn-radio   ${gamePicked === game.name ? 'selected' : ''
+}`}
+onClick={() => handleGameSelection(game.name)}
+style={{
+                    backgroundColor: gamePicked === game.name ? 'blue' : '',
+                }}
+                >
+                {game.name}
+                </button>
+                ))}
+                </div>
+                </div>
+                
+<div>
+<h1>Choose Your Course!</h1>
+<div className="d-flex flex-wrap">
+{course.map((course, i) => (
+    <button
+    key={i}
+    type="button"
+    className={`btn btn-outline-primary btn-sm m-2 ${coursePicked === course.name ? 'selected' : ''
+}`}
+onClick={() => handleCourseSelection(course.name)}
+style={{
+    backgroundColor: coursePicked === course.name ? 'blue' : '',
+}}
+>
+{course.name}
+</button>
+))}
+</div>
+</div> */
+/* <div style={{ width: "500px", margin: "0 auto" }} >
+    <h1>Add Players</h1>
+    <form onSubmit={handleSubmit} >
+        <div className="mb-3">
+            <label htmlFor="player1" className="form-label">Player 1</label>
+
+            <input type="text" className="form-control" id="player1" value={players[0]} onChange={(e) => handlePlayerChange(0, e.target.value)} />
+        </div>
+
+        <div className="mb-3">
+            <label htmlFor="player2" className="form-label">Player 2</label>
+            <input type="text" className="form-control" id="player2" value={players[1]} onChange={(e) => handlePlayerChange(1, e.target.value)} />
+        </div>
+        <div className="mb-3">
+            <label htmlFor="player3" className="form-label">Player 3</label>
+            <input type="text" className="form-control" id="player3" value={players[2]} onChange={(e) => handlePlayerChange(2, e.target.value)} />
+        </div>
+        <div className="mb-3">
+            <label htmlFor="player4" className="form-label">Player 4</label>
+            <input type="text" className="form-control" id="player4" value={players[3]} onChange={(e) => handlePlayerChange(3, e.target.value)} />
+        </div>
+        <div className="mb-3">
+            <label htmlFor="bettingAmount" className="form-label">Money to bet (18 Holes)</label>
+            <input
+                type="number"
+                className="form-control"
+                name="bettingAmount"
+                value={bettingAmount}
+                onChange={(e) => setBettingAmount(parseInt(e.target.value))}
+            />
+        </div>
+        <button type="submit" className="btn btn-primary">Submit</button>
+    </form>
+</div> */

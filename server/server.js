@@ -15,7 +15,22 @@ app.use(cors({
     origin: 'http://localhost:3000'
 }));
 
+// app.post('/webhook', express.raw({ type: 'application/json' }), (req, res) => {
+//     const endpointSecret = "whsec_8b9dfaabfadd510e27cb2d38c3663f50ce5c82a4fa75648feda9d5f54da2880d";
+//     const sig = req.headers['stripe-signature'];
+//     let event;
 
+//     try {
+//         event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+//         console.log('--- event ---', event);
+//     } catch (err) {
+//         console.log('error', err.message);
+//         res.status(400).send(`Webhook Error: ${err.message}`);
+//         return;
+//     }
+
+//     res.send().end();
+// });
 app.use(express.json({
     // Because Stripe needs the raw body, we compute it but only when hitting the Stripe callback URL.
     verify: function (req, res, buf) {
@@ -56,6 +71,26 @@ require("./config/mongoose.config");
 
 // MODELS IMPORT
 const Lobby = require('./models/lobby.model');
+
+
+// update lobby with players
+// app.post('/api/lobbys/update/:lobbyId', async (req, res) => {
+//     const lobbyId = req.params.lobbyId;
+//     const newPlayer = req.body.newPlayer;
+
+//     const lobby = await Lobby.findById(lobbyId);  // This assumes you're using something like Mongoose with MongoDB
+
+//     if (!lobby) {
+//         return res.status(404).send('Lobby not found');
+//     }
+
+//     lobby.players.push(newPlayer);
+
+//     await lobby.save();
+
+//     res.status(200).send('Player added successfully');
+// });
+
 
 
 
@@ -213,7 +248,7 @@ io.on("connection", (socket) => {
         io.emit('gameCompletedReceived');
     });
 
-    socket.on('proceedToGame', async (data) => {
+    socket.on('proceedToGame', async (data, teams) => {
         const gameplayResponse = await initiateGamePlay(data);
         const response = findNonEligibleUsers(gameplayResponse);
 
@@ -222,7 +257,7 @@ io.on("connection", (socket) => {
             createGameScoreCard(data.players, data.lobby);
         }
 
-        io.emit('proceedToGameReceived', response);
+        io.emit('proceedToGameReceived', response, teams);
     });
 
     socket.on('winnersList', async (data) => {
@@ -273,25 +308,9 @@ io.on("connection", (socket) => {
             console.log('game scorecard deleted');
         }
     });
-    // New team-related events
-    socket.on('createTeam', (data) => {
-        const { lobbyId, teamName, creator } = data;
-        const newTeam = {
-            id: generateRandomRoomName(),
-            name: teamName,
-            members: [creator]
-        };
-        rooms.push(newTeam);
-        io.to(lobbyId).emit('teamFormed', newTeam);
-    });
 
-    socket.on('addPlayerToTeam', (data) => {
-        const { playerId, teamId, lobbyId } = data;
-        const team = rooms.find(t => t.id === teamId);
-        if (team) {
-            team.members.push(playerId);
-        }
-        io.to(lobbyId).emit('teamMemberJoined', { teamId, member: playerId });
+    socket.on('addPlayerInTeamPlay', (data) => {
+        io.emit('addPlayerInTeamPlayReceived', data);
     });
 
     socket.on('logout', () => {
@@ -305,48 +324,6 @@ io.on("connection", (socket) => {
 
     });
 });
-// ======================================================================================================================================
+// ==========================================================================================================================================
 
-
-
-
-// app.post('/webhook', express.raw({ type: 'application/json' }), (req, res) => {
-
-//     const endpointSecret = "whsec_uZSM6ZUdGuk1GKcazbGUEqQ6rZvFi6a1";
-//     const sig = req.headers['stripe-signature'];
-//     let event;
-
-//     try {
-//         event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
-//         console.log('--- event ---', event);
-//     } catch (err) {
-//         console.log('error', err.message);
-//         res.status(400).send(`Webhook Error: ${err.message}`);
-//         return;
-//     }
-
-//     res.send().end();
-// });
-
-
-
-
-// update lobby with players
-// app.post('/api/lobbys/update/:lobbyId', async (req, res) => {
-//     const lobbyId = req.params.lobbyId;
-//     const newPlayer = req.body.newPlayer;
-
-//     const lobby = await Lobby.findById(lobbyId);  // This assumes you're using something like Mongoose with MongoDB
-
-//     if (!lobby) {
-//         return res.status(404).send('Lobby not found');
-//     }
-
-//     lobby.players.push(newPlayer);
-
-//     await lobby.save();
-
-//     res.status(200).send('Player added successfully');
-// });
-
-
+// NEW SOCKET.IO SERVER     =======================================================================================
