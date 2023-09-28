@@ -13,6 +13,9 @@ const GameSchema = new mongoose.Schema({
     },
     howToPlay: {
         type: String,
+    },
+    isTeamGame: {
+        type: Boolean, default: false
     }
 
 

@@ -18,3 +18,18 @@ export const initSocket = () => {
 }
 
 export const getSocket = () => socket;
+
+
+// functions for TEAM LOBBY 
+
+export const joinTeamLobby = (lobbyId) => {
+    if (socket) {
+        socket.emit('joinTeamLobby', lobbyId);
+    }
+}
+
+export const listeToTeamUpdates = (callback) => {
+    if (socket) {
+        socket.on('teamLobbyUpdate', callback);
+    }
+}

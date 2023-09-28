@@ -10,12 +10,15 @@ import queryString from 'query-string';
 
 
 
+
 const Home = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const [games, setGames] = useState([]);
     const [course, setCourse] = useState([]);
     const [selectedGame, setSelectedGame] = useState(null);
+    // state for handling what game is picked (multiplayer or single player)
+    const [gameMode, setGameMode] = useState('normal');
     const [selectedCourse, setSelectedCourse] = useState(null);
     const [setLoaded] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -74,23 +77,28 @@ const Home = () => {
     }, []);
 
 
-    const handleSelect = (e, type) => {
-        if (type === 'game') {
-            setSelectedGame(e.target.value);
-            // Get the selected games name 
-            const selectedGameName = e.target.options[e.target.selectedIndex].text;
-            console.log('Selected Game ID:', e.target.value);
-            console.log('Selected Game Name:', selectedGameName);
-            return;
+    // Handle game selection
+    const handleSelectGame = (e) => {
+        setSelectedGame(e.target.value);
+        const selectedGameName = e.target.options[e.target.selectedIndex].text;
+        if (selectedGameName === 'Match Play') {
+            setGameMode('team');
         } else {
-            setSelectedCourse(e.target.value);
+            setGameMode('normal');
         }
-    }
+        localStorage.setItem('selectedGameName', selectedGameName);
+    };
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
+    // Handle course selection (if needed)
+    const handleSelectCourse = (e) => {
+        setSelectedCourse(e.target.value);
+        // Add your course selection logic here if needed.
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
         if (!selectedGame || !selectedCourse) {
-            alert('Kindly select the course and game values');
+            alert('Kindly select the course and game');
         }
 
         try {
@@ -99,7 +107,8 @@ const Home = () => {
                 method: 'post',
                 body: {
                     selectedCourse,
-                    selectedGame
+                    selectedGame,
+                    gameMode
                 }
             });
             navigate(`/new/round/${response.lobby.lobbyId}`);
@@ -183,7 +192,7 @@ const Home = () => {
             <div>
                 <form onSubmit={handleSubmit}>
                     <div>
-                        <select className='form-select' onChange={(e) => handleSelect(e, 'game')}>
+                        <select className='form-select' onChange={(e) => handleSelectGame(e, 'game')}>
                             <option>Select game</option>
                             {
                                 games && games.length > 0 ? (
@@ -199,7 +208,7 @@ const Home = () => {
                     </div>
                     {/* Courses Dropdown */}
                     <div className='mt-4'>
-                        <select className='form-select' onChange={(e) => handleSelect(e, 'course')}>
+                        <select className='form-select' onChange={(e) => handleSelectCourse(e, 'course')}>
                             <option>Select Course</option>
                             {
                                 course && course.length > 0 ? (

@@ -7,7 +7,7 @@ import ScoreCard from '../Components/ScoreCard';
 import generateRandomRoomName from '../helpers/roomKeyGenarator';
 import { getSocket } from '../helpers/socketHelper';
 import io from 'socket.io-client';
-
+import TeamLobby from '../Components/TeamLobby';
 
 const LobbyPage = () => {
     // grabbing the lobbyId from url of Home.jsx Page to use on this page.
@@ -19,7 +19,10 @@ const LobbyPage = () => {
 
     const socket = getSocket();
     // state for setting what game user picks
-    const [gamePicked, setGamePicked] = useState('');
+
+    const [selectedGame, setSelectedGame] = useState(JSON.stringify(localStorage.getItem('selectedGameName')));
+    console.log('selectedGame===::', selectedGame);
+
     // state for setting what course user picks
     const [coursePicked, setCoursePicked] = useState('');
     // state for loading in all of the db courses to choose from
@@ -37,6 +40,11 @@ const LobbyPage = () => {
 
     const [roomKey, setRoomKey] = useState('');
     const [isCreator, setIsCreator] = useState(false);
+    // state to show or not show team lobby
+
+    const [gameMode, setGameMode] = useState('normal');
+    const [teams, setTeams] = useState([]); // For teams data
+    const [showTeamLobby, setShowTeamLobby] = useState(false);
 
 
 
@@ -104,6 +112,9 @@ const LobbyPage = () => {
     }, []);
 
 
+    const addPlayerToTeam = (playerId, teamId) => {
+        socket.emit('addPlayerToTeam', { playerId, teamId, lobbyId });
+    };
 
 
 
@@ -150,19 +161,19 @@ const LobbyPage = () => {
 
 
 
-    // Function to handle game selection
-    const handleGameSelection = (game) => {
-        // console.log(game)
-        setGamePicked(game);
-    };
+    // // Function to handle game selection
+    // const handleGameSelection = (game) => {
+    //     // console.log(game)
+    //     setGamePicked(game);
+    // };
 
 
-    // Function to handle course selection
-    const handleCourseSelection = (course) => {
-        // console.log(course)
-        setCoursePicked(course);
+    // // Function to handle course selection
+    // const handleCourseSelection = (course) => {
+    //     // console.log(course)
+    //     setCoursePicked(course);
 
-    };
+    // };
 
 
     // const handlePlayerChange = (index, value) => {
@@ -189,50 +200,74 @@ const LobbyPage = () => {
     }
 
 
+    useEffect(() => {
+        if (selectedGame) {
+            // Set the game mode based on the selected game
+            setGameMode(selectedGame.mode);
+            console.log(`selected Game Mode====: ${selectedGame.mode}`)
+        }
+    }, [selectedGame]);
+
+
+    console.log(`selected game===`, selectedGame)
+    console.log(`MATCHING ===:`, selectedGame.localeCompare("Match Play"));
+
     return (
         <div>
-            <div>
-                <h1>Lobby Code: {lobbyId}</h1>
+            {selectedGame.localeCompare("Match Play") == 0 ? (
+                <h1>hello<TeamLobby /></h1>
+            ) : (
+                // Render your normal lobby content here
+                <div><h1>goodbye</h1>
+                    <div>
+                        <h1>Lobby Code: {lobbyId}</h1>
+                    </div>
 
-            </div>
-            <div className="player-container">
-                <p></p>
+                    <div className="player-container">
+                        <p></p>
+                    </div>
 
-            </div>
-            <div className="loadingPlayerContainer" >
-                <h3>Players Loading...</h3>
-                {
-                    players.map((p, i) => {
-                        return <h4 key={i} >{p.username}</h4>
-                    })
-                }
-            </div>
+                    <div className="loadingPlayerContainer">
+                        <h3>Players Loading...</h3>
+                        {players.map((p, i) => {
+                            return <h4 key={i}>{p.username}</h4>;
+                        })}
+                    </div>
 
-            <form className="mb-3 p-4" onSubmit={handleSubmit} >
-                <label htmlFor="bettingAmount" className="form-label">Money to bet (18 Holes)</label>
-                <input
-                    type="number"
-                    className="form-control"
-                    name="bettingAmount"
-                    placeholder='Enter amount'
-                    disabled={!isCreator}
-                    onChange={(e) => setBettingAmount(parseInt(e.target.value))}
-                />
-                <button type="submit" className="btn btn-primary mt-2" disabled={!isCreator} >Submit</button>
-            </form>
-            <div>
-                <Link to="/home" className="btn btn-outline-primary btn-sm m-2">
-                    Home
-                </Link>
-            </div>
+                    <form className="mb-3 p-4" onSubmit={handleSubmit}>
+                        <label htmlFor="bettingAmount" className="form-label">
+                            Money to bet (18 Holes)
+                        </label>
+                        <input
+                            type="number"
+                            className="form-control"
+                            name="bettingAmount"
+                            placeholder="Enter amount"
+                            disabled={!isCreator}
+                            onChange={(e) =>
+                                setBettingAmount(parseInt(e.target.value))
+                            }
+                        />
+                        <button
+                            type="submit"
+                            className="btn btn-primary mt-2"
+                            disabled={!isCreator}
+                        >
+                            Submit
+                        </button>
+                    </form>
+
+                    <div>
+                        <Link
+                            to="/home"
+                            className="btn btn-outline-primary btn-sm m-2"
+                        >
+                            Home
+                        </Link>
+                    </div>
+                </div>
+            )}
         </div>
-
-
-
-
     );
 };
-
-
 export default LobbyPage;
-

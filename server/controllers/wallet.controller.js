@@ -19,15 +19,15 @@ module.exports.fundWallet = async (req, res) => {
 
         // Create payment intent on stripe
         const paymentIntent = await stripe.paymentIntents.create({
-			amount: Math.ceil(amount * 100),
-			currency: 'usd',
-			automatic_payment_methods: { enabled: true },
-			metadata: {
-				paymentId,
-				user: req.user.id,
-				paymentDescription: 'Wallet funding',
-			},
-		});
+            amount: Math.ceil(amount * 100),
+            currency: 'usd',
+            automatic_payment_methods: { enabled: true },
+            metadata: {
+                paymentId,
+                user: req.user.id,
+                paymentDescription: 'Wallet funding',
+            },
+        });
 
         return res.status(200).json({
             status: true,
@@ -68,8 +68,8 @@ const connectAccount = async (userDetails) => {
             country: 'US',
             email: userDetails.email,
             capabilities: {
-                card_payments: {requested: true},
-                transfers: {requested: true},
+                card_payments: { requested: true },
+                transfers: { requested: true },
             },
             business_type: 'individual',
             individual: {
@@ -173,14 +173,14 @@ module.exports.initiateWithdrawal = async (req, res) => {
                 });
             }
         }
-        
+
         // Check user wallet balance
         const walletDetails = await Wallet.findOne({ user: req.user.id });
         if (amount > walletDetails.amount) {
             return res.status(400).json({
                 status: 400,
                 message: 'Your wallet balance is low',
-            }); 
+            });
         }
 
         // Create new withdrawal instance
@@ -240,7 +240,7 @@ module.exports.deleteAccount = async (req, res) => {
     try {
         const deleted = await stripe.accounts.del(
             'acct_1NsCAuHKKc5TWlPl'
-        );          
+        );
         res.status(200).json({
             deleted,
             status: true,
@@ -301,27 +301,27 @@ module.exports.stripePaymentWebhook = async (req, res) => {
     const { paymentId, user, withdrawalRef } = paymentIntentData.metadata;
 
     switch (event.type) {
-		case 'payment_intent.created':
-			const paymentIntentCreated = event.data.object;
-			console.log('Payment intent created');
-			break;
+        case 'payment_intent.created':
+            const paymentIntentCreated = event.data.object;
+            console.log('Payment intent created');
+            break;
 
-		case 'payment_intent.failed':
-			// update payment status to failed
+        case 'payment_intent.failed':
+            // update payment status to failed
             await Payment.findOneAndUpdate({
                 paymentRef: paymentId
-            }, {$set: { status: 'failed' }});
+            }, { $set: { status: 'failed' } });
             console.log(`Payment status updated to failed`);
-			break;
+            break;
 
-		case 'payment_intent.succeeded':
-			// update order status to success
+        case 'payment_intent.succeeded':
+            // update order status to success
             await Payment.findOneAndUpdate({
                 paymentRef: paymentId
-            }, {$set: { status: 'success' }});
+            }, { $set: { status: 'success' } });
 
             // Update user wallet balance
-            const userData = await Wallet.findOne({user});
+            const userData = await Wallet.findOne({ user });
             if (!userData) {
                 console.log('No user found. Amount cannot be added to wallet');
             }
@@ -329,17 +329,17 @@ module.exports.stripePaymentWebhook = async (req, res) => {
             userData.amount += (paymentIntentData.amount / 100);
             await userData.save();
             console.log(`Wallet funded and payment status updated to success`);
-			break;
-        
+            break;
+
         case 'payout.paid':
             await Withdrawal.findOneAndUpdate({
                 reference: withdrawalRef
-            }, {$set: {isPaid: true}});
+            }, { $set: { isPaid: true } });
             console.log(`Withdrawal status for reference ${withdrawalRef} updated to paid`);
             break;
 
         case 'payout.cancelled':
-            const __userData = await Wallet.findOne({user});
+            const __userData = await Wallet.findOne({ user });
             if (!__userData) {
                 console.log('No user found. Amount cannot be added to wallet');
             }
@@ -350,19 +350,19 @@ module.exports.stripePaymentWebhook = async (req, res) => {
             break;
 
         case 'payout.failed':
-            const ___userData = await Wallet.findOne({user});
+            const ___userData = await Wallet.findOne({ user });
             if (!___userData) {
                 console.log('No user found. Amount cannot be added to wallet');
             }
-    
+
             ___userData.amount += (paymentIntentData.amount / 100);
             await ___userData.save();
             console.log(`Payout failed...Withdrawal status for reference ${withdrawalRef} updated to unpaid and wallet amount added back to wallet balance.`);
             break;
 
-		default:
-			console.log(`Unhandled event type ${event.type}`);
-	}
+        default:
+            console.log(`Unhandled event type ${event.type}`);
+    }
 
     res.send().end();
 } 

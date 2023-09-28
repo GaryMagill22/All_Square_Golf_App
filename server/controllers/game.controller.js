@@ -4,16 +4,18 @@ const GameScoreCard = require('../models/gameScorecard.model');
 
 
 
-
 // Create new Game 
 module.exports.createGame = (req, res) => {
-    Game.create(req.body)
+    const { name, isTeamGame, howToPlay } = req.body;
+
+    Game.create({
+        name: name,
+        isTeamGame: isTeamGame,
+        // howToPlay: howToPlay,
+    })
         .then(game => res.json(game))
         .catch(err => res.status(400).json(err))
-
-
 }
-
 
 // GeT all Games
 module.exports.getAllGames = (req, res) => {
