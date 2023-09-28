@@ -19,6 +19,7 @@ import DisplayRounds from './Pages/DisplayRounds';
 import FundWallet from './Pages/FundWallet';
 import VerifyPayment from './Pages/VerifyPayment';
 import RequestStripeLink from './Pages/RequestStripeAccountLink';
+import SelectGameType from './Pages/SelectGameType';
 import Chat from './Components/Chat';
 import AppContext from './helpers/context';
 
@@ -79,10 +80,12 @@ function App() {
                         <Route path="/profile" element={<ProfileCard />} />
                         <Route path="/new/game" element={<ScoreCard />} />
                         <Route path="/rounds" element={<DisplayRounds />} />
+                        <Route path="/new/round/:gameType/:lobbyId" element={<LobbyPage />} />
                         <Route path="/new/round/:lobbyId" element={<LobbyPage />} />
                         <Route path="/fund-wallet/:amount" element={<FundWallet />} />
                         <Route path="/verify-payment" element={<VerifyPayment />} />
                         <Route path="/request-stripe-authlink" element={<RequestStripeLink />} />
+                        <Route path="/select-game/:lobbyId" element={<SelectGameType />} />
                     </Routes>
                 </AppContext.Provider>
             </BrowserRouter>

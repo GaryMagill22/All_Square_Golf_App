@@ -247,7 +247,7 @@ io.on("connection", (socket) => {
         io.emit('gameCompletedReceived');
     });
 
-    socket.on('proceedToGame', async (data) => {
+    socket.on('proceedToGame', async (data, teams) => {
         const gameplayResponse = await initiateGamePlay(data);
         const response = findNonEligibleUsers(gameplayResponse);
 
@@ -256,7 +256,7 @@ io.on("connection", (socket) => {
             createGameScoreCard(data.players, data.lobby);
         }
 
-        io.emit('proceedToGameReceived', response);
+        io.emit('proceedToGameReceived', response, teams);
     });
 
     socket.on('winnersList', async (data) => {
@@ -306,6 +306,10 @@ io.on("connection", (socket) => {
             await GameScoreCard.findOneAndDelete({ lobbyId: data.lobby });
             console.log('game scorecard deleted');
         }
+    });
+
+    socket.on('addPlayerInTeamPlay', (data) => {
+        io.emit('addPlayerInTeamPlayReceived', data);
     });
 
     socket.on('logout', () => {

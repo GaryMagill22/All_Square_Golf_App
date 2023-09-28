@@ -98,7 +98,8 @@ const Home = () => {
                     selectedGame
                 }
             });
-            navigate(`/new/round/${response.lobby.lobbyId}`);
+            navigate(`/select-game/${response.lobby.lobbyId}`);
+            //navigate(`/new/round/${response.lobby.lobbyId}`);
         } catch (err) {
             console.log(err)
         }
