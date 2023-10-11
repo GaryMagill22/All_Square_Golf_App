@@ -3,10 +3,8 @@ import { useState, useEffect } from 'react'
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Link, useNavigate, useLocation, useParams } from 'react-router-dom';
-import ScoreCard from '../Components/ScoreCard';
 import generateRandomRoomName from '../helpers/roomKeyGenarator';
 import { getSocket } from '../helpers/socketHelper';
-import io from 'socket.io-client';
 
 
 const LobbyPage = () => {
@@ -15,60 +13,22 @@ const LobbyPage = () => {
     const location = useLocation();
     const { lobbyId, gameType } = useParams();
 
-    // state for setting what game user picks
     const [gamePicked, setGamePicked] = useState('');
-    // state for setting what course user picks
     const [coursePicked, setCoursePicked] = useState('');
-    // state for loading in all of the db courses to choose from
     const [course, setCourse] = useState([]);
     const [setLoaded] = useState(false);
-    // setting state for loading in all of the db games to choose from
     const [games, setGames] = useState([]);
-    // state for setting user inputting players to play with.
     const [players, setPlayers] = useState([]);
     const [creator, setCreator] = useState('');
-
     const [user, setUser] = useState(null);
     const [bettingAmount, setBettingAmount] = useState(0); // State for how much money betting.
     const navigate = useNavigate()
-
     const [teams, setTeams] = useState([]);
-    // const [teams, setTeams] = useState([
-    //     {
-    //       teamName: 'Team A',
-    //       players: [
-    //         {
-    //           id: 'syfd636et27627w718w1',
-    //           name: 'John Doe'
-    //         },
-    //         {
-    //           id: 'bhfdjh7et27627w718w1',
-    //           name: 'Alex Fidelis'
-    //         }
-    //       ]
-    //     },
-    //     {
-    //       teamName: 'Team B',
-    //       players: [
-    //         {
-    //           id: 'bnfd636et27627w718w1',
-    //           name: 'Curator Bellis'
-    //         },
-    //         {
-    //           id: 'bhfdjh7et27627wkj8w1',
-    //           name: 'Davio Angel'
-    //         }
-    //       ]
-    //     }
-    // ]);
     const [teamValue, setTeamValue] = useState('');
     const [selectedTeam, setSelectedTeam] = useState('');
     const [selectedPlayer, setSelectedPlayer] = useState('');
     const [roomKey, setRoomKey] = useState('');
     const [isCreator, setIsCreator] = useState(false);
-
-
-
 
     useEffect(() => {
         if (socket) {
@@ -95,7 +55,7 @@ const LobbyPage = () => {
                     if (teamsData.length > 0) {
                         localStorage.setItem('teams', JSON.stringify(teamsData));
                     }
-                    navigate('/new/game');
+                    navigate(`/new/game/${teamsData.length > 0 ? 'team' : 'individual'}`);
                 } else {
                     alert(data.message);
                 }

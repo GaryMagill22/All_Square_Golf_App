@@ -2,41 +2,23 @@ import React, { useEffect, useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.css';
 import { Link, useNavigate, useLocation, useParams } from 'react-router-dom';
 import BottomNav from '../Components/BottomNav';
-import io from 'socket.io-client';
-import { useAppContext } from '../helpers/context';
 import axios from 'axios';
 import { Axios } from '../helpers/axiosHelper';
-import queryString from 'query-string';
-
-
 
 const Home = () => {
     const location = useLocation();
     const navigate = useNavigate();
+    const { lobbyId } = useParams();
+
+    // State values
     const [games, setGames] = useState([]);
     const [course, setCourse] = useState([]);
     const [selectedGame, setSelectedGame] = useState(null);
     const [selectedCourse, setSelectedCourse] = useState(null);
     const [setLoaded] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
-
-
     const [show, setShow] = useState(false);
     const handleClose = () => { setShow(false) };
-    // const handleShow = () => {
-    //     navigate("/new/round")
-    //     setShow(true)
-    // };
-
-
-
-
-    const { lobbyId } = useParams();
-
-
-    // const parsed = queryString.parse(location.search);
-    // const lobbyId = parsed.id;
-
 
     const openModal = () => {
         const modal = new window.bootstrap.Modal(document.getElementById('exampleModal'));
@@ -60,7 +42,6 @@ const Home = () => {
             });
     }, []);
 
-
     // GET ALL COURSES
     useEffect(() => {
         axios.get('http://localhost:8000/api/courses')
@@ -73,10 +54,12 @@ const Home = () => {
             });
     }, []);
 
-
     const handleSelect = (event, type) => {
         if (type === 'game') {
             setSelectedGame(event.target.value);
+            const filteredGame = games.filter((game) => game._id === event.target.value);
+            const gameName = filteredGame[0].name;
+            localStorage.setItem('user_selected_game', JSON.stringify(gameName.toLowerCase()));
             return;
         } else {
             setSelectedCourse(event.target.value);
@@ -99,36 +82,27 @@ const Home = () => {
                 }
             });
             navigate(`/select-game/${response.lobby.lobbyId}`);
-            //navigate(`/new/round/${response.lobby.lobbyId}`);
         } catch (err) {
             console.log(err)
         }
-        console.log(selectedCourse, selectedGame);
     }
 
     const joinRoom = () => {
         const lobbyId = lobbyId;
     }
 
-
     const handleUserUpdateIntoTheLobby = async (lobbyId, room) => {
         try {
             const storedPlayers = localStorage.getItem('players');
             const response = await axios.post(`http://localhost:8000/api/lobbys/update-users/${lobbyId}`, { updatedPlayers: JSON.parse(storedPlayers) });
-            // handle response, e.g., confirm success
 
             navigate(`/new/round/${lobbyId}`);
-
         } catch (error) {
             console.error("Error updating the lobby:", error);
-            // handle error, e.g., show a message to the user
         }
     }
 
-
-
     // To close modal after inputting the key and navigating to next page.
-
     useEffect(() => {
         const myModal = document.getElementById('myModal');
         const myInput = document.getElementById('myInput');
@@ -148,14 +122,6 @@ const Home = () => {
             }
         };
     }, []);
-
-
-    // const handleJoinRoom = (lobbyId) => {
-    //     socket.emit('JoinRoom', { lobbyId });
-    //     const inputLobbyId = document.getElementById('lobbyIdInput').value;
-    //     navigate(`/new/round?id=${lobbyId}`);
-    //     setIsModalOpen(false); // Close the modal
-    // };
 
     const handleJoinRoom = async (lobbyId) => {
         const inputLobbyId = document.getElementById('lobbyIdInput').value;
@@ -248,11 +214,6 @@ const Home = () => {
                     </div>
                 </div>
             </div>
-
-
-
-
-
             <BottomNav />
         </div>
     )
