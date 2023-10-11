@@ -3,10 +3,8 @@ import { useState, useEffect } from 'react'
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Link, useNavigate, useLocation, useParams } from 'react-router-dom';
-import ScoreCard from '../Components/ScoreCard';
 import generateRandomRoomName from '../helpers/roomKeyGenarator';
 import { getSocket } from '../helpers/socketHelper';
-import io from 'socket.io-client';
 
 
 const LobbyPage = () => {
@@ -15,60 +13,22 @@ const LobbyPage = () => {
     const location = useLocation();
     const { lobbyId, gameType } = useParams();
 
-    // state for setting what game user picks
     const [gamePicked, setGamePicked] = useState('');
-    // state for setting what course user picks
     const [coursePicked, setCoursePicked] = useState('');
-    // state for loading in all of the db courses to choose from
     const [course, setCourse] = useState([]);
     const [setLoaded] = useState(false);
-    // setting state for loading in all of the db games to choose from
     const [games, setGames] = useState([]);
-    // state for setting user inputting players to play with.
     const [players, setPlayers] = useState([]);
     const [creator, setCreator] = useState('');
-
     const [user, setUser] = useState(null);
     const [bettingAmount, setBettingAmount] = useState(0); // State for how much money betting.
     const navigate = useNavigate()
-
     const [teams, setTeams] = useState([]);
-    // const [teams, setTeams] = useState([
-    //     {
-    //       teamName: 'Team A',
-    //       players: [
-    //         {
-    //           id: 'syfd636et27627w718w1',
-    //           name: 'John Doe'
-    //         },
-    //         {
-    //           id: 'bhfdjh7et27627w718w1',
-    //           name: 'Alex Fidelis'
-    //         }
-    //       ]
-    //     },
-    //     {
-    //       teamName: 'Team B',
-    //       players: [
-    //         {
-    //           id: 'bnfd636et27627w718w1',
-    //           name: 'Curator Bellis'
-    //         },
-    //         {
-    //           id: 'bhfdjh7et27627wkj8w1',
-    //           name: 'Davio Angel'
-    //         }
-    //       ]
-    //     }
-    // ]);
     const [teamValue, setTeamValue] = useState('');
     const [selectedTeam, setSelectedTeam] = useState('');
     const [selectedPlayer, setSelectedPlayer] = useState('');
     const [roomKey, setRoomKey] = useState('');
     const [isCreator, setIsCreator] = useState(false);
-
-
-
 
     useEffect(() => {
         if (socket) {
@@ -95,7 +55,7 @@ const LobbyPage = () => {
                     if (teamsData.length > 0) {
                         localStorage.setItem('teams', JSON.stringify(teamsData));
                     }
-                    navigate('/new/game');
+                    navigate(`/new/game/${teamsData.length > 0 ? 'team' : 'individual'}`);
                 } else {
                     alert(data.message);
                 }
@@ -393,78 +353,3 @@ const LobbyPage = () => {
 
 export default LobbyPage;
 
-
-
-/* <div>
-<h1>Pick Your Game!</h1>
-<div className="d-flex flex-wrap">
-{games.map((game, i) => (
-    <button
-    key={i}
-    type="button"
-    className={`btn btn-outline-primary btn-sm m-2 btn-radio   ${gamePicked === game.name ? 'selected' : ''
-}`}
-onClick={() => handleGameSelection(game.name)}
-style={{
-                    backgroundColor: gamePicked === game.name ? 'blue' : '',
-                }}
-                >
-                {game.name}
-                </button>
-                ))}
-                </div>
-                </div>
-                
-<div>
-<h1>Choose Your Course!</h1>
-<div className="d-flex flex-wrap">
-{course.map((course, i) => (
-    <button
-    key={i}
-    type="button"
-    className={`btn btn-outline-primary btn-sm m-2 ${coursePicked === course.name ? 'selected' : ''
-}`}
-onClick={() => handleCourseSelection(course.name)}
-style={{
-    backgroundColor: coursePicked === course.name ? 'blue' : '',
-}}
->
-{course.name}
-</button>
-))}
-</div>
-</div> */
-/* <div style={{ width: "500px", margin: "0 auto" }} >
-    <h1>Add Players</h1>
-    <form onSubmit={handleSubmit} >
-        <div className="mb-3">
-            <label htmlFor="player1" className="form-label">Player 1</label>
-
-            <input type="text" className="form-control" id="player1" value={players[0]} onChange={(e) => handlePlayerChange(0, e.target.value)} />
-        </div>
-
-        <div className="mb-3">
-            <label htmlFor="player2" className="form-label">Player 2</label>
-            <input type="text" className="form-control" id="player2" value={players[1]} onChange={(e) => handlePlayerChange(1, e.target.value)} />
-        </div>
-        <div className="mb-3">
-            <label htmlFor="player3" className="form-label">Player 3</label>
-            <input type="text" className="form-control" id="player3" value={players[2]} onChange={(e) => handlePlayerChange(2, e.target.value)} />
-        </div>
-        <div className="mb-3">
-            <label htmlFor="player4" className="form-label">Player 4</label>
-            <input type="text" className="form-control" id="player4" value={players[3]} onChange={(e) => handlePlayerChange(3, e.target.value)} />
-        </div>
-        <div className="mb-3">
-            <label htmlFor="bettingAmount" className="form-label">Money to bet (18 Holes)</label>
-            <input
-                type="number"
-                className="form-control"
-                name="bettingAmount"
-                value={bettingAmount}
-                onChange={(e) => setBettingAmount(parseInt(e.target.value))}
-            />
-        </div>
-        <button type="submit" className="btn btn-primary">Submit</button>
-    </form>
-</div> */

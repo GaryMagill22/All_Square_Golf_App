@@ -78,7 +78,7 @@ function App() {
                         {/* <Route path="/new/game" element={<Chat />} /> */}
                         <Route path="/games" element={<GamesPage />} />
                         <Route path="/profile" element={<ProfileCard />} />
-                        <Route path="/new/game" element={<ScoreCard />} />
+                        <Route path="/new/game/:gameType" element={<ScoreCard />} />
                         <Route path="/rounds" element={<DisplayRounds />} />
                         <Route path="/new/round/:gameType/:lobbyId" element={<LobbyPage />} />
                         <Route path="/new/round/:lobbyId" element={<LobbyPage />} />

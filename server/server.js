@@ -16,7 +16,7 @@ app.use(cors({
 }));
 
 // app.post('/webhook', express.raw({ type: 'application/json' }), (req, res) => {
-//     const endpointSecret = "whsec_8b9dfaabfadd510e27cb2d38c3663f50ce5c82a4fa75648feda9d5f54da2880d";
+//     const endpointSecret = "whsec_bVUixsBX7f7rlVvegivfLaGIiveyiFZV";
 //     const sig = req.headers['stripe-signature'];
 //     let event;
 
@@ -31,6 +31,7 @@ app.use(cors({
 
 //     res.send().end();
 // });
+
 app.use(express.json({
     // Because Stripe needs the raw body, we compute it but only when hitting the Stripe callback URL.
     verify: function (req, res, buf) {
@@ -71,33 +72,6 @@ require("./config/mongoose.config");
 
 // MODELS IMPORT
 const Lobby = require('./models/lobby.model');
-
-
-// update lobby with players
-// app.post('/api/lobbys/update/:lobbyId', async (req, res) => {
-//     const lobbyId = req.params.lobbyId;
-//     const newPlayer = req.body.newPlayer;
-
-//     const lobby = await Lobby.findById(lobbyId);  // This assumes you're using something like Mongoose with MongoDB
-
-//     if (!lobby) {
-//         return res.status(404).send('Lobby not found');
-//     }
-
-//     lobby.players.push(newPlayer);
-
-//     await lobby.save();
-
-//     res.status(200).send('Player added successfully');
-// });
-
-
-
-
-
-
-// SOCKETS.IO //
-//==========================================================================================================================================
 
 
 // created variable called server listening on port 8000

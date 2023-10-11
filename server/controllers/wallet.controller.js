@@ -35,6 +35,7 @@ module.exports.fundWallet = async (req, res) => {
             client_secret: paymentIntent.client_secret,
         });
     } catch (err) {
+        console.log(err);
         return res.status(500).json({
             status: false,
             message: "Unable to process wallet funding.",
