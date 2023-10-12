@@ -36,6 +36,7 @@ module.exports.register = async (req, res) => {
 }
 
 
+
 module.exports.index = (req, res) => {
     User.find()
         .then(users => res.cookie("test", "test", { httpOnly: true }).json(users))
@@ -122,13 +123,13 @@ module.exports.createUser = (req, res) => {
 }
 
 
+
 // GeT all Users
 module.exports.getAllUsers = (req, res) => {
     User.find({})
         .then(user => res.json(user))
         .catch(err => res.json(err))
 }
-
 
 
 

@@ -5,6 +5,7 @@ const { authenticate } = require('../config/jwt.config');
 const userRoutes = express.Router()
 
 
+
 userRoutes.get(`/allUsers`, authenticate, UserController.index)
 // app.get(`/api/cookie`, UserController.cookie)
 // /login endpoint is hte endpoint the frontend will hit
@@ -19,6 +20,8 @@ userRoutes.get('/', UserController.getAllUsers)
 
 // Create User
 userRoutes.post('/register/new', UserController.register)
+
+
 
 
 // Get One User

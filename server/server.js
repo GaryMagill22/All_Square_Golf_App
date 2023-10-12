@@ -8,29 +8,12 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { Wallet } = require('./models/wallet.model');
 const GameScoreCard = require('./models/gameScorecard.model');
 
-
 // CONFIG EXPRESS ===================================================================
 app.use(cors({
     credentials: true,
     origin: 'http://localhost:3000'
 }));
 
-// app.post('/webhook', express.raw({ type: 'application/json' }), (req, res) => {
-//     const endpointSecret = "whsec_bVUixsBX7f7rlVvegivfLaGIiveyiFZV";
-//     const sig = req.headers['stripe-signature'];
-//     let event;
-
-//     try {
-//         event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
-//         console.log('--- event ---', event);
-//     } catch (err) {
-//         console.log('error', err.message);
-//         res.status(400).send(`Webhook Error: ${err.message}`);
-//         return;
-//     }
-
-//     res.send().end();
-// });
 
 app.use(express.json({
     // Because Stripe needs the raw body, we compute it but only when hitting the Stripe callback URL.
@@ -299,5 +282,19 @@ io.on("connection", (socket) => {
     });
 });
 // ==========================================================================================================================================
+// app.post('/webhook', express.raw({ type: 'application/json' }), (req, res) => {
+//     const endpointSecret = "whsec_bVUixsBX7f7rlVvegivfLaGIiveyiFZV";
+//     const sig = req.headers['stripe-signature'];
+//     let event;
 
-// NEW SOCKET.IO SERVER     =======================================================================================
+//     try {
+//         event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+//         console.log('--- event ---', event);
+//     } catch (err) {
+//         console.log('error', err.message);
+//         res.status(400).send(`Webhook Error: ${err.message}`);
+//         return;
+//     }
+
+//     res.send().end();
+// });

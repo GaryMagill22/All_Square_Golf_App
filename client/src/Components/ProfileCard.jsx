@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import { Link } from 'react-router-dom';
 import { Axios } from '../helpers/axiosHelper';
 import axios from 'axios';
+import ProfileSettings from '../Components/ProfileSettings';
 
 
 const ProfileCard = () => {
@@ -16,6 +17,13 @@ const ProfileCard = () => {
     const [amount, setAmount] = useState(null);
     const [walletBalance, setWalletBalance] = useState(0);
     const [user, setUser] = useState();
+
+
+    const [showSettings, setShowSettings] = useState(false);
+    const [avatar, setAvatar] = useState(null);
+    const [avatarPreview, setAvatarPreview] = useState(null);
+
+
 
     useEffect(() => {
         const fetchWalletBalance = async () => {
@@ -104,6 +112,10 @@ const ProfileCard = () => {
             .then(res => setUser(res.data))
             .catch()
     }, [])
+
+
+
+
     return (
         <div>
             <section className="vh-100" style={{ backgroundColor: '#eee' }}>
@@ -112,25 +124,32 @@ const ProfileCard = () => {
                         <div className="col-md-12 col-xl-4">
                             <div className="card" style={{ borderRadius: '15px' }}>
                                 <div className="card-body text-center">
-                                    <div className="mt-3 mb-4">
 
-
-                                        <img
-                                            src=""
-                                            alt="logo"
-                                            style={{ width: '100px' }}
-                                        />
+                                    <div className="avatar-section">
+                                        <img src='./icons8-avatar-50.png' alt="avatar" className="rounded-circle avatar" />
                                     </div>
+                                    {/* <button
+                                        onClick={() => setShowSettings(!showSettings)}
+                                        style={{ position: 'absolute', right: '10px', top: '10px', zIndex: 10 }}>
+                                        Settings
+                                    </button> */}
+
+                                    {/* Conditionally rendering ProfileSettings */}
+                                    {showSettings && <ProfileSettings />}
+
+                                    <div className="mt-3 mb-4">
+                                        {/* ... other content ... */}
+                                    </div>
+
                                     <h4 className="mb-2">{user && user.username}</h4>
-                                    {/* <p className="text-muted mb-4">
-                                        <a><span className="mx-2">|</span>garymagill22@gmail.com</a>
-                                    </p> */}
+
                                     <div className="mb-4 pb-2">
                                         <p>Handicap: 7.4</p>
                                         <p>Payments | PayPal, Venmo, AppleCash </p>
                                         <p>Home Course:</p>
                                         <p>Omni Interlocken Golf Club, Superior Colorado</p>
                                     </div>
+
                                     <div className='mt-4'>
                                         <h4>Wallet Balance: ${walletBalance}</h4>
                                         {
@@ -157,6 +176,7 @@ const ProfileCard = () => {
                                             </div>
                                         }
                                     </div>
+
                                     <div className="d-flex justify-content-between text-center mt-5 mb-2">
                                         <div>
                                             <p className="mb-0">All Square Balance</p>
