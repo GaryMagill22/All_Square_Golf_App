@@ -17,9 +17,7 @@ const ProfileCard = () => {
     const [user, setUser] = useState();
 
 
-    const [showSettings, setShowSettings] = useState(false);
-    const [avatar, setAvatar] = useState(null);
-    const [avatarPreview, setAvatarPreview] = useState(null);
+
 
 
 
@@ -112,12 +110,7 @@ const ProfileCard = () => {
     }, [])
 
 
-    // Avatar load setup
-    const inputRef = useRef(null);
 
-    const handleImageClick = () => {
-
-    }
 
     return (
         <div>
@@ -127,19 +120,7 @@ const ProfileCard = () => {
                         <div className="col-md-12 col-xl-4">
                             <div className="card" style={{ borderRadius: '15px' }}>
                                 <div className="card-body text-center">
-
-                                    <div onClick={handleImageClick} className="avatar-section">
-                                        <img src='./icons8-avatar-50.png' alt="avatar" className="rounded-circle avatar" />
-                                        <input type="file" ref={inputRef} />
-                                    </div>
-
-
-                                    <div className="mt-3 mb-4">
-                                        {/* ... other content ... */}
-                                    </div>
-
                                     <h4 className="mb-2">{user && user.username}</h4>
-
                                     <div className="mb-4 pb-2">
                                         <p>Handicap: 7.4</p>
                                         <p>Payments | PayPal, Venmo, AppleCash </p>
@@ -156,14 +137,25 @@ const ProfileCard = () => {
                                         }
                                         {
                                             !promptFundAndWithdrawal && <div>
-                                                <button className='btn btn-primary' onClick={() => { setPromptFundAndWithdrawal(true), setIsReadyToFund(true), setIsReadyToWithdraw(false) }}>Fund wallet</button>
-                                                <button className='btn btn-info ml-2' onClick={() => { setPromptFundAndWithdrawal(true), setIsReadyToWithdraw(true), setIsReadyToFund(false) }}>Withdraw funds</button>
+                                                <button className='btn btn-primary' onClick={() => {
+                                                    setPromptFundAndWithdrawal(true);
+                                                    setIsReadyToFund(true);
+                                                    setIsReadyToWithdraw(false);
+                                                }}>Fund wallet</button>
+                                                <button className='btn btn-info ml-2' onClick={() => {
+                                                    setPromptFundAndWithdrawal(true); setIsReadyToWithdraw(true);
+                                                    setIsReadyToFund(false);
+                                                }}>Withdraw funds</button>
                                             </div>
                                         }
 
                                         {
                                             promptFundAndWithdrawal && <div>
-                                                <button className='btn btn-danger mr-2' onClick={() => { setPromptFundAndWithdrawal(false), setIsReadyToFund(false), setIsReadyToWithdraw(false) }}>Cancel</button>
+                                                <button className='btn btn-danger mr-2' onClick={() => {
+                                                    setPromptFundAndWithdrawal(false);
+                                                    setIsReadyToFund(false);
+                                                    setIsReadyToWithdraw(false);
+                                                }}>Cancel</button>
                                                 <button className='btn btn-primary' onClick={handleFundOrWithdraw}>
                                                     {
                                                         isLoading && <span className='spinner-border spinner-border-sm mr-2' role='status' aria-hidden="true"></span>
