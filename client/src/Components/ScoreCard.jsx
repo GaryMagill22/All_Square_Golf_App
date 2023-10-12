@@ -452,12 +452,12 @@ const ScoreCard = () => {
                                                 <td>{selectedPlayer[player.username].score}</td>
                                                 <td>
                                                     <div className="d-flex justify-content-between">
-                                                        <button type="button" className="btn btn-primary" value={-2} onClick={() => handleScoreUpdate(player.username, -2)} disabled={!isCreator}>Eagle</button>
-                                                        <button type="button" className="btn btn-secondary" value={-1} onClick={() => handleScoreUpdate(player.username, -1)} disabled={!isCreator}>Birdie</button>
-                                                        <button type="button" className="btn btn-dark" value={0} onClick={() => handleScoreUpdate(player.username, 0)} disabled={!isCreator}>Par</button>
-                                                        <button type="button" className="btn btn-info" value={1} onClick={() => handleScoreUpdate(player.username, 1)} disabled={!isCreator}>Bogie</button>
-                                                        <button type="button" className="btn btn-warning" value={2} onClick={() => handleScoreUpdate(player.username, 2)} disabled={!isCreator}>Double Bogey</button>
-                                                        <button type="button" className="btn btn-danger" value={10} onClick={() => handleScoreUpdate(player.username, 10)} disabled={!isCreator}>X</button>
+                                                        <button type="button" className="btn btn-primary btn-sm" value={-2} onClick={() => handleScoreUpdate(player.username, -2)} disabled={!isCreator}>Eagle</button>
+                                                        <button type="button" className="btn btn-secondary btn-sm" value={-1} onClick={() => handleScoreUpdate(player.username, -1)} disabled={!isCreator}>Birdie</button>
+                                                        <button type="button" className="btn btn-dark btn-sm" value={0} onClick={() => handleScoreUpdate(player.username, 0)} disabled={!isCreator}>Par</button>
+                                                        <button type="button" className="btn btn-info btn-sm" value={1} onClick={() => handleScoreUpdate(player.username, 1)} disabled={!isCreator}>Bogie</button>
+                                                        <button type="button" className="btn btn-warning btn-sm" value={2} onClick={() => handleScoreUpdate(player.username, 2)} disabled={!isCreator}>Double Bogey</button>
+                                                        <button type="button" className="btn btn-danger btn-sm" value={10} onClick={() => handleScoreUpdate(player.username, 10)} disabled={!isCreator}>X</button>
                                                     </div>
                                                 </td>
                                             </tr>
