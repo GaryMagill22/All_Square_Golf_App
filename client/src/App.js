@@ -20,7 +20,6 @@ import FundWallet from './Pages/FundWallet';
 import VerifyPayment from './Pages/VerifyPayment';
 import RequestStripeLink from './Pages/RequestStripeAccountLink';
 import SelectGameType from './Pages/SelectGameType';
-import Chat from './Components/Chat';
 import AppContext from './helpers/context';
 
 

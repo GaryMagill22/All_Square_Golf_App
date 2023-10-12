@@ -435,7 +435,7 @@ const ScoreCard = () => {
                         <h1 className="HoleNumber">Hole #{currentHoleNumber}</h1>
                     </div>
                     {
-                        gameType === 'individual' && <table className="table" style={{ border: "solid black", margin: "20px auto", width: "1200px" }} >
+                        gameType === 'individual' && <table className="table" style={{ border: "solid black", margin: "20px auto", maxWidth: "800px" }} >
                             <thead>
                                 <tr>
                                     <th style={{ width: '15%' }}>Player</th>
@@ -475,7 +475,7 @@ const ScoreCard = () => {
                                     {
                                         team.players.map((player) => {
                                             return (
-                                                <table className="table" style={{ border: "solid black", margin: "20px auto", width: "1200px" }} >
+                                                <table className="table" style={{ border: "solid black", margin: "20px auto", maxWidth: "800px" }} >
                                                     <thead>
                                                         <tr>
                                                             <th style={{ width: '15%' }}>Player</th>
@@ -513,7 +513,7 @@ const ScoreCard = () => {
                             <button style={{ margin: "20px" }} type="submit" onClick={(event) => submitScore(event)} className="btn btn-success" disabled={!isCreator}>Submit Score</button>
                         </div>
                     </div>
-                    <div className="container" style={{ marginLeft: "600px" }} >
+                    <div className="container"  >
                         <div className="row justify-content-center">
                             <div className="col-md-4">
                                 <h1>ScoreCard</h1>
@@ -551,9 +551,6 @@ const ScoreCard = () => {
                     </div>
                     <div>
                         <h4>Betting Amount: ${bettingAmount}</h4>
-                    </div>
-                    <div className="col-md-6">
-                        <Chat />
                     </div>
 
                 </section>

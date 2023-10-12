@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Link } from 'react-router-dom';
 import { Axios } from '../helpers/axiosHelper';
 import axios from 'axios';
-import ProfileSettings from '../Components/ProfileSettings';
-
 
 const ProfileCard = () => {
     const navigate = useNavigate();
@@ -114,7 +112,12 @@ const ProfileCard = () => {
     }, [])
 
 
+    // Avatar load setup
+    const inputRef = useRef(null);
 
+    const handleImageClick = () => {
+
+    }
 
     return (
         <div>
@@ -125,17 +128,11 @@ const ProfileCard = () => {
                             <div className="card" style={{ borderRadius: '15px' }}>
                                 <div className="card-body text-center">
 
-                                    <div className="avatar-section">
+                                    <div onClick={handleImageClick} className="avatar-section">
                                         <img src='./icons8-avatar-50.png' alt="avatar" className="rounded-circle avatar" />
+                                        <input type="file" ref={inputRef} />
                                     </div>
-                                    {/* <button
-                                        onClick={() => setShowSettings(!showSettings)}
-                                        style={{ position: 'absolute', right: '10px', top: '10px', zIndex: 10 }}>
-                                        Settings
-                                    </button> */}
 
-                                    {/* Conditionally rendering ProfileSettings */}
-                                    {showSettings && <ProfileSettings />}
 
                                     <div className="mt-3 mb-4">
                                         {/* ... other content ... */}
