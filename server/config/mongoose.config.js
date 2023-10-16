@@ -7,7 +7,7 @@ const db = process.env.DB
 
 
 
-mongoose.connect((`mongodb+srv://${username}:${dbPassword}@mongopractice.zp13odz.mongodb.net/${db}`), {
+mongoose.connect((`mongodb+srv://${username}:${dbPassword}@mongopractice.zp13odz.mongodb.net/?retryWrites=true&w=majority${db}`), {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 })
