@@ -4,10 +4,9 @@ const dbPassword = process.env.ATLAS_PASSWORD
 const db = process.env.DB
 
 
-// mongodb + srv://garymagill22:<password>@mongopractice.zp13odz.mongodb.net/
 
 
-mongoose.connect((`mongodb+srv://${username}:${dbPassword}@mongopractice.zp13odz.mongodb.net/?retryWrites=true&w=majority${db}`), {
+mongoose.connect((`mongodb+srv://${username}:${dbPassword}@mongopractice.zp13odz.mongodb.net/${db}`), {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 })
