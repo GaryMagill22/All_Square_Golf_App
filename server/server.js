@@ -7,6 +7,7 @@ const cors = require("cors");
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { Wallet } = require('./models/wallet.model');
 const GameScoreCard = require('./models/gameScorecard.model');
+require('dotenv').config();
 
 // CONFIG EXPRESS ===================================================================
 app.use(cors({
