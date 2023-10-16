@@ -6,7 +6,7 @@ import { loadStripe } from '@stripe/stripe-js';
 
 
 // public key
-const stripePromise = loadStripe('pk_live_51NpbUBHJaZP62m3KJB4bnuPqg5Kwwqak6IN1gMzDriqUuxEXxgOVrhrapRLk2L9Eo7HT8W9Q1hVLV6aIBgSRIuRq00QIyOwkAX');
+const stripePromise = loadStripe('pk_test_51NpbUBHJaZP62m3KKuApJPp7c67kL8vOpxwCr4ZDVxgDE1c01CpnNqSNbURSEzKnyGTOEtVLOV38NOq3pRDY29Px00WnKFvNsV');
 
 const FundWallet = () => {
   const { amount } = useParams();
