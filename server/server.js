@@ -12,7 +12,7 @@ require('dotenv').config();
 // CONFIG EXPRESS ===================================================================
 app.use(cors({
     credentials: true,
-    origin: 'http://localhost:3000'
+    origin: 'http://3.143.22.178'
 }));
 
 
@@ -57,6 +57,9 @@ require("./config/mongoose.config");
 // MODELS IMPORT
 const Lobby = require('./models/lobby.model');
 
+app.get('/', (req, res) => {
+    res.send("Welcome to the server");
+});
 
 // created variable called server listening on port 8000
 const server = app.listen(port, () => console.log(`Listening on port: ${port}`));
