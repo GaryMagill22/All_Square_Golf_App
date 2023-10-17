@@ -12,7 +12,7 @@ require('dotenv').config();
 // CONFIG EXPRESS ===================================================================
 app.use(cors({
     credentials: true,
-    origin: 'http://3.143.22.178'
+    origin: '*',
 }));
 
 
