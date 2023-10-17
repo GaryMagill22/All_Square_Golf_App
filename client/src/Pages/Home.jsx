@@ -32,7 +32,7 @@ const Home = () => {
 
     // GET ALL GAMES
     useEffect(() => {
-        axios.get('http://localhost:8000/api/games')
+        axios.get('/games')
             .then((res) => {
                 setGames(res.data);
                 setLoaded(true);
@@ -44,7 +44,7 @@ const Home = () => {
 
     // GET ALL COURSES
     useEffect(() => {
-        axios.get('http://localhost:8000/api/courses')
+        axios.get('/courses')
             .then((res) => {
                 setCourse(res.data);
                 setLoaded(true);
