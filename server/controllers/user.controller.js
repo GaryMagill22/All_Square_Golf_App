@@ -82,7 +82,7 @@ module.exports.login = async (req, res) => {
             {
                 maxAge: 18000 * 60 * 10,
                 httpOnly: true,
-                sameSite: 'none',
+                sameSite: 'Lax',
                 secure: true
             }
         )
