@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-axios.defaults.baseURL = 'http://3.143.22.178/api';
+axios.defaults.baseURL = 'http://localhost:8000/api';
 axios.defaults.withCredentials = true;
 axios.interceptors.response.use(
     (response) => {

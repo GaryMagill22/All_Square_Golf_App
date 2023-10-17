@@ -32,7 +32,7 @@ const Home = () => {
 
     // GET ALL GAMES
     useEffect(() => {
-        axios.get('/games')
+        axios.get('http://localhost:8000/api/games')
             .then((res) => {
                 setGames(res.data);
                 setLoaded(true);
@@ -44,7 +44,7 @@ const Home = () => {
 
     // GET ALL COURSES
     useEffect(() => {
-        axios.get('/courses')
+        axios.get('http://localhost:8000/api/courses')
             .then((res) => {
                 setCourse(res.data);
                 setLoaded(true);
@@ -94,7 +94,7 @@ const Home = () => {
     const handleUserUpdateIntoTheLobby = async (lobbyId, room) => {
         try {
             const storedPlayers = localStorage.getItem('players');
-            const response = await axios.post(`/lobbys/update-users/${lobbyId}`, { updatedPlayers: JSON.parse(storedPlayers) });
+            const response = await axios.post(`http://localhost:8000/api/lobbys/update-users/${lobbyId}`, { updatedPlayers: JSON.parse(storedPlayers) });
 
             navigate(`/new/round/${lobbyId}`);
         } catch (error) {
