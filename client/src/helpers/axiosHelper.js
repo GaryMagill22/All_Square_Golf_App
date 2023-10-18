@@ -14,6 +14,7 @@ axios.interceptors.response.use(
     }
 );
 
+// export axios instance
 export const Axios = async ({ url, method, body, headers }) => {
     const res = await axios({
         method: method,
