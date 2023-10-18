@@ -101,8 +101,7 @@ const Home = () => {
             console.error("Error updating the lobby:", error);
         }
     }
-    // saving just in case need to change back
-    // const response = await axios.post(`http://localhost:8000/api/lobbys/update-users/${lobbyId}`, { updatedPlayers: JSON.parse(storedPlayers) });
+
 
     // To close modal after inputting the key and navigating to next page.
     useEffect(() => {
