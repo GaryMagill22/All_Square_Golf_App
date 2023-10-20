@@ -30,7 +30,6 @@ app.use(express.urlencoded({ extended: true }));  // POST METHOD
 app.use(cookieParser());
 
 
-// app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
 
 
 // ROUTES
