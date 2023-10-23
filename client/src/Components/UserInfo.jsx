@@ -12,6 +12,7 @@ const UserInfo = () => {
         axios.delete(`http://localhost:8000/api/users/logout`, { withCredentials: true })
             .then(res => {
                 localStorage.clear();
+                console.log('user logged out successfully')
                 navigate("/")
             })
             .catch(err => {
