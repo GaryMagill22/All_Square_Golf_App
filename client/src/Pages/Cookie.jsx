@@ -11,7 +11,7 @@ import { useEffect } from 'react';
 
 const Cookie = () => {
     useEffect(() => {
-        axios.get(`http://localhost:8000/api/cookie`, { withCredentials: true })
+        axios.get(`https://allsquare.club/api/cookie`, { withCredentials: true })
             .then(res => console.log("success!"))
             .catch(err => console.log(err));
     }, [])

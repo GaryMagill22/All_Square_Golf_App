@@ -27,7 +27,7 @@ const ProfileSettings = () => {
     //     formData.append('avatar', avatar);
 
     //     try {
-    //         const response = await axios.post('http://localhost:8000/api/upload-avatar', formData, {
+    //         const response = await axios.post('https://allsquare.club/api/upload-avatar', formData, {
     //             headers: {
     //                 'Content-Type': 'multipart/form-data',
     //             },

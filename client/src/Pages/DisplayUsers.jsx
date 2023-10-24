@@ -9,7 +9,7 @@ const DisplayUsers = () => {
     const navigate = useNavigate()
 
     useEffect(() => {
-        axios.get(`http://localhost:8000/api/users/allUsers`, { withCredentials: true })
+        axios.get(`https://allsquare.club/api/users/allUsers`, { withCredentials: true })
             .then(res => setUsers(res.data))
             .catch(err => {
                 console.error("Error fetching users:", err)
@@ -17,7 +17,7 @@ const DisplayUsers = () => {
     }, [])
 
     const logoutHandler = () => {
-        axios.delete(`http://localhost:8000/api/users/logout`, { withCredentials: true })
+        axios.delete(`https://allsquare.club/api/users/logout`, { withCredentials: true })
             .then(res => navigate("/"))
             .catch(err => {
                 console.error("Error during logout:", err)

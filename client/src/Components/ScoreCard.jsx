@@ -125,7 +125,7 @@ const ScoreCard = () => {
             }
 
             // Make a POST request to the backend to save the round data
-            await axios.post('http://localhost:8000/api/rounds/new', roundData);
+            await axios.post('https://allsquare.club/api/rounds/new', roundData);
             navigate("/home");
         } catch (error) {
             console.log('Error saving round data:', error);
@@ -280,7 +280,7 @@ const ScoreCard = () => {
     // useEffect to fetch user data from the server
     useEffect(() => {
         axios
-            .get(`http://localhost:8000/api/users/getUser`, { withCredentials: true })
+            .get(`https://allsquare.club/api/users/getUser`, { withCredentials: true })
             .then((res) => setUser(res.data))
             .catch((error) => console.log(error));
     }, []);

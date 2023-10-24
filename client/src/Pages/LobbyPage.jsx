@@ -73,7 +73,7 @@ const LobbyPage = () => {
 
     // GET ALL GAMES
     useEffect(() => {
-        axios.get('http://localhost:8000/api/games')
+        axios.get('https://allsquare.club/api/games')
             .then((res) => {
                 setGames(res.data);
                 setLoaded(true);
@@ -86,7 +86,7 @@ const LobbyPage = () => {
     // Grabbing user that is logged in and using data in local Storage
     useEffect(() => {
         axios
-            .get(`http://localhost:8000/api/users/getUser`, { withCredentials: true })
+            .get(`https://allsquare.club/api/users/getUser`, { withCredentials: true })
             .then((res) => setUser(res.data))
             .catch((error) => console.log(error));
     }, []);
@@ -94,7 +94,7 @@ const LobbyPage = () => {
     useEffect(() => {
         if (lobbyId)
             axios
-                .get(`http://localhost:8000/api/lobbys/get-users-in-room/${lobbyId}`)
+                .get(`https://allsquare.club/api/lobbys/get-users-in-room/${lobbyId}`)
                 .then((res) => console.log(res.data))
                 .catch((error) => console.log(error));
     }, []);
@@ -132,7 +132,7 @@ const LobbyPage = () => {
     //=====================================================================================================
     // GET ALL COURSES
     useEffect(() => {
-        axios.get('http://localhost:8000/api/courses')
+        axios.get('https://allsquare.club/api/courses')
             .then((res) => {
                 setCourse(res.data);
                 setLoaded(true);
