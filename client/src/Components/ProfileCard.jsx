@@ -190,15 +190,16 @@ const ProfileCard = () => {
                                             <p className="mb-2 h5">23</p>
                                         </div>
                                     </div>
+                                    <Link to="/home" className="btn btn-outline-primary btn-sm m-2">
+                                        Home
+                                    </Link>
+                                    <button onClick={logoutHandler}>Logout</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <Link to="/home" className="btn btn-outline-primary btn-sm m-2">
-                    Home
-                </Link>
-                <button onClick={logoutHandler}>Logout</button>
+
             </section>
         </div>
     );

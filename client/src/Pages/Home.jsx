@@ -215,7 +215,7 @@ const Home = () => {
                     </div>
                 </div>
             </div>
-            <BottomNav />
+            {/* <BottomNav /> */}
         </div>
     )
 }
