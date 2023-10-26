@@ -7,6 +7,7 @@ const cors = require("cors");
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { Wallet } = require('./models/wallet.model');
 const GameScoreCard = require('./models/gameScorecard.model');
+const fs = require('fs');
 
 // CONFIG EXPRESS ===================================================================
 app.use(cors({
@@ -59,13 +60,21 @@ app.get('/', (req, res) => {
     res.send("Welcome to the server");
 });
 
-// created variable called server listening on port 8000
-const server = app.listen(port, () => console.log(`Listening on port: ${port}`));
+// created variable called server listening on port 9000
+// const server = app.listen(port, () => console.log(`Listening on port: ${port}`));
 
 
 // // importing socket.io module and attatching it to our server
-const { Server } = require("socket.io");
-const io = new Server(server, { cors: true });
+// const { Server } = require("socket.io");
+// const io = new Server(server, { cors: true });
+
+
+
+// Socket.io listening on Seperate port 9000 than express server (8000)
+app.listen(port, () => console.log(`Listening on port: ${port}`));
+socketServer.listen(9000, () => {
+        console.log(`Socket Server is started at port 9000`);
+});
 
 const initiateGamePlay = async (payload) => {
     const { players, amount } = payload;
