@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 require('dotenv').config()
-const port = 8000;
+// const port = 8000;
 const cookieParser = require('cookie-parser');
 const cors = require("cors");
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
@@ -60,7 +60,7 @@ app.get('/', (req, res) => {
     res.send("Welcome to the server");
 });
 
-// created variable called server listening on port 9000
+
 // const server = app.listen(port, () => console.log(`Listening on port: ${port}`));
 
 
