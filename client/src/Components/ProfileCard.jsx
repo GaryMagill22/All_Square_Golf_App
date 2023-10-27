@@ -193,7 +193,7 @@ const ProfileCard = () => {
                                     <Link to="/home" className="btn btn-outline-primary btn-sm m-2">
                                         Home
                                     </Link>
-                                    <button onClick={logoutHandler} className="btn btn-outline-danger btn-sm m-2" >Logout</button>
+                                    <button onClick={logoutHandler} className="btn btn-outline-danger btn-sm m-2">Logout</button>
                                 </div>
                             </div>
                         </div>
