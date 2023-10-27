@@ -21,6 +21,7 @@ import VerifyPayment from './Pages/VerifyPayment';
 import RequestStripeLink from './Pages/RequestStripeAccountLink';
 import SelectGameType from './Pages/SelectGameType';
 import AppContext from './helpers/context';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 function App() {
