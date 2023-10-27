@@ -15,7 +15,6 @@ app.use(cors({
     origin: 'https://allsquare.club',
 }));
 
-
 app.use(express.json({
     // Because Stripe needs the raw body, we compute it but only when hitting the Stripe callback URL.
     verify: function (req, res, buf) {
