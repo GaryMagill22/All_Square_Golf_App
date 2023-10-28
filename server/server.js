@@ -67,6 +67,16 @@ app.get('/', (req, res) => {
 // const { Server } = require("socket.io");
 // const io = new Server(server, { cors: true });
 
+const options = {
+    key: fs.readFileSync('mssl.key'),
+    cert: fs.readFileSync('mssl.crt'),
+};
+const socketServer = require('https').createServer(options);
+const io = require('socket.io')(socketServer, {
+    cors: {
+            origin: '*',
+    },
+});
 
 
 // Socket.io listening on Seperate port 9000 than express server (8000)

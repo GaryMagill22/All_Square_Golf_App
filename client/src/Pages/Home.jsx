@@ -128,7 +128,7 @@ const Home = () => {
         const inputLobbyId = document.getElementById('lobbyIdInput').value;
 
         // Close the modal
-        setIsModalOpen(false);
+        // setIsModalOpen(false);
 
         // Use a timeout or a callback to wait for the modal to finish its closing animation (if any).
         setTimeout(() => {
@@ -205,8 +205,8 @@ const Home = () => {
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={() => {
                                 const lobbyId = document.getElementById('lobbyIdInput').value;
-                                joinRoom(lobbyId);
                                 closeModal();
+                                joinRoom(lobbyId);
                                 handleUserUpdateIntoTheLobby(lobbyId, `/new/round/${lobbyId}`)
                             }}>
                                 Join Game
@@ -221,3 +221,4 @@ const Home = () => {
 }
 
 export default Home
+
