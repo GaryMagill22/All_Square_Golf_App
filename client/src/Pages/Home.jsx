@@ -38,7 +38,7 @@ const Home = () => {
                 setLoaded(true);
             })
             .catch((err) => {
-                console.log(`Error fetching games: ${err}`);
+                console.log(`Error fetching games: ${err}, ${err.stack}`);
             });
     }, []);
 
@@ -50,7 +50,7 @@ const Home = () => {
                 setLoaded(true);
             })
             .catch((err) => {
-                console.log(`Error fetching games: ${err}`);
+                console.log(`Error fetching courses: ${err}, ${err.stack}`);
             });
     }, []);
 
