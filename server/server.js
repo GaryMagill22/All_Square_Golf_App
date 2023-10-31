@@ -73,16 +73,23 @@ app.get('/', (req, res) => {
 //     cert: fs.readFileSync('mssl.crt'),
 // };
 
-const options = {
-    key: fs.readFileSync('/etc/ssl/private/mssl.key'),
-    cert: fs.readFileSync('/etc/ssl/certs/mssl.crt'),
-};
+// const options = {
+//     key: fs.readFileSync('/etc/ssl/private/mssl.key'),
+//     cert: fs.readFileSync('/etc/ssl/certs/mssl.crt'),
+// };
 
 
+// Old way of oding it with options/key/cert
+// const socketServer = require('https').createServer(options);
+// const io = require('socket.io')(socketServer, {
+//     cors: {
+//             origin: '*',
+//     },
+// });
 
 
-
-const socketServer = require('https').createServer(options);
+// changed to this to connect to database
+const socketServer = require('https').createServer(app);
 const io = require('socket.io')(socketServer, {
     cors: {
             origin: '*',
@@ -90,7 +97,8 @@ const io = require('socket.io')(socketServer, {
 });
 
 
-// Socket.io listening on Seperate port 9000 than express server (8000)
+
+// // Socket.io listening on Seperate port 9000 than express server (8000)
 app.listen(port, () => console.log(`Listening on port: ${port}`));
 socketServer.listen(9000, () => {
         console.log(`Socket Server is started at port 9000`);
