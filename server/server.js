@@ -90,7 +90,7 @@ try {
 const socketServer = require('https').createServer(options);
 const io = require('socket.io')(socketServer, {
     cors: {
-            origin: '*',
+            origin: 'https://allsquare.club',
     },
 });
 
