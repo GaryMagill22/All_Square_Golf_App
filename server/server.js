@@ -67,6 +67,8 @@ app.get('/', (req, res) => {
 // const { Server } = require("socket.io");
 // const io = new Server(server, { cors: true });
 
+
+// ssl certificate key and certificates
 const options = {
     key: fs.readFileSync('mssl.key'),
     cert: fs.readFileSync('mssl.crt'),
