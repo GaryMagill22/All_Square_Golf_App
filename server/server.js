@@ -62,17 +62,31 @@ app.get('/', (req, res) => {
 
 // const server = app.listen(port, () => console.log(`Listening on port: ${port}`));
 
-
-// // importing socket.io module and attatching it to our server
 // const { Server } = require("socket.io");
 // const io = new Server(server, { cors: true });
 
 
 // ssl certificate key and certificates
-const options = {
-    key: fs.readFileSync('mssl.key'),
-    cert: fs.readFileSync('mssl.crt'),
-};
+// const options = {
+//     key: fs.readFileSync('mssl.key'),
+//     cert: fs.readFileSync('mssl.crt'),
+// };
+
+
+
+// ssl certificate key and certificates
+try {
+    const options = {
+        key: fs.readFileSync('/etc/ssl/private/mssl.key'),
+        cert: fs.readFileSync('/etc/ssl/certs/mssl.crt')
+    };
+} catch (error) {
+    console.error('Error reading SSL files:', error);
+    process.exit(1);
+}
+
+
+
 const socketServer = require('https').createServer(options);
 const io = require('socket.io')(socketServer, {
     cors: {
