@@ -62,17 +62,22 @@ app.get('/', (req, res) => {
 
 // const server = app.listen(port, () => console.log(`Listening on port: ${port}`));
 
-
-// // importing socket.io module and attatching it to our server
 // const { Server } = require("socket.io");
 // const io = new Server(server, { cors: true });
 
 
 // ssl certificate key and certificates
+
 // const options = {
 //     key: fs.readFileSync('mssl.key'),
 //     cert: fs.readFileSync('mssl.crt'),
 // };
+
+
+
+
+
+
 const socketServer = require('https').createServer(options);
 const io = require('socket.io')(socketServer, {
     cors: {
