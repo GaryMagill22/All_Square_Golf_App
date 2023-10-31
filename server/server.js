@@ -67,23 +67,11 @@ app.get('/', (req, res) => {
 
 
 // ssl certificate key and certificates
-// const options = {
-//     key: fs.readFileSync('mssl.key'),
-//     cert: fs.readFileSync('mssl.crt'),
-// };
+const options = {
+    key: fs.readFileSync('/etc/ssl/private/mssl.key'),
+    cert: fs.readFileSync('/etc/ssl/certs/mssl.crt'),
+};
 
-
-
-// ssl certificate key and certificates
-try {
-    const options = {
-        key: fs.readFileSync('/etc/ssl/private/mssl.key'),
-        cert: fs.readFileSync('/etc/ssl/certs/mssl.crt')
-    };
-} catch (error) {
-    console.error('Error reading SSL files:', error);
-    process.exit(1);
-}
 
 
 
