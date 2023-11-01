@@ -31,12 +31,20 @@ const Login = () => {
         e.preventDefault()
         setIsLoading(true);
 
-        // Email Validation
+        // Email Validation if empty
         if (!formInfo.email.trim()) {
             setErrorMsg("Email is required");
             setIsLoading(false);
             return;
         }
+
+         // Validate email format
+    const emailRegex = /\S+@\S+\.\S+/;
+    if (!emailRegex.test(formInfo.email)) {
+        setErrorMsg("Please enter a valid email address");
+        setIsLoading(false);
+        return;
+    }
 
         // Check if password is entered
     if (!formInfo.password.trim()) {
