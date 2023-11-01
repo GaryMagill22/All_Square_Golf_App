@@ -338,7 +338,7 @@ const LobbyPage = () => {
                 <button type="submit" className="btn btn-primary mt-2" disabled={!isCreator} >Submit</button>
             </form>
             <div>
-                <Link to="/home" className="btn btn-outline-primary btn-sm m-2">
+                <Link to="/home" disabled={!isCreator} className="btn btn-outline-primary btn-sm m-2">
                     Home
                 </Link>
             </div>
