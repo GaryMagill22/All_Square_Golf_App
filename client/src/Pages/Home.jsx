@@ -15,7 +15,7 @@ const Home = () => {
     const [course, setCourse] = useState([]);
     const [selectedGame, setSelectedGame] = useState(null);
     const [selectedCourse, setSelectedCourse] = useState(null);
-    const [setLoaded] = useState(false);
+    const [loaded, setLoaded] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [show, setShow] = useState(false);
     const handleClose = () => { setShow(false) };
