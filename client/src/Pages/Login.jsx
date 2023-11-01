@@ -30,6 +30,22 @@ const Login = () => {
     const submitHandler = async (e) => {
         e.preventDefault()
         setIsLoading(true);
+
+        // Email Validation
+        if (!formInfo.email.trim()) {
+            setErrorMsg("Email is required");
+            setIsLoading(false);
+            return;
+        }
+
+        // Check if password is entered
+    if (!formInfo.password.trim()) {
+        setErrorMsg("Password is required");
+        setIsLoading(false);
+        return;
+    }
+
+
         try {
             const response = await Axios({
                 url: '/users/login',
