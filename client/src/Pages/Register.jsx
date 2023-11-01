@@ -21,8 +21,6 @@ const Register = () => {
     const [errors, setErrors] = useState({});
 
 
-
-
     const changeHandler = (e) => {
         setFormInfo({
             ...formInfo,
@@ -32,12 +30,42 @@ const Register = () => {
 
 
 
-
-
-
     const submitHandler = async (e) => {
         e.preventDefault()
         setIsLoading(true);
+
+        // Reset Error Messages
+        setErrors({});
+
+        // Create local variable to store potential errors
+        let validationErrors = {};
+
+         // Check for empty fields
+    if (!formInfo.firstName.trim()) validationErrors.firstName = "First name is required";
+    if (!formInfo.lastName.trim()) validationErrors.lastName = "Last name is required";
+    if (!formInfo.email.trim()) validationErrors.email = "Email is required";
+    if (!formInfo.username.trim()) validationErrors.username = "Username is required";
+    if (!formInfo.password.trim()) validationErrors.password = "Password is required";
+    if (!formInfo.confirmPassword.trim()) validationErrors.confirmPassword = "Confirm password is required";
+
+    // Validate email format
+    const emailRegex = /\S+@\S+\.\S+/;
+    if (formInfo.email && !emailRegex.test(formInfo.email)) {
+        validationErrors.email = "Please enter a valid email address";
+    }
+
+    // Check if passwords match
+    if (formInfo.password !== formInfo.confirmPassword) {
+        validationErrors.confirmPassword = "Passwords do not match";
+    }
+
+    // If there are any errors, stop the function and display them
+    if (Object.keys(validationErrors).length > 0) {
+        setErrors(validationErrors);
+        setIsLoading(false);
+        return;
+    }
+
 
         try {
             const response = await Axios({
@@ -51,7 +79,7 @@ const Register = () => {
                 setErrors(response.errors)
             } else {
                 alert('Registration successful');
-                navigate("/login");
+                navigate("/home");
             }
         } catch (err) {
             setIsLoading(false);
@@ -67,36 +95,36 @@ const Register = () => {
                 <div>
                     <label htmlFor="firstName" >Firstname: </label>
                     <input type="text" name="firstName" value={formInfo.firstName} onChange={changeHandler} />
-                    {errors.firstName ? <p className="text-danger" >{errors.firstName.message}</p> : ""}
+                    {errors.firstName ? <p className="text-danger" >{errors.firstName}</p> : ""}
                 </div>
 
                 <div>
                     <label htmlFor="lastName" >Lastname</label>
                     <input type="text" name="lastName" value={formInfo.lastName} onChange={changeHandler} />
-                    {errors.lastName ? <p className="text-danger"  >{errors.lastName.message}</p> : ""}
+                    {errors.lastName ? <p className="text-danger"  >{errors.lastName}</p> : ""}
                 </div>
                 <div>
                     <label htmlFor="email" >Email</label>
                     <input type="text" name="email" value={formInfo.email} onChange={changeHandler} />
-                    {errors.email ? <p className="text-danger"  >{errors.email.message}</p> : ""}
+                    {errors.email ? <p className="text-danger"  >{errors.email}</p> : ""}
 
                 </div>
                 <div>
                     <label htmlFor="username" >Username: </label>
                     <input type="text" name="username" value={formInfo.username} onChange={changeHandler} />
-                    {errors.username ? <p className="text-danger"  >{errors.username.message}</p> : ""}
+                    {errors.username ? <p className="text-danger"  >{errors.username}</p> : ""}
 
                 </div>
                 <div>
                     <label htmlFor="password" >Password</label>
                     <input type="password" name="password" value={formInfo.password} onChange={changeHandler} />
-                    {errors.password ? <p className="text-danger"  >{errors.password.message}</p> : ""}
+                    {errors.password ? <p className="text-danger"  >{errors.password}</p> : ""}
 
                 </div>
                 <div>
                     <label htmlFor="confirmPassword" >Confirm Password</label>
                     <input type="password" name="confirmPassword" value={formInfo.confirmPassword} onChange={changeHandler} />
-                    {errors.confirmPassword ? <p className="text-danger"  >{errors.confirmPassword.message}</p> : ""}
+                    {errors.confirmPassword ? <p className="text-danger"  >{errors.confirmPassword}</p> : ""}
 
                 </div>
                 <div>
@@ -108,7 +136,7 @@ const Register = () => {
                         name="handicap" // Add the name attribute to match the state key
                         placeholder="Enter your handicap"
                         value={formInfo.handicap} />
-                    {errors.handicap ? <p className="text-danger"  >{errors.handicap.message}</p> : ""}
+                    {errors.handicap ? <p className="text-danger"  >{errors.handicap}</p> : ""}
 
                 </div>
 
