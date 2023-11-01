@@ -112,7 +112,17 @@ const ProfileCard = () => {
     const logoutHandler = () => {
         axios.delete(`https://allsquare.club/api/users/logout`, { withCredentials: true })
             .then(res => {
+                // clear all local/session storage
                 localStorage.clear();
+                sessionStorage.clear();
+
+                // Clear all cookies (individually)
+                document.cookie.split(";").forEach((c) => {
+                    document.cookie = c
+                    .replace(/^ +/, "")
+                    .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+                });
+
                 console.log('user logged out successfully')
                 navigate("/")
             })

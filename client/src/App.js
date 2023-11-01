@@ -35,12 +35,12 @@ function App() {
         <div className="App">
 
             <BrowserRouter>
-                <p><Link to="/">Test Cookie</Link>|
+                {/* <p><Link to="/">Test Cookie</Link>|
                     <Link to="/register">Register</Link>|
                     <Link to="/login">Login</Link>|
                     <Link to="/allUsers">All users</Link>|
                     <Link to="/userInfo"> User info</Link>
-                </p>
+                </p> */}
                 <AppContext.Provider>
                     <Routes>
                         <Route path="/register" element={<Cookie />} />
@@ -74,7 +74,7 @@ function App() {
                                 </ProtectedRoute>
                             }
                         />
-                        <Route path="/userInfo" element={<UserInfo />} />
+                        {/* <Route path="/userInfo" element={<UserInfo />} /> */}
                         {/* <Route path="/new/game" element={<Chat />} /> */}
                         <Route path="/games" element={<GamesPage />} />
                         <Route path="/profile" element={<ProfileCard />} />
