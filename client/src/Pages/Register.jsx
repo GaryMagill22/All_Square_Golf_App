@@ -78,7 +78,11 @@ const Register = () => {
                 setIsLoading(false);
                 setErrors(response.errors)
             } else {
-                alert('Registration successful');
+                 // Instead of alert, log the user in
+            await loginUser({ 
+                username: formInfo.username, 
+                password: formInfo.password 
+            });
                 navigate("/home");
             }
         } catch (err) {
@@ -128,10 +132,9 @@ const Register = () => {
 
                 </div>
                 <div>
-                    <label htmlFor="handicap" name="handicap" className="form-label">Handicap: </label>
+                    <label htmlFor="handicap" name="handicap" >Handicap: </label>
                     <input onChange={changeHandler} // Call the changeHandler function here
                         type="number"
-                        className="form-control"
                         id="handicap"
                         name="handicap" // Add the name attribute to match the state key
                         placeholder="Enter your handicap"
