@@ -47,6 +47,7 @@ const Register = () => {
     if (!formInfo.username.trim()) validationErrors.username = "Username is required";
     if (!formInfo.password.trim()) validationErrors.password = "Password is required";
     if (!formInfo.confirmPassword.trim()) validationErrors.confirmPassword = "Confirm password is required";
+    if (!formInfo.handicap.trim()) validationErrors.handicap = "Handicap is required";
 
     // Validate email format
     const emailRegex = /\S+@\S+\.\S+/;
