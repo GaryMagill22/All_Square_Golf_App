@@ -21,13 +21,15 @@ const Home = () => {
     const handleClose = () => { setShow(false) };
 
     const openModal = () => {
-        const modal = new window.bootstrap.Modal(document.getElementById('exampleModal'));
-        modal.show();
+        setIsModalOpen(true);
+        // const modal = new window.bootstrap.Modal(document.getElementById('exampleModal'));
+        // modal.show();
     };
 
     const closeModal = () => {
-        const modal = new window.bootstrap.Modal(document.getElementById('exampleModal'));
-        modal.hide();
+        setIsModalOpen(false);
+        // const modal = new window.bootstrap.Modal(document.getElementById('exampleModal'));
+        // modal.hide();
     };
 
     // GET ALL GAMES
