@@ -128,12 +128,11 @@ const Register = () => {
 
                 </div>
                 <div>
-                    <label htmlFor="handicap" name="handicap" >Handicap: </label>
+                    <label htmlFor="handicap" >Handicap: </label>
                     <input onChange={changeHandler} // Call the changeHandler function here
                         type="number"
                         id="handicap"
                         name="handicap" // Add the name attribute to match the state key
-                        placeholder="Enter your handicap"
                         value={formInfo.handicap} />
                     {errors.handicap ? <p className="text-danger"  >{errors.handicap}</p> : ""}
 
