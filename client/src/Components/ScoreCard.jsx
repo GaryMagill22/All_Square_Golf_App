@@ -614,9 +614,15 @@ const ScoreCard = () => {
                     </div>
                 </div>
             }
-            <Link to="/home" disabled={!isCreator} className="btn btn-outline-primary btn-sm m-2">
-                Home
-            </Link>
+            {isCreator ? (
+                <Link to="/home" className="btn btn-outline-primary btn-sm m-2">
+                    Home
+                </Link>
+            ) : (
+                <button className="btn btn-outline-primary btn-sm m-2" disabled>
+                    Home
+                </button>
+            )}
         </main >
 
     )
