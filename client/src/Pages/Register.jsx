@@ -78,12 +78,8 @@ const Register = () => {
                 setIsLoading(false);
                 setErrors(response.errors)
             } else {
-                 // Instead of alert, log the user in
-            await loginUser({ 
-                username: formInfo.username, 
-                password: formInfo.password 
-            });
-                navigate("/home");
+                alert('Registration successful');
+                navigate("/login");
             }
         } catch (err) {
             setIsLoading(false);
