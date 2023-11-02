@@ -10,11 +10,13 @@ import { useEffect } from 'react';
 
 
 const Cookie = () => {
+    // Deployment & Local using env variables
     useEffect(() => {
-        axios.get(`https://allsquare.club/api/cookie`, { withCredentials: true })
+        axios.get(`${process.env.REACT_APP_API_URL}/api/cookie`, { withCredentials: true })
             .then(res => console.log("success!"))
             .catch(err => console.log(err));
     }, [])
+    
     return (
         <div>
             <Register />

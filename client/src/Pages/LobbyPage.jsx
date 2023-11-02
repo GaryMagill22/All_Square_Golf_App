@@ -8,7 +8,10 @@ import { getSocket } from '../helpers/socketHelper';
 
 
 const LobbyPage = () => {
-    // grabbing the lobbyId from url of Home.jsx Page to use on this page.
+    
+    // environment variables for local/production
+    const apiURL = process.env.REACT_APP_API_URL;
+
     const socket = getSocket();
     const location = useLocation();
     const { lobbyId, gameType } = useParams();
@@ -73,7 +76,7 @@ const LobbyPage = () => {
 
     // GET ALL GAMES
     useEffect(() => {
-        axios.get('https://allsquare.club/api/games')
+        axios.get(`${apiURL}/api/games`)
             .then((res) => {
                 setGames(res.data);
                 setLoaded(true);
@@ -83,10 +86,9 @@ const LobbyPage = () => {
             });
     }, []);
 
-    // Grabbing user that is logged in and using data in local Storage
     useEffect(() => {
         axios
-            .get(`https://allsquare.club/api/users/getUser`, { withCredentials: true })
+            .get(`${apiURL}/api/users/getUser`, { withCredentials: true })
             .then((res) => setUser(res.data))
             .catch((error) => console.log(error));
     }, []);
@@ -94,7 +96,7 @@ const LobbyPage = () => {
     useEffect(() => {
         if (lobbyId)
             axios
-                .get(`https://allsquare.club/api/lobbys/get-users-in-room/${lobbyId}`)
+                .get(`${apiURL}/api/lobbys/get-users-in-room/${lobbyId}`)
                 .then((res) => console.log(res.data))
                 .catch((error) => console.log(error));
     }, []);
@@ -132,7 +134,7 @@ const LobbyPage = () => {
     //=====================================================================================================
     // GET ALL COURSES
     useEffect(() => {
-        axios.get('https://allsquare.club/api/courses')
+        axios.get(`${apiURL}/api/courses`)
             .then((res) => {
                 setCourse(res.data);
                 setLoaded(true);

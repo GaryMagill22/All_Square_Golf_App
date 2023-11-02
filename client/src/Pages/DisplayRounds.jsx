@@ -9,9 +9,12 @@ const DisplayRounds = () => {
 
 
 
-    // Grabbing all of the rounds from the database
+    
     useEffect(() => {
-        axios.get('https://allsquare.club/api/rounds')
+        // Using environment variable to determine base URL needed for deployment and local development
+        const apiURL = process.env.REACT_APP_API_URL;
+
+        axios.get(`${apiURL}/api/rounds`)
             .then((res) => {
                 setDisplayRounds(res.data);
                 setLoaded(true);
@@ -20,14 +23,6 @@ const DisplayRounds = () => {
                 console.log(`Error fetching rounds: ${err}`)
             });
     }, []);
-
-
-
-
-
-
-
-
 
 
     return (

@@ -6,9 +6,12 @@ const PlayGolf = () => {
 
     // Grabbing user that is logged in and using data in session
     useEffect(() => {
-        axios.get(`https://allsquare.club/api/getUser`, { withCredentials: true })
-            .then(res => setUser(res.data))
 
+        // variable for deployment and local development
+        const apiURL = process.env.REACT_APP_API_URL;
+
+        axios.get(`${apiURL}/api/getUser`, { withCredentials: true })
+            .then(res => setUser(res.data))
             .catch()
     }, [])
 

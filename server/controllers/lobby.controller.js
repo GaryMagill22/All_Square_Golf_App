@@ -92,34 +92,6 @@ module.exports.updateUsersByLobbyId = async (lobbyId, playerId) => {
 }
 
 
-
-// TRYING BELOW
-//==============================================================================
-
-// module.exports.updateUsersByLobbyId = async (lobbyId, updatedPlayers) => {
-//     console.log("this is lobby id error message", lobbyId);
-//     try {
-//         // First, check if the lobby with the given ID exists
-//         const lobby = await Lobby.findOne({ LobbyId: lobbyId });
-//         if (!lobby) {
-//             throw new Error('Lobby not found');
-//         }
-
-//         // Update the players using $push with $each to ensure each player ID is added to the array
-//         await Lobby.updateOne({ lobbyId }, { $push: { players: { $each: updatedPlayers } } });
-
-//         const updatedLobby = await Lobby.findOne({ lobbyId });
-
-//         return updatedLobby;
-
-//     } catch (error) {
-//         console.error('Error updating users:', error);
-//         throw error;
-//     }
-// }
-
-//==============================================================================
-
 module.exports.getUsersByLobbyId = async (lobbyId) => {
     try {
         const lobby = await Lobby.findOne({ lobbyId }).populate('players');

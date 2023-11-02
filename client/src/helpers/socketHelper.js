@@ -4,7 +4,12 @@ let socket = null;
 
 export const initSocket = () => {
     if (!socket) {
-        socket = io('wss://allsquare.club:9000');  
+        // Deployment
+        socket = io('wss://allsquare.club:9000');
+        // Local
+        socket = io('ws://localhost:8000');  
+
+        
 
         socket.on('connect', () => {
             console.log('Connected to server');

@@ -12,7 +12,11 @@ const GamesPage = () => {
     const [activeGame, setActiveGame] = useState(null);
 
     useEffect(() => {
-        axios.get('https://allsquare.club/api/games')
+
+        // environment variables for local/production
+        const apiURL = process.env.REACT_APP_API_URL;
+
+        axios.get(`${apiURL}/api/games`)
             .then((res) => {
                 setActiveGame(res.data);
                 setLoaded(true);

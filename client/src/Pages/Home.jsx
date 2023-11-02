@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.css';
 import { Link, useNavigate, useLocation, useParams } from 'react-router-dom';
-import BottomNav from '../Components/BottomNav';
 import axios from 'axios';
 import { Axios } from '../helpers/axiosHelper';
+
+// envirionment variables for local/production
+const apiURL = process.env.REACT_APP_API_URL || '';
 
 const Home = () => {
     const location = useLocation();
@@ -22,19 +24,16 @@ const Home = () => {
 
     const openModal = () => {
         setIsModalOpen(true);
-        // const modal = new window.bootstrap.Modal(document.getElementById('exampleModal'));
-        // modal.show();
     };
 
     const closeModal = () => {
         setIsModalOpen(false);
-        // const modal = new window.bootstrap.Modal(document.getElementById('exampleModal'));
-        // modal.hide();
     };
 
+    
     // GET ALL GAMES
     useEffect(() => {
-        axios.get('/games')
+        axios.get(`${apiURL}/games`)
             .then((res) => {
                 setGames(res.data);
                 setLoaded(true);
@@ -46,7 +45,7 @@ const Home = () => {
 
     // GET ALL COURSES
     useEffect(() => {
-        axios.get('/courses')
+        axios.get(`${apiURL}/courses`)
             .then((res) => {
                 setCourse(res.data);
                 setLoaded(true);
@@ -71,12 +70,12 @@ const Home = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         if (!selectedGame || !selectedCourse) {
-            alert('Kindly select the course and game values');
+            alert('Kindly select the course and game to create a lobby');
         }
 
         try {
             const response = await Axios({
-                url: '/lobbys/new',
+                url: `/lobbys/new`,
                 method: 'post',
                 body: {
                     selectedCourse,
@@ -94,9 +93,13 @@ const Home = () => {
     }
 
     const handleUserUpdateIntoTheLobby = async (lobbyId, room) => {
+
+        // Using environment variables for deployment/production
+        const apiURL = process.env.REACT_APP_API_URL;
+
         try {
             const storedPlayers = localStorage.getItem('players');
-            const response = await axios.post(`https://allsquare.club/api/lobbys/update-users/${lobbyId}`, { updatedPlayers: JSON.parse(storedPlayers) });
+            const response = await axios.post(`${apiURL}/api/lobbys/update-users/${lobbyId}`, { updatedPlayers: JSON.parse(storedPlayers) });
 
             navigate(`/new/round/${lobbyId}`);
         } catch (error) {

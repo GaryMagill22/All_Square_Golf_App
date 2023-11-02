@@ -9,7 +9,11 @@ const DisplayUsers = () => {
     const navigate = useNavigate()
 
     useEffect(() => {
-        axios.get(`https://allsquare.club/api/users/allUsers`, { withCredentials: true })
+        
+        // using environment variables to determine which api to use for local and deployment
+        const apiURL = process.env.REACT_APP_API_URL;
+
+        axios.get(`${apiURL}/api/users/allUsers`, { withCredentials: true })
             .then(res => setUsers(res.data))
             .catch(err => {
                 console.error("Error fetching users:", err)
@@ -17,7 +21,11 @@ const DisplayUsers = () => {
     }, [])
 
     const logoutHandler = () => {
-        axios.delete(`https://allsquare.club/api/users/logout`, { withCredentials: true })
+
+        // using environment variables to determine which api to use for local and deployment
+        const apiURL = process.env.REACT_APP_API_URL;
+
+        axios.delete(`${apiURL}/api/users/logout`, { withCredentials: true })
             .then(res => navigate("/"))
             .catch(err => {
                 console.error("Error during logout:", err)

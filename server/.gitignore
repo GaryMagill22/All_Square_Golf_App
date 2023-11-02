@@ -7,8 +7,11 @@ node_modules*
 # testing
 /coverage
 
-# production
+# development
+.env.production
 
+# production
+.env.development
 
 # misc
 .DS_Store

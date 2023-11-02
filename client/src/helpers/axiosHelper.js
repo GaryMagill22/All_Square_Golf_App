@@ -1,6 +1,11 @@
 import axios from 'axios';
 
+// Deployment
 axios.defaults.baseURL = 'https://allsquare.club/api';
+// Local
+axios.defaults.baseURL = 'http://localhost:8000/api';
+
+
 axios.defaults.withCredentials = true;
 axios.interceptors.response.use(
     (response) => {
