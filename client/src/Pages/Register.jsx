@@ -55,15 +55,15 @@ const Register = () => {
         validationErrors.email = "Please enter a valid email address";
     }
 
+    // Validate password length must be atleast 8 characters
+    if (formInfo.password.length & formInfo.confirmPassword.length < 8) {
+        validationErrors.password = "Password must be at least 8 characters";
+    }
     // Check if passwords match
     if (formInfo.password !== formInfo.confirmPassword) {
         validationErrors.confirmPassword = "Passwords do not match";
     }
 
-    // Validate password length must be atleast 8 characters
-    if (formInfo.password.length < 8) {
-        validationErrors.password = "Password must be at least 8 characters";
-    }
 
     // If there are any errors, stop the function and display them
     if (Object.keys(validationErrors).length > 0) {
