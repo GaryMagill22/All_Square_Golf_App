@@ -3,13 +3,14 @@ import io from 'socket.io-client';
 let socket = null;
 
 export const initSocket = () => {
-    if (!socket) {
-        // Deployment
-        socket = io('wss://allsquare.club:9000');
-        // Local
-        socket = io('ws://localhost:8000');  
 
-        
+    // environment variable for socket connection
+    const socketURL = process.env.REACT_APP_SOCKET_URL;
+
+    if (!socket) {
+        // Deployment/Production using environment variable
+        socket = io(socketURL);
+
 
         socket.on('connect', () => {
             console.log('Connected to server');

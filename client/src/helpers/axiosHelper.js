@@ -1,9 +1,8 @@
 import axios from 'axios';
 
-// Deployment
-axios.defaults.baseURL = 'https://allsquare.club/api';
-// Local
-axios.defaults.baseURL = 'http://localhost:8000/api';
+// Deployment/Production using environment variables
+const apiURL = process.env.REACT_APP_API_URL;
+axios.defaults.baseURL = `${apiURL}/api`;
 
 
 axios.defaults.withCredentials = true;
