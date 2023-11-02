@@ -60,6 +60,13 @@ const Register = () => {
         validationErrors.confirmPassword = "Passwords do not match";
     }
 
+    // Validate password length
+    if (formInfo.password.length < 8) {
+        setErrorMsg("Password must be at least 8 characters");
+        setIsLoading(false);
+        return;
+    }
+
     // If there are any errors, stop the function and display them
     if (Object.keys(validationErrors).length > 0) {
         setErrors(validationErrors);
