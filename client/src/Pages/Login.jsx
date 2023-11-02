@@ -53,6 +53,12 @@ const Login = () => {
         return;
     }
 
+    // Validate password length
+    if (formInfo.password.length < 8) {
+        setErrorMsg("Password must be at least 8 characters");
+        setIsLoading(false);
+        return;
+    }
 
         try {
             const response = await Axios({
