@@ -5,7 +5,7 @@ import axios from 'axios';
 import { Axios } from '../helpers/axiosHelper';
 
 // envirionment variables for local/production
-const apiURL = process.env.REACT_APP_API_URL || '';
+const apiURL = process.env.REACT_APP_API_URL;
 
 const Home = () => {
     const location = useLocation();

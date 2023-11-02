@@ -22,6 +22,7 @@ const { lobbyRoutes } = require('./routes/lobby.routes')
 const { courseRoutes } = require('./routes/course.routes')
 const { roundRoutes } = require('./routes/round.routes');
 const { walletRoutes } = require('./routes/wallet.routes');
+const Lobby = require('./models/lobby.model');
 require("./config/mongoose.config");
 
 // setting up variables for sockets
@@ -78,7 +79,7 @@ app.use(cookieParser());
 
 
 // MODELS IMPORT
-const Lobby = require('./models/lobby.model');
+
 
 app.get('/', (req, res) => {
     res.send("Welcome to the server");
