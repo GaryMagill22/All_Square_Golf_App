@@ -1,3 +1,12 @@
+
+// First, load environment variables
+if (process.env.NODE_ENV === 'production') {
+    require('dotenv').config({ path: '.env.production' });
+} else {
+    require('dotenv').config({ path: '.env.development' });
+}
+
+
 const express = require('express');
 const app = express();
 require('dotenv').config()
@@ -16,7 +25,7 @@ const { walletRoutes } = require('./routes/wallet.routes');
 require("./config/mongoose.config");
 
 // setting up variables for sockets
-const PORT = process.env.PORT  || 8000;
+const PORT = process.env.PORT || 8000;
 const SOCKET_PORT = process.env.SOCKET_PORT || 9000;
 const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS?.split(",") || ['http://localhost:3000', 'https://allsquare.club'];
 
@@ -61,7 +70,7 @@ app.use(express.json({
 );
 
 // POST METHOD
-app.use(express.urlencoded({ extended: true }));  
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 
@@ -87,7 +96,7 @@ app.get('/', (req, res) => {
 const socketServer = require('https').createServer(app);
 const io = require('socket.io')(socketServer, {
     cors: {
-            origin: '*',
+        origin: '*',
     },
 });
 
@@ -98,7 +107,7 @@ app.listen(PORT, () => console.log(`Listening on port: ${PORT}`));
 
 // Socket.io listening on port 9000 
 socketServer.listen(SOCKET_PORT, () => {
-        console.log(`Socket Server is started at port ${SOCKET_PORT}`);
+    console.log(`Socket Server is started at port ${SOCKET_PORT}`);
 });
 
 const initiateGamePlay = async (payload) => {
