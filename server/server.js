@@ -334,8 +334,8 @@ io.on("connection", (socket) => {
 //==================================================================================================
 
 // const options = {
-//     key: fs.readFileSync('/etc/ssl/private/mssl.key'),
-//     cert: fs.readFileSync('/etc/ssl/certs/mssl.crt'),
+//     key: fs.readFileSync('mssl.key'),
+//     cert: fs.readFileSync('mssl.crt'),
 // };
 
 // Old way of oding it with options/key/cert
