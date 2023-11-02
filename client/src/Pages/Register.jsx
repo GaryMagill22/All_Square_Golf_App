@@ -62,9 +62,7 @@ const Register = () => {
 
     // Validate password length must be atleast 8 characters
     if (formInfo.password.length < 8) {
-        setErrorMsg("Password must be at least 8 characters");
-        setIsLoading(false);
-        return;
+        validationErrors.password = "Password must be at least 8 characters";
     }
 
     // If there are any errors, stop the function and display them
