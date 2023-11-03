@@ -38,7 +38,7 @@ app.use('/api/wallet', walletRoutes);
 const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS?.split(",") || ['http://localhost:3000', 'https://allsquare.club'];
 
 
-
+console.log('Allowed Origins for CORS:', ALLOWED_ORIGINS);
 
 
 // CONFIG EXPRESS DEPLOYMENT/LOCAL  ===================================================================
@@ -46,9 +46,13 @@ const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS?.split(",") || ['http://loca
 const corsOptions = {
     credentials: true,
     origin: function (origin, callback) {
+        console.log('Origin of request: ', origin);
+        console.log('Current ALLOWED_ORIGINS:', ALLOWED_ORIGINS);
         if (!origin || ALLOWED_ORIGINS.indexOf(origin) !== -1) {
+            console.log('Allowed by CORS');
             callback(null, true)
         } else {
+            console.log('Blocked by CORS:', origin);
             callback(new Error('Not allowed by CORS'))
         }
     }
