@@ -3,6 +3,7 @@ import axios from 'axios';
 
 // Deployment/Production using environment variables
 const apiURL = process.env.REACT_APP_API_URL;
+console.log('axios helper - apiURL:', apiURL );
 axios.defaults.baseURL = `${apiURL}/api`;
 
 

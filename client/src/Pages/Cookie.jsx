@@ -12,8 +12,8 @@ import { useEffect } from 'react';
 const Cookie = () => {
     // Deployment & Local using env variables
     useEffect(() => {
-
         const apiURL = process.env.REACT_APP_API_URL;
+        console.log('cookie - apiURL: ', apiURL);
         axios.get(`${apiURL}/api/cookie`, { withCredentials: true })
             .then(res => console.log("success!"))
             .catch(err => console.log(err));

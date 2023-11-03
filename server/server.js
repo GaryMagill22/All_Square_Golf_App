@@ -19,11 +19,11 @@ const { roundRoutes } = require('./routes/round.routes');
 const { walletRoutes } = require('./routes/wallet.routes');
 const Lobby = require('./models/lobby.model');
 require("./config/mongoose.config");
+const PORT = 8000;
 
 // setting up variables for sockets
-const PORT = process.env.PORT;
-const SOCKET_PORT = process.env.SOCKET_PORT || 9000;
-const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS?.split(",") || ['http://localhost:3000', 'https://allsquare.club'];
+const SOCKET_PORT = process.env.SOCKET_PORT;
+// const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS?.split(",") || ['http://localhost:3000', 'https://allsquare.club'];
 
 
 // ROUTES

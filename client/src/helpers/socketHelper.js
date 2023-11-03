@@ -6,6 +6,7 @@ export const initSocket = () => {
 
     // environment variable for socket connection
     const socketURL = process.env.REACT_APP_SOCKET_URL;
+    console.log('socket helper - socketURL:', socketURL);
 
     if (!socket) {
         // Deployment/Production using environment variable
