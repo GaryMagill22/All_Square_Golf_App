@@ -35,29 +35,37 @@ require("./config/mongoose.config");
 
 
 // setting up variables for sockets
-const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS ?
-    process.env.ALLOWED_ORIGINS.split(",") :
-    ['http://localhost:3000', 'https://allsquare.club'];
+// const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS ?
+//     process.env.ALLOWED_ORIGINS.split(",") :
+//     ['http://localhost:3000', 'https://allsquare.club'];
 
 console.log('Allowed Origins for CORS:', ALLOWED_ORIGINS);
 
 
 // CORS Configuration
+// const corsOptions = {
+//     credentials: true,
+//     origin: function (origin, callback) {
+//         console.log('Origin of request: ', origin);
+//         console.log('Current ALLOWED_ORIGINS:', ALLOWED_ORIGINS);
+//         // If no origin or it's in the allowed list, call callback with true, else with an error message
+//         if (!origin || ALLOWED_ORIGINS.includes(origin)) {
+//             console.log('Allowed by CORS');
+//             callback(null, true);
+//         } else {
+//             console.log('Blocked by CORS:', origin);
+//             callback(new Error('Not allowed by CORS'));
+//         }
+//     }
+// };
+
 const corsOptions = {
     credentials: true,
     origin: function (origin, callback) {
-        console.log('Origin of request: ', origin);
-        console.log('Current ALLOWED_ORIGINS:', ALLOWED_ORIGINS);
-        // If no origin or it's in the allowed list, call callback with true, else with an error message
-        if (!origin || ALLOWED_ORIGINS.includes(origin)) {
-            console.log('Allowed by CORS');
-            callback(null, true);
-        } else {
-            console.log('Blocked by CORS:', origin);
-            callback(new Error('Not allowed by CORS'));
-        }
+        callback(null, true); // Allow every origin
     }
 };
+
 
 app.use(cors(corsOptions));
 

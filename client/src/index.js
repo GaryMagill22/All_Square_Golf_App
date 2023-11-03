@@ -1,3 +1,4 @@
+require('dotenv').config();
 import React, { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
