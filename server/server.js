@@ -39,7 +39,7 @@ require("./config/mongoose.config");
 //     process.env.ALLOWED_ORIGINS.split(",") :
 //     ['http://localhost:3000', 'https://allsquare.club'];
 
-console.log('Allowed Origins for CORS:', ALLOWED_ORIGINS);
+// console.log('Allowed Origins for CORS:', ALLOWED_ORIGINS);
 
 
 // CORS Configuration
