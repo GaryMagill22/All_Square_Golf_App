@@ -14,7 +14,7 @@ export const initSocket = () => {
 
 
         socket.on('connect', () => {
-            console.log('Connected to server');
+            console.log('SocketHelper - Socket Connected to server');
             //socket.emit('joinLobby', lobbyId);
         });
 
