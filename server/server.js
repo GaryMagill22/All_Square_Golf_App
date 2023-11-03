@@ -21,8 +21,7 @@ const Lobby = require('./models/lobby.model');
 require("./config/mongoose.config");
 const PORT = 8000;
 
-// setting up variables for sockets
-const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS?.split(",") || ['http://localhost:3000', 'https://allsquare.club'];
+
 
 
 // ROUTES
@@ -32,6 +31,14 @@ app.use('/api/games', gameRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/rounds', roundRoutes);
 app.use('/api/wallet', walletRoutes);
+
+
+
+// setting up variables for sockets
+const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS?.split(",") || ['http://localhost:3000', 'https://allsquare.club'];
+
+
+
 
 
 // CONFIG EXPRESS DEPLOYMENT/LOCAL  ===================================================================
