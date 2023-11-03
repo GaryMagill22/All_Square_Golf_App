@@ -1,15 +1,10 @@
-
-// First, load environment variables
-if (process.env.NODE_ENV === 'production') {
-    require('dotenv').config({ path: '.env.production' });
-} else {
-    require('dotenv').config({ path: '.env.development' });
-}
+// Load environment variables first
+const envPath = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development';
+require('dotenv').config({ path: envPath });
 
 
 const express = require('express');
 const app = express();
-require('dotenv').config()
 const cookieParser = require('cookie-parser');
 const cors = require("cors");
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
