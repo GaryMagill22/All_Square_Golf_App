@@ -97,10 +97,10 @@ app.get('/', (req, res) => {
 // const io = new Server(server, { cors: true });
 
 
-// const options = {
-//     key: fs.readFileSync('/etc/ssl/private/mssl.key'),
-//     cert: fs.readFileSync('/etc/ssl/certs/mssl.crt'),
-// };
+const options = {
+    key: fs.readFileSync('/etc/ssl/private/mssl.key'),
+    cert: fs.readFileSync('/etc/ssl/certs/mssl.crt'),
+};
 
 
 
