@@ -5,6 +5,7 @@ import axios from 'axios';
 const apiURL = process.env.REACT_APP_API_URL;
 console.log('axios helper - apiURL:', apiURL );
 axios.defaults.baseURL = `${apiURL}/api`;
+console.log(`axios helper - baseURL:` , axios.defaults.baseURL);
 
 
 axios.defaults.withCredentials = true;

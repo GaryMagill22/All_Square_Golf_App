@@ -22,8 +22,7 @@ require("./config/mongoose.config");
 const PORT = 8000;
 
 // setting up variables for sockets
-const SOCKET_PORT = process.env.SOCKET_PORT;
-// const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS?.split(",") || ['http://localhost:3000', 'https://allsquare.club'];
+const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS?.split(",") || ['http://localhost:3000', 'https://allsquare.club'];
 
 
 // ROUTES
@@ -87,6 +86,12 @@ app.get('/', (req, res) => {
 // const io = new Server(server, { cors: true });
 
 
+const options = {
+    key: fs.readFileSync('/etc/ssl/private/mssl.key'),
+    cert: fs.readFileSync('/etc/ssl/certs/mssl.crt'),
+};
+
+
 
 // changed to this to connect to database
 const socketServer = require('https').createServer(app);
@@ -102,8 +107,8 @@ const io = require('socket.io')(socketServer, {
 app.listen(PORT, () => console.log(`Listening on port: ${PORT}`));
 
 // Socket.io listening on port 9000 
-socketServer.listen(SOCKET_PORT, () => {
-    console.log(`Socket Server is started at port ${SOCKET_PORT}`);
+socketServer.listen(9000, () => {
+    console.log(`Socket Server is started at port 9000`);
 });
 
 const initiateGamePlay = async (payload) => {
