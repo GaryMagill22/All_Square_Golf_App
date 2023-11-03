@@ -74,7 +74,7 @@ function App() {
                                 </ProtectedRoute>
                             }
                         />
-                        {/* <Route path="/userInfo" element={<UserInfo />} /> */}
+                        <Route path="/userInfo" element={<UserInfo />} />
                         {/* <Route path="/new/game" element={<Chat />} /> */}
                         <Route path="/games" element={<GamesPage />} />
                         <Route path="/profile" element={<ProfileCard />} />
