@@ -115,11 +115,11 @@ const io = require('socket.io')(socketServer, {
 
 
 // Express server listening on port 8000
-app.listen(PORT, () => console.log(`Listening on port: ${PORT}`));
+app.listen(PORT, () => console.log(`Express Server Listening on port: ${PORT}`));
 
 // Socket.io listening on port 9000 
 socketServer.listen(9000, () => {
-    console.log(`Socket Server is started at port 9000`);
+    console.log(`Socket Server is started on port 9000`);
 });
 
 const initiateGamePlay = async (payload) => {
