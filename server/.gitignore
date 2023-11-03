@@ -7,14 +7,10 @@ node_modules*
 # testing
 /coverage
 
-# development
-.env.production
 
-# production
-.env.development
 
-server.js
-server/server.js
+
+
 
 
 # misc
