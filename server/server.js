@@ -1,48 +1,29 @@
+// Load environment variables first
+const envPath = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development';
+require('dotenv').config({ path: envPath });
+
+
 const express = require('express');
 const app = express();
-require('dotenv').config()
-const port = 8000;
 const cookieParser = require('cookie-parser');
+const PORT = 8000;
 const cors = require("cors");
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { Wallet } = require('./models/wallet.model');
 const GameScoreCard = require('./models/gameScorecard.model');
 const fs = require('fs');
-
-// CONFIG EXPRESS ===================================================================
-app.use(cors({
-    credentials: true,
-    origin: 'https://allsquare.club',
-}));
-
-app.use(express.json({
-    // Because Stripe needs the raw body, we compute it but only when hitting the Stripe callback URL.
-    verify: function (req, res, buf) {
-        var url = req.originalUrl;
-        if (url.startsWith('/api/wallet/payment-webhook')) {
-            req.rawBody = buf.toString()
-        }
-    }
-})
-);
-app.use(express.urlencoded({ extended: true }));  // POST METHOD
-app.use(cookieParser());
-
-
-
-
-// ROUTES
-
-
-
 const { userRoutes } = require('./routes/user.routes')
 const { gameRoutes } = require('./routes/game.routes')
 const { lobbyRoutes } = require('./routes/lobby.routes')
 const { courseRoutes } = require('./routes/course.routes')
 const { roundRoutes } = require('./routes/round.routes');
 const { walletRoutes } = require('./routes/wallet.routes');
+const Lobby = require('./models/lobby.model');
 
 
+
+
+// ROUTES
 app.use('/api/lobbys', lobbyRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/games', gameRoutes);
@@ -52,56 +33,80 @@ app.use('/api/wallet', walletRoutes);
 
 require("./config/mongoose.config");
 
-// MODELS IMPORT
-const Lobby = require('./models/lobby.model');
+
+const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS ?
+    process.env.ALLOWED_ORIGINS.split(",") :
+    ['http://localhost:3000', 'https://allsquare.club'];
+
+console.log('Allowed Origins for CORS:', ALLOWED_ORIGINS);
+
+
+CORS Configuration
+const corsOptions = {
+    credentials: true,
+    origin: function (origin, callback) {
+        console.log('Origin of request: ', origin);
+        console.log('Current ALLOWED_ORIGINS:', ALLOWED_ORIGINS);
+        // If no origin or it's in the allowed list, call callback with true, else with an error message
+        if (!origin || ALLOWED_ORIGINS.includes(origin)) {
+            console.log('Allowed by CORS');
+            callback(null, true);
+        } else {
+            console.log('Blocked by CORS:', origin);
+            callback(new Error('Not allowed by CORS'));
+        }
+    }
+};
+
+
+
+app.use(cors(corsOptions));
+
+
+app.use(express.json({
+    // The verify function is for raw body parsing for Stripe
+    verify: function (req, res, buf) {
+        var url = req.originalUrl;
+        if (url.startsWith('/api/wallet/payment-webhook')) {
+            req.rawBody = buf.toString()
+        }
+    }
+})
+);
+
+// Body parser for URL-encoded bodies (from HTML forms)
+app.use(express.urlencoded({ extended: true }));
+
+// Middleware for parsing cookies
+app.use(cookieParser());
+
+
+
 
 app.get('/', (req, res) => {
     res.send("Welcome to the server");
 });
 
 
-// const server = app.listen(port, () => console.log(`Listening on port: ${port}`));
-
-// const { Server } = require("socket.io");
-// const io = new Server(server, { cors: true });
-
-
-// ssl certificate key and certificates
-
-// const options = {
-//     key: fs.readFileSync('mssl.key'),
-//     cert: fs.readFileSync('mssl.crt'),
-// };
-
-// const options = {
-//     key: fs.readFileSync('/etc/ssl/private/mssl.key'),
-//     cert: fs.readFileSync('/etc/ssl/certs/mssl.crt'),
-// };
-
-
-// Old way of oding it with options/key/cert
-// const socketServer = require('https').createServer(options);
-// const io = require('socket.io')(socketServer, {
-//     cors: {
-//             origin: '*',
-//     },
-// });
+//
 
 
 // changed to this to connect to database
 const socketServer = require('https').createServer(app);
 const io = require('socket.io')(socketServer, {
     cors: {
-            origin: '*',
+        origin: '*',
     },
 });
 
 
 
-// // Socket.io listening on Seperate port 9000 than express server (8000)
-app.listen(port, () => console.log(`Listening on port: ${port}`));
+// Express server listening on port 8000
+app.listen(PORT, () => console.log(`Express Server Listening on port: ${PORT}`));
+
+// Socket.io listening on port 9000 
 socketServer.listen(9000, () => {
-        console.log(`Socket Server is started at port 9000`);
+    console.log(`Socket Server is started on port 9000`);
 });
 
 const initiateGamePlay = async (payload) => {
@@ -320,20 +325,24 @@ io.on("connection", (socket) => {
 
     });
 });
-// ==========================================================================================================================================
-// app.post('/webhook', express.raw({ type: 'application/json' }), (req, res) => {
-//     const endpointSecret = "whsec_bVUixsBX7f7rlVvegivfLaGIiveyiFZV";
-//     const sig = req.headers['stripe-signature'];
-//     let event;
 
-//     try {
-//         event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
-//         console.log('--- event ---', event);
-//     } catch (err) {
-//         console.log('error', err.message);
-//         res.status(400).send(`Webhook Error: ${err.message}`);
-//         return;
-//     }
 
-//     res.send().end();
+// Old way of oding it with options/key/cert
+// const socketServer = require('https').createServer(options);
+// const io = require('socket.io')(socketServer, {
+//     cors: {
+//             origin: '*',
+//     },
 // });
+
+
+// const server = app.listen(port, () => console.log(`Listening on port: ${port}`));
+
+// const { Server } = require("socket.io");
+// const io = new Server(server, { cors: true });
+
+
+// const options = {
+//     key: fs.readFileSync('/etc/ssl/private/mssl.key'),
+//     cert: fs.readFileSync('/etc/ssl/certs/mssl.crt'),
+// };
