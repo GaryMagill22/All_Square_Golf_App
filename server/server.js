@@ -41,7 +41,7 @@ const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS ?
 console.log('Allowed Origins for CORS:', ALLOWED_ORIGINS);
 
 
-CORS Configuration
+// CORS Configuration
 const corsOptions = {
     credentials: true,
     origin: function (origin, callback) {
