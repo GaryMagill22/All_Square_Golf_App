@@ -1,8 +1,8 @@
 // Load environment variables first
-const envPath = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development';
-require('dotenv').config({ path: envPath });
+// const envPath = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development';
+// require('dotenv').config({ path: envPath });
 
-
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const cookieParser = require('cookie-parser');
@@ -80,6 +80,12 @@ app.use(express.urlencoded({ extended: true }));
 // Middleware for parsing cookies
 app.use(cookieParser());
 
+
+// added this to connect to cookie
+app.get('/api/cookie', (req, res) => {
+    // Your logic to handle the cookie endpoint
+    res.json({ message: "Cookie endpoint hit!" });
+});
 
 
 
