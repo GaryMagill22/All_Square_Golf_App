@@ -87,12 +87,14 @@ app.get('/', (req, res) => {
     res.send("Welcome to the server");
 });
 
-
-//
+const httpsOptions = {
+    key: fs.readFileSync('/etc/ssl/private/mssl.key'),
+    cert: fs.readFileSync('/etc/ssl/certs/mssl.crt'),
+};
 
 
 // changed to this to connect to database
-const socketServer = require('https').createServer(app);
+const socketServer = require('https').createServer(httpsOptions, app);
 const io = require('socket.io')(socketServer, {
     cors: {
         origin: '*',
@@ -102,7 +104,7 @@ const io = require('socket.io')(socketServer, {
 
 
 // Express server listening on port 8000
-app.listen(PORT, () => console.log(`Express Server Listening on port: ${PORT}`));
+app.listen(8000, () => console.log(`Express Server Listening on port: 8000`));
 
 // Socket.io listening on port 9000 
 socketServer.listen(9000, () => {
@@ -342,7 +344,4 @@ io.on("connection", (socket) => {
 // const io = new Server(server, { cors: true });
 
 
-// const options = {
-//     key: fs.readFileSync('/etc/ssl/private/mssl.key'),
-//     cert: fs.readFileSync('/etc/ssl/certs/mssl.crt'),
-// };
+
