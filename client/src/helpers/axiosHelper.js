@@ -12,16 +12,43 @@ axios.defaults.withCredentials = true;
 
 
 axios.interceptors.response.use(
-    (response) => {
-        return response;
-    },
-    (error) => {
-        if (error.response.status === 401) {
-            window.location.href = '/';
+    response => response, // simply return the response if no error
+    error => {
+        if (error.response) {
+            // Handle 401 Unauthorized response
+            if (error.response.status === 401) {
+                window.location.href = '/';
+            }
+
+            // Handle 504 Gateway Timeout response
+            if (error.response.status === 504) {
+                alert('The server is not responding. Please try again later.');
+            }
+        } else if (error.request) {
+            // The request was made but no response was received
+            console.log(error.request);
+        } else {
+            // Something happened in setting up the request that triggered an error
+            console.log('Error', error.message);
         }
+
         return Promise.reject(error);
     }
 );
+
+
+// OLD interceptor code 
+// axios.interceptors.response.use(
+//     (response) => {
+//         return response;
+//     },
+//     (error) => {
+//         if (error.response.status === 401) {
+//             window.location.href = '/';
+//         }
+//         return Promise.reject(error);
+//     }
+// );
 
 // export axios instance
 export const Axios = async ({ url, method, body, headers }) => {
