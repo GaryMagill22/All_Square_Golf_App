@@ -93,14 +93,14 @@ app.get('/', (req, res) => {
     res.send("Welcome to the server");
 });
 
-const httpsOptions = {
-    key: fs.readFileSync('/etc/ssl/private/mssl.key'),
-    cert: fs.readFileSync('/etc/ssl/certs/mssl.crt'),
-};
+// const httpsOptions = {
+//     key: fs.readFileSync('mssl.key'),
+//     cert: fs.readFileSync('mssl.crt')
+// };
 
 
 // changed to this to connect to database
-const socketServer = require('https').createServer(httpsOptions, app);
+const socketServer = require('https').createServer(app);
 const io = require('socket.io')(socketServer, {
     cors: {
         origin: '*',
