@@ -7,7 +7,7 @@ export const initSocket = () => {
         socket = io('wss://allsquare.club:');  
 
         socket.on('connect', () => {
-            console.log('Connected to server');
+            console.log('Socket connected to server');
             //socket.emit('joinLobby', lobbyId);
         });
 

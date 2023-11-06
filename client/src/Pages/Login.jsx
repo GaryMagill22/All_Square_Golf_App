@@ -53,8 +53,6 @@ const Login = () => {
         return;
     }
 
-    
-
         try {
             const response = await Axios({
                 url: '/users/login',
