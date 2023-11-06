@@ -1,12 +1,10 @@
 const express = require('express');
 const app = express();
-require('dotenv').config()
 const cookieParser = require('cookie-parser');
 const cors = require("cors");
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { Wallet } = require('./models/wallet.model');
 const GameScoreCard = require('./models/gameScorecard.model');
-const http = require('http');
 const https = require('https');
 const fs = require('fs');
 const port = process.env.PORT || 8000;
