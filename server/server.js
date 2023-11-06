@@ -6,7 +6,17 @@ const cors = require("cors");
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { Wallet } = require('./models/wallet.model');
 const GameScoreCard = require('./models/gameScorecard.model');
+const http = require('http');
+const https = require('https');
 const fs = require('fs');
+const port = process.env.PORT || 8000;
+const { userRoutes } = require('./routes/user.routes')
+const { gameRoutes } = require('./routes/game.routes')
+const { lobbyRoutes } = require('./routes/lobby.routes')
+const { courseRoutes } = require('./routes/course.routes')
+const { roundRoutes } = require('./routes/round.routes');
+const { walletRoutes } = require('./routes/wallet.routes');
+
 
 // CONFIG EXPRESS ===================================================================
 app.use(cors({
@@ -24,30 +34,9 @@ app.use(express.json({
     }
 })
 );
-app.use(express.urlencoded({ extended: true }));  // POST METHOD
+app.use(express.urlencoded({ extended: true }));  
 app.use(cookieParser());
 
-
-
-
-// ROUTES
-
-
-
-const { userRoutes } = require('./routes/user.routes')
-const { gameRoutes } = require('./routes/game.routes')
-const { lobbyRoutes } = require('./routes/lobby.routes')
-const { courseRoutes } = require('./routes/course.routes')
-const { roundRoutes } = require('./routes/round.routes');
-const { walletRoutes } = require('./routes/wallet.routes');
-
-
-app.use('/api/lobbys', lobbyRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/games', gameRoutes);
-app.use('/api/courses', courseRoutes);
-app.use('/api/rounds', roundRoutes);
-app.use('/api/wallet', walletRoutes);
 
 require("./config/mongoose.config");
 
@@ -55,53 +44,31 @@ require("./config/mongoose.config");
 const Lobby = require('./models/lobby.model');
 
 app.get('/', (req, res) => {
-    res.send("Welcome to the server");
+    res.send("Welcome to the All Square Golf Server");
 });
 
 
-// const server = app.listen(port, () => console.log(`Listening on port: ${port}`));
+const server = https.createServer(app);
 
-// const { Server } = require("socket.io");
-// const io = new Server(server, { cors: true });
-
-
-// ssl certificate key and certificates
-
-// const options = {
-//     key: fs.readFileSync('mssl.key'),
-//     cert: fs.readFileSync('mssl.crt'),
-// };
-
-// const options = {
-//     key: fs.readFileSync('/etc/ssl/private/mssl.key'),
-//     cert: fs.readFileSync('/etc/ssl/certs/mssl.crt'),
-// };
-
-
-// Old way of oding it with options/key/cert
-// const socketServer = require('https').createServer(options);
-// const io = require('socket.io')(socketServer, {
-//     cors: {
-//             origin: '*',
-//     },
-// });
-
-
-// changed to this to connect to database
-const socketServer = require('https').createServer(app);
-const io = require('socket.io')(socketServer, {
+const io = require('socket.io')(server, {
     cors: {
             origin: '*',
     },
 });
 
 
+// ROUTES
+app.use('/api/lobbys', lobbyRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/games', gameRoutes);
+app.use('/api/courses', courseRoutes);
+app.use('/api/rounds', roundRoutes);
+app.use('/api/wallet', walletRoutes);
 
-// // Socket.io listening on Seperate port 9000 than express server (8000)
-app.listen(8000, () => console.log(`Listening on port: 8000`));
-socketServer.listen(9000, () => {
-        console.log(`Socket Server is started, listening on port 9000`);
+server.listen(port, () => {
+    console.log(`Express and Socket Server started -Listening on port ${port}`);
 });
+
 
 const initiateGamePlay = async (payload) => {
     const { players, amount } = payload;
@@ -335,4 +302,27 @@ io.on("connection", (socket) => {
 //     }
 
 //     res.send().end();
+// });
+
+// const server = app.listen(port, () => console.log(`Listening on port: ${port}`));
+
+// const { Server } = require("socket.io");
+// const io = new Server(server, { cors: true });
+
+
+// ssl certificate key and certificates
+
+// const options = {
+//     key: fs.readFileSync('mssl.key'),
+//     cert: fs.readFileSync('mssl.crt'),
+// };
+
+
+
+// Old way of oding it with options/key/cert
+// const socketServer = require('https').createServer(options);
+// const io = require('socket.io')(socketServer, {
+//     cors: {
+//             origin: '*',
+//     },
 // });
