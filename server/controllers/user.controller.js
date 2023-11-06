@@ -149,5 +149,3 @@ module.exports.deleteUser = (req, res) => {
         .then(deleteUser => res.json(deleteUser))
         .catch(err => res.json(err))
 }
-
-

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { Axios } from '../helpers/axiosHelper';
 
@@ -159,5 +160,3 @@ const Register = () => {
 }
 
 export default Register
-
-

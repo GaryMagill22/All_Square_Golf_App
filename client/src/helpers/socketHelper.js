@@ -3,18 +3,11 @@ import io from 'socket.io-client';
 let socket = null;
 
 export const initSocket = () => {
-
-    // environment variable for socket connection
-    const socketURL = process.env.REACT_APP_SOCKET_URL;
-    console.log('socket helper - socketURL:', socketURL);
-
     if (!socket) {
-        // Deployment/Production using environment variable
-        socket = io(socketURL);
-
+        socket = io('wss://allsquare.club:9000');  
 
         socket.on('connect', () => {
-            console.log('SocketHelper - Socket Connected to server');
+            console.log('Connected to server');
             //socket.emit('joinLobby', lobbyId);
         });
 
