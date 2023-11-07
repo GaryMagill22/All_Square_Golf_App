@@ -4,6 +4,7 @@ dotenv.config();
 
 // Dependencies
 const express = require('express');
+const mongoose = require('mongoose');
 const app = express();
 const cors = require("cors");
 const cookieParser = require('cookie-parser');
@@ -33,33 +34,37 @@ const Lobby = require('./models/lobby.model');
 require('./config/mongoose.config');
 
 // Server port
-const port = process.env.PORT || 8000;
+const port = 8000;
+
+
+
 
 // Middlewares ===================================================================
 
 // Enable CORS with options
 app.use(cors({
-    origin: 'https://allsquare.club',
     credentials: true,
+    origin: 'https://allsquare.club',
 }));
 
 app.use(cors());
 
 // Regular JSON and URL-encoded data middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
 
 
 // Middleware for Stripe webhook to capture raw body
-app.use(bodyParser.json({
-    verify: (req, res, buf) => {
-        const url = req.originalUrl;
+app.use(express.json({
+    verify: function (req, res, buf) {
+        var url = req.originalUrl;
         if (url.startsWith('/api/wallet/payment-webhook')) {
             req.rawBody = buf.toString()
         }
-    },
-}));
+    }
+})
+);
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // Routes ========================================================================
 app.use('/api/lobbys', lobbyRoutes);
@@ -95,13 +100,12 @@ const server = https.createServer(app);
 
 
 // Set up Socket.io on the same HTTPS server
-const io = new Server(server, {
+const io = require('socket.io')(server, {
     cors: {
         origin: '*',
         credentials: true,
     },
 });
-
 
 
 // Socket Server and Express Server Listening on port 8000

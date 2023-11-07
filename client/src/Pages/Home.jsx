@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.css';
 import { Link, useNavigate, useLocation, useParams } from 'react-router-dom';
-import BottomNav from '../Components/BottomNav';
 import axios from 'axios';
 import { Axios } from '../helpers/axiosHelper';
 
