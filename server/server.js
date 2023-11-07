@@ -39,9 +39,11 @@ const port = process.env.PORT || 8000;
 
 // Enable CORS with options
 app.use(cors({
-    origin: process.env.CORS_ORIGIN,
+    origin: 'https://allsquare.club',
     credentials: true,
 }));
+
+app.use(cors());
 
 // Regular JSON and URL-encoded data middleware
 app.use(express.json());
@@ -54,7 +56,7 @@ app.use(bodyParser.json({
     verify: (req, res, buf) => {
         const url = req.originalUrl;
         if (url.startsWith('/api/wallet/payment-webhook')) {
-            req.rawBody = buf;
+            req.rawBody = buf.toString()
         }
     },
 }));
@@ -76,10 +78,10 @@ app.get('/', (req, res) => {
 // HTTPS Server Setup ============================================================
 
 
-const options = {
-    key: fs.readFileSync('mssl.key'),
-    cert: fs.readFileSync('mssl.crt'),
-};
+// const options = {
+//     key: fs.readFileSync('mssl.key'),
+//     cert: fs.readFileSync('mssl.crt'),
+// };
 
 // const options = {
 //     key: fs.readFileSync('/etc/ssl/private/mssl.key'),
@@ -89,7 +91,7 @@ const options = {
 
 
 
-const server = https.createServer(options, app);
+const server = https.createServer(app);
 
 
 // Set up Socket.io on the same HTTPS server
