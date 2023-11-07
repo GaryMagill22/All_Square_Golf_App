@@ -1,3 +1,4 @@
+const dotenv = require('dotenv');
 const express = require('express');
 const app = express();
 const cookieParser = require('cookie-parser');
@@ -46,11 +47,12 @@ app.get('/', (req, res) => {
 });
 
 
-const server = https.createServer(app);
+const httpsServer = https.createServer(app);
 
-const io = require('socket.io')(server, {
+const io = require('socket.io')(httpsServer, {
     cors: {
             origin: '*',
+            credentials: true,
     },
 });
 
@@ -63,7 +65,7 @@ app.use('/api/courses', courseRoutes);
 app.use('/api/rounds', roundRoutes);
 app.use('/api/wallet', walletRoutes);
 
-server.listen(port, () => {
+httpsServer.listen(port, () => {
     console.log(`Express and Socket Server started -Listening on port ${port}`);
 });
 
