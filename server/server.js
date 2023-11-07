@@ -1,59 +1,22 @@
-// Load environment variables from .env files
-const dotenv = require('dotenv');
-dotenv.config();
-
-// Dependencies
 const express = require('express');
-const mongoose = require('mongoose');
 const app = express();
-const cors = require("cors");
-const cookieParser = require('cookie-parser');
-const bodyParser = require('body-parser');
-const fs = require('fs');
-const https = require('https');
-
-
-// Import Routes
-const { userRoutes } = require('./routes/user.routes')
-const { gameRoutes } = require('./routes/game.routes')
-const { lobbyRoutes } = require('./routes/lobby.routes')
-const { courseRoutes } = require('./routes/course.routes')
-const { roundRoutes } = require('./routes/round.routes');
-const { walletRoutes } = require('./routes/wallet.routes');
-
-
-// Import Socket.IO
-const { Server } = require("socket.io");
-
-// Load your models
-const Wallet = require('./models/wallet.model');
-const GameScoreCard = require('./models/gameScorecard.model');
-const Lobby = require('./models/lobby.model');
-
-// Set Up Mongoose connection
-require('./config/mongoose.config');
-
-// Server port
+require('dotenv').config()
 const port = 8000;
+const cookieParser = require('cookie-parser');
+const cors = require("cors");
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const { Wallet } = require('./models/wallet.model');
+const GameScoreCard = require('./models/gameScorecard.model');
+const fs = require('fs');
 
-
-
-
-// Middlewares ===================================================================
-
-// Enable CORS with options
+// CONFIG EXPRESS ===================================================================
 app.use(cors({
     credentials: true,
     origin: 'https://allsquare.club',
 }));
 
-app.use(cors());
-
-// Regular JSON and URL-encoded data middleware
-
-
-// Middleware for Stripe webhook to capture raw body
 app.use(express.json({
+    // Because Stripe needs the raw body, we compute it but only when hitting the Stripe callback URL.
     verify: function (req, res, buf) {
         var url = req.originalUrl;
         if (url.startsWith('/api/wallet/payment-webhook')) {
@@ -62,11 +25,24 @@ app.use(express.json({
     }
 })
 );
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));  // POST METHOD
 app.use(cookieParser());
 
-// Routes ========================================================================
+
+
+
+// ROUTES
+
+
+
+const { userRoutes } = require('./routes/user.routes')
+const { gameRoutes } = require('./routes/game.routes')
+const { lobbyRoutes } = require('./routes/lobby.routes')
+const { courseRoutes } = require('./routes/course.routes')
+const { roundRoutes } = require('./routes/round.routes');
+const { walletRoutes } = require('./routes/wallet.routes');
+
+
 app.use('/api/lobbys', lobbyRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/games', gameRoutes);
@@ -74,20 +50,23 @@ app.use('/api/courses', courseRoutes);
 app.use('/api/rounds', roundRoutes);
 app.use('/api/wallet', walletRoutes);
 
-// Welcome route
+require("./config/mongoose.config");
+
+// MODELS IMPORT
+const Lobby = require('./models/lobby.model');
+
 app.get('/', (req, res) => {
-    console.log("Welcome to the All Square Golf Server");
-    res.send("Welcome to the All Square Golf Server");
+    res.send("Welcome to the server");
 });
 
-// HTTPS Server Setup ============================================================
+
+// const server = app.listen(port, () => console.log(`Listening on port: ${port}`));
+
+// const { Server } = require("socket.io");
+// const io = new Server(server, { cors: true });
 
 
-// const options = {
-//     key: fs.readFileSync('mssl.key'),
-//     cert: fs.readFileSync('mssl.crt'),
-// };
-
+// ssl certificate key and certificates
 // const options = {
 //     key: fs.readFileSync('/etc/ssl/private/mssl.key'),
 //     cert: fs.readFileSync('/etc/ssl/certs/mssl.crt'),
@@ -96,21 +75,20 @@ app.get('/', (req, res) => {
 
 
 
-const server = https.createServer(app);
-
-
-// Set up Socket.io on the same HTTPS server
-const io = require('socket.io')(server, {
+const socketServer = require('https').createServer(app);
+const io = require('socket.io')(socketServer, {
     cors: {
-        origin: '*',
-        credentials: true,
+            origin: '*',
     },
 });
 
 
-// Socket Server and Express Server Listening on port 8000
-server.listen(port, () => {
-    console.log(`Express and Socket.IO Server started - Listening on port ${port}`);
+// Express Server listening on port 8000
+app.listen(port, () => console.log(`Express Server Listening on port: ${port}`));
+
+// Socket Server listening on port 9000
+socketServer.listen(9000, () => {
+        console.log(`Socket Server is started and listening on port 9000`);
 });
 
 const initiateGamePlay = async (payload) => {
@@ -329,7 +307,6 @@ io.on("connection", (socket) => {
 
     });
 });
-
 // ==========================================================================================================================================
 // app.post('/webhook', express.raw({ type: 'application/json' }), (req, res) => {
 //     const endpointSecret = "whsec_bVUixsBX7f7rlVvegivfLaGIiveyiFZV";
@@ -347,40 +324,3 @@ io.on("connection", (socket) => {
 
 //     res.send().end();
 // });
-
-// const server = app.listen(port, () => console.log(`Listening on port: ${port}`));
-
-// const { Server } = require("socket.io");
-// const io = new Server(server, { cors: true });
-
-
-// ssl certificate key and certificates
-
-// const options = {
-//     key: fs.readFileSync('mssl.key'),
-//     cert: fs.readFileSync('mssl.crt'),
-// };
-
-
-
-// Old way of oding it with options/key/cert
-// const socketServer = require('https').createServer(options);
-// const io = require('socket.io')(socketServer, {
-//     cors: {
-//             origin: '*',
-//     },
-// });
-
-
-
-// old way to do stripe webhook
-// app.use(express.json({
-//     // Because Stripe needs the raw body, we compute it but only when hitting the Stripe callback URL.
-//     verify: function (req, res, buf) {
-//         var url = req.originalUrl;
-//         if (url.startsWith('/api/wallet/payment-webhook')) {
-//             req.rawBody = buf.toString()
-//         }
-//     }
-// })
-// );

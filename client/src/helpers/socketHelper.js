@@ -4,7 +4,7 @@ let socket = null;
 
 export const initSocket = () => {
     if (!socket) {
-        socket = io('https://allsquare.club');  
+        socket = io('https://allsquare.club:9000');  
 
         socket.on('connect', () => {
             console.log('Socket connected to server');
