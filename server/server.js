@@ -1,14 +1,18 @@
+// Load environment variables from .env files
 const dotenv = require('dotenv');
+dotenv.config();
+
+// Dependencies
 const express = require('express');
 const app = express();
-const cookieParser = require('cookie-parser');
 const cors = require("cors");
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const { Wallet } = require('./models/wallet.model');
-const GameScoreCard = require('./models/gameScorecard.model');
-const https = require('https');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 const fs = require('fs');
-const port = process.env.PORT || 8000;
+const https = require('https');
+
+
+// Import Routes
 const { userRoutes } = require('./routes/user.routes')
 const { gameRoutes } = require('./routes/game.routes')
 const { lobbyRoutes } = require('./routes/lobby.routes')
@@ -17,47 +21,45 @@ const { roundRoutes } = require('./routes/round.routes');
 const { walletRoutes } = require('./routes/wallet.routes');
 
 
-// CONFIG EXPRESS ===================================================================
+// Import Socket.IO
+const { Server } = require("socket.io");
+
+// Load your models
+const Wallet = require('./models/wallet.model');
+const GameScoreCard = require('./models/gameScorecard.model');
+const Lobby = require('./models/lobby.model');
+
+// Set Up Mongoose connection
+require('./config/mongoose.config');
+
+// Server port
+const port = process.env.PORT || 8000;
+
+// Middlewares ===================================================================
+
+// Enable CORS with options
 app.use(cors({
+    origin: process.env.CORS_ORIGIN,
     credentials: true,
-    origin: 'https://allsquare.club',
 }));
 
-app.use(express.json({
-    // Because Stripe needs the raw body, we compute it but only when hitting the Stripe callback URL.
-    verify: function (req, res, buf) {
-        var url = req.originalUrl;
-        if (url.startsWith('/api/wallet/payment-webhook')) {
-            req.rawBody = buf.toString()
-        }
-    }
-})
-);
-app.use(express.urlencoded({ extended: true }));  
+// Regular JSON and URL-encoded data middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 
-require("./config/mongoose.config");
-
-// MODELS IMPORT
-const Lobby = require('./models/lobby.model');
-
-app.get('/', (req, res) => {
-    res.send("Welcome to the All Square Golf Server");
-});
-
-
-const httpsServer = https.createServer(app);
-
-const io = require('socket.io')(httpsServer, {
-    cors: {
-            origin: '*',
-            credentials: true,
+// Middleware for Stripe webhook to capture raw body
+app.use(bodyParser.json({
+    verify: (req, res, buf) => {
+        const url = req.originalUrl;
+        if (url.startsWith('/api/wallet/payment-webhook')) {
+            req.rawBody = buf;
+        }
     },
-});
+}));
 
-
-// ROUTES
+// Routes ========================================================================
 app.use('/api/lobbys', lobbyRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/games', gameRoutes);
@@ -65,10 +67,45 @@ app.use('/api/courses', courseRoutes);
 app.use('/api/rounds', roundRoutes);
 app.use('/api/wallet', walletRoutes);
 
-httpsServer.listen(port, () => {
-    console.log(`Express and Socket Server started -Listening on port ${port}`);
+// Welcome route
+app.get('/', (req, res) => {
+    console.log("Welcome to the All Square Golf Server");
+    res.send("Welcome to the All Square Golf Server");
 });
 
+// HTTPS Server Setup ============================================================
+
+
+const options = {
+    key: fs.readFileSync('mssl.key'),
+    cert: fs.readFileSync('mssl.crt'),
+};
+
+// const options = {
+//     key: fs.readFileSync('/etc/ssl/private/mssl.key'),
+//     cert: fs.readFileSync('/etc/ssl/certs/mssl.crt'),
+// };
+
+
+
+
+const server = https.createServer(options, app);
+
+
+// Set up Socket.io on the same HTTPS server
+const io = new Server(server, {
+    cors: {
+        origin: '*',
+        credentials: true,
+    },
+});
+
+
+
+// Socket Server and Express Server Listening on port 8000
+server.listen(port, () => {
+    console.log(`Express and Socket.IO Server started - Listening on port ${port}`);
+});
 
 const initiateGamePlay = async (payload) => {
     const { players, amount } = payload;
@@ -286,6 +323,7 @@ io.on("connection", (socket) => {
 
     });
 });
+
 // ==========================================================================================================================================
 // app.post('/webhook', express.raw({ type: 'application/json' }), (req, res) => {
 //     const endpointSecret = "whsec_bVUixsBX7f7rlVvegivfLaGIiveyiFZV";
@@ -326,3 +364,17 @@ io.on("connection", (socket) => {
 //             origin: '*',
 //     },
 // });
+
+
+
+// old way to do stripe webhook
+// app.use(express.json({
+//     // Because Stripe needs the raw body, we compute it but only when hitting the Stripe callback URL.
+//     verify: function (req, res, buf) {
+//         var url = req.originalUrl;
+//         if (url.startsWith('/api/wallet/payment-webhook')) {
+//             req.rawBody = buf.toString()
+//         }
+//     }
+// })
+// );
