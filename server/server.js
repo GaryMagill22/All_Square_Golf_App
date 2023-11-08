@@ -63,7 +63,7 @@ app.get('/', (req, res) => {
 
 
 
-const socketServer = require('https').createServer(options, app);
+const socketServer = require('https').createServer(app);
 
 const io = require('socket.io')(socketServer, {
     cors: {
