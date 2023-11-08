@@ -8,6 +8,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { Wallet } = require('./models/wallet.model');
 const GameScoreCard = require('./models/gameScorecard.model');
 const fs = require('fs');
+const https = require('https').createServer(app);
 
 // CONFIG EXPRESS ===================================================================
 app.use(cors({
@@ -60,25 +61,13 @@ app.get('/', (req, res) => {
 });
 
 
-// const server = app.listen(port, () => console.log(`Listening on port: ${port}`));
-
-// const { Server } = require("socket.io");
-// const io = new Server(server, { cors: true });
 
 
-// ssl certificate key and certificates
-// const options = {
-//     key: fs.readFileSync('/etc/ssl/private/mssl.key'),
-//     cert: fs.readFileSync('/etc/ssl/certs/mssl.crt'),
-// };
+const socketServer = require('https').createServer(options, app);
 
-
-
-
-const socketServer = require('https').createServer(app);
 const io = require('socket.io')(socketServer, {
     cors: {
-            origin: '*',
+        origin: '*',
     },
 });
 
@@ -86,9 +75,11 @@ const io = require('socket.io')(socketServer, {
 // Express Server listening on port 8000
 app.listen(port, () => console.log(`Express Server Listening on port: ${port}`));
 
+
+
 // Socket Server listening on port 9000
 socketServer.listen(9000, () => {
-        console.log(`Socket Server is started and listening on port 9000`);
+    console.log(`Socket Server is started and listening on port 9000`);
 });
 
 const initiateGamePlay = async (payload) => {
@@ -324,3 +315,17 @@ io.on("connection", (socket) => {
 
 //     res.send().end();
 // });
+
+
+
+// const server = app.listen(port, () => console.log(`Listening on port: ${port}`));
+
+// const { Server } = require("socket.io");
+// const io = new Server(server, { cors: true });
+
+
+// ssl certificate key and certificates
+// const options = {
+//     key: fs.readFileSync('/etc/ssl/private/mssl.key'),
+//     cert: fs.readFileSync('/etc/ssl/certs/mssl.crt'),
+// };
