@@ -8,12 +8,14 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { Wallet } = require('./models/wallet.model');
 const GameScoreCard = require('./models/gameScorecard.model');
 const fs = require('fs');
+const https = require('https').createServer(app);
 
 // CONFIG EXPRESS ===================================================================
 app.use(cors({
     credentials: true,
-    origin: 'https://allsquare.club',
+    origin: '*',
 }));
+
 
 app.use(express.json({
     // Because Stripe needs the raw body, we compute it but only when hitting the Stripe callback URL.
@@ -25,15 +27,12 @@ app.use(express.json({
     }
 })
 );
+
+
 app.use(express.urlencoded({ extended: true }));  // POST METHOD
 app.use(cookieParser());
 
-
-
-
 // ROUTES
-
-
 
 const { userRoutes } = require('./routes/user.routes')
 const { gameRoutes } = require('./routes/game.routes')
@@ -60,36 +59,15 @@ app.get('/', (req, res) => {
 });
 
 
-// const server = app.listen(port, () => console.log(`Listening on port: ${port}`));
 
-// const { Server } = require("socket.io");
-// const io = new Server(server, { cors: true });
-
-
-// ssl certificate key and certificates
-
-// const options = {
-//     key: fs.readFileSync('mssl.key'),
-//     cert: fs.readFileSync('mssl.crt'),
-// };
-
-// const options = {
-//     key: fs.readFileSync('/etc/ssl/private/mssl.key'),
-//     cert: fs.readFileSync('/etc/ssl/certs/mssl.crt'),
-// };
+ const options = {
+     key: fs.readFileSync('/etc/ssl/private/mssl.key'),
+     cert: fs.readFileSync('/etc/ssl/certs/mssl.crt'),
+ };
 
 
-// Old way of oding it with options/key/cert
-// const socketServer = require('https').createServer(options);
-// const io = require('socket.io')(socketServer, {
-//     cors: {
-//             origin: '*',
-//     },
-// });
+const socketServer = require('https').createServer(options);
 
-
-// changed to this to connect to database
-const socketServer = require('https').createServer(app);
 const io = require('socket.io')(socketServer, {
     cors: {
             origin: '*',
@@ -97,12 +75,26 @@ const io = require('socket.io')(socketServer, {
 });
 
 
+io.on('connection', (socket) => {
+    console.log('A user connected with Socket.io');
+});
+
+
+// Handle client errors on the server
+socketServer.on('clientError', (error, socket) => {
+    console.error('Client Error on Socket.io Server:', error);
+    socket.destroy();
+});
+
 
 // // Socket.io listening on Seperate port 9000 than express server (8000)
 app.listen(port, () => console.log(`Listening on port: ${port}`));
+
 socketServer.listen(9000, () => {
         console.log(`Socket Server is started at port 9000`);
 });
+
+
 
 const initiateGamePlay = async (payload) => {
     const { players, amount } = payload;
@@ -320,20 +312,3 @@ io.on("connection", (socket) => {
 
     });
 });
-// ==========================================================================================================================================
-// app.post('/webhook', express.raw({ type: 'application/json' }), (req, res) => {
-//     const endpointSecret = "whsec_bVUixsBX7f7rlVvegivfLaGIiveyiFZV";
-//     const sig = req.headers['stripe-signature'];
-//     let event;
-
-//     try {
-//         event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
-//         console.log('--- event ---', event);
-//     } catch (err) {
-//         console.log('error', err.message);
-//         res.status(400).send(`Webhook Error: ${err.message}`);
-//         return;
-//     }
-
-//     res.send().end();
-// });

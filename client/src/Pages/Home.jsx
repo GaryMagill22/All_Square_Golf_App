@@ -22,14 +22,10 @@ const Home = () => {
 
     const openModal = () => {
         setIsModalOpen(true);
-        // const modal = new window.bootstrap.Modal(document.getElementById('exampleModal'));
-        // modal.show();
     };
 
     const closeModal = () => {
         setIsModalOpen(false);
-        // const modal = new window.bootstrap.Modal(document.getElementById('exampleModal'));
-        // modal.hide();
     };
 
     // GET ALL GAMES

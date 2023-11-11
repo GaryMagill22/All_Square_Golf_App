@@ -16,7 +16,7 @@ const LobbyPage = () => {
     const [gamePicked, setGamePicked] = useState('');
     const [coursePicked, setCoursePicked] = useState('');
     const [course, setCourse] = useState([]);
-    const [setLoaded] = useState(false);
+    const [loaded, setLoaded] = useState(false);
     const [games, setGames] = useState([]);
     const [players, setPlayers] = useState([]);
     const [creator, setCreator] = useState('');

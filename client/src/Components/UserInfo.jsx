@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 const UserInfo = () => {
-    // NOT RECOMMENDED TO SET THE WHOLE USER DUE TO PASSWORD
+    
     const [user, setUser] = useState()
     const navigate = useNavigate()
 
@@ -12,6 +12,15 @@ const UserInfo = () => {
         axios.delete(`https://allsquare.club/api/users/logout`, { withCredentials: true })
             .then(res => {
                 localStorage.clear();
+		sessionStorage.clear();
+
+		// Clear all cookies (individually)
+                document.cookie.split(";").forEach((c) => {
+                    document.cookie = c
+                    .replace(/^ +/, "")
+                    .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+                });		
+
                 console.log('user logged out successfully')
                 navigate("/")
             })

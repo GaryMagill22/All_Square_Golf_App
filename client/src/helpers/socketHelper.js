@@ -4,10 +4,10 @@ let socket = null;
 
 export const initSocket = () => {
     if (!socket) {
-        socket = io('wss://allsquare.club:9000');  
+        socket = io('wss://allsquare.club', { path: '/socket.io' });
 
         socket.on('connect', () => {
-            console.log('Connected to server');
+            console.log('SocketHelper - Socket connected to server');
             //socket.emit('joinLobby', lobbyId);
         });
 
@@ -20,7 +20,7 @@ export const initSocket = () => {
 export const getSocket = () => socket;
 
 
-// functions for TEAM LOBBY 
+// functions for TEAM LOBBY
 
 export const joinTeamLobby = (lobbyId) => {
     if (socket) {
