@@ -11,7 +11,7 @@ const DisplayRounds = () => {
 
     // Grabbing all of the rounds from the database
     useEffect(() => {
-        axios.get('https://allsquare.club/api/rounds')
+        axios.get('http://localhost:8000/api/rounds')
             .then((res) => {
                 setDisplayRounds(res.data);
                 setLoaded(true);

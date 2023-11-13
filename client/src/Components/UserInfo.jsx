@@ -9,7 +9,7 @@ const UserInfo = () => {
     const navigate = useNavigate()
 
     const logoutHandler = () => {
-        axios.delete(`https://allsquare.club/api/users/logout`, { withCredentials: true })
+        axios.delete(`http://localhost:8000/api/users/logout`, { withCredentials: true })
             .then(res => {
                 localStorage.clear();
                 console.log('user logged out successfully')
@@ -21,7 +21,7 @@ const UserInfo = () => {
     }
 
     useEffect(() => {
-        axios.get(`https://allsquare.club/api/users/getUser`, { withCredentials: true })
+        axios.get(`http://localhost:8000/api/users/getUser`, { withCredentials: true })
             .then(res => setUser(res.data))
             .catch()
     }, [])

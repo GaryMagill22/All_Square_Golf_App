@@ -13,17 +13,3 @@ mongoose.connect((`mongodb+srv://${username}:${dbPassword}@mongopractice.zp13odz
 
 
 module.exports = db;
-
-
-
-// mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
-// .then(() => {
-//     console.log('Connected to MongoDB');
-//     // Additional server setup and route handling can go here
-//     app.listen(port, () => {
-//         console.log(`Server is running on port ${port}`);
-//     });
-// })
-// .catch((err) => {
-//     console.error('Error connecting to MongoDB:', err);
-// });

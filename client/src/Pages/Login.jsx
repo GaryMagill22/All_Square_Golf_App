@@ -4,7 +4,6 @@ import { Axios } from '../helpers/axiosHelper';
 
 
 
-
 const Login = () => {
 
 
@@ -38,20 +37,20 @@ const Login = () => {
             return;
         }
 
-         // Validate email format
-    const emailRegex = /\S+@\S+\.\S+/;
-    if (!emailRegex.test(formInfo.email)) {
-        setErrorMsg("Please enter a valid email address");
-        setIsLoading(false);
-        return;
-    }
+        // Validate email format
+        const emailRegex = /\S+@\S+\.\S+/;
+        if (!emailRegex.test(formInfo.email)) {
+            setErrorMsg("Please enter a valid email address");
+            setIsLoading(false);
+            return;
+        }
 
         // Check if password is entered
-    if (!formInfo.password.trim()) {
-        setErrorMsg("Password is required");
-        setIsLoading(false);
-        return;
-    }
+        if (!formInfo.password.trim()) {
+            setErrorMsg("Password is required");
+            setIsLoading(false);
+            return;
+        }
 
         try {
             const response = await Axios({
@@ -63,6 +62,7 @@ const Login = () => {
                 localStorage.setItem('user_id', JSON.stringify(response.user._id));
                 localStorage.setItem('isLoggedIn', true);
                 localStorage.setItem('players', JSON.stringify(response.user._id));
+                console.log('User logged in successfully!');
                 setTimeout(() => {
                     setIsLoading(false);
                     navigate("/home");
@@ -78,32 +78,48 @@ const Login = () => {
 
 
     return (
-        <div>
+        <div className="">
+            <h2>Login</h2>
             <form onSubmit={submitHandler}>
-                <div>
-                    {errorMsg ? <p className="text-danger" >{errorMsg}</p> : ""}
+                {
+                errorMsg && <p className="text-danger">{errorMsg}</p>
+                }
+
+                <div className="">
+                    <input
+                        type="text"
+                        name="email"
+                        value={formInfo.email}
+                        onChange={changeHandler}
+                        
+                    />
                     <label>Email</label>
-                    <input type="text" name="email" value={formInfo.email} onChange={changeHandler} />
-
                 </div>
-                <div>
+
+                <div className="">
+                    <input
+                        type="password"
+                        name="password"
+                        value={formInfo.password}
+                        onChange={changeHandler}
+                    />
                     <label>Password</label>
-                    <input type="password" name="password" value={formInfo.password} onChange={changeHandler} />
-
                 </div>
-                <button className="btn btn-outline-primary" type="submit" disabled={isLoading}>
-                    {
-                        isLoading && <span className='spinner-border spinner-border-sm' role='status' aria-hidden="true"></span>
-                    }
-                    Login
+
+                <button className="" type="submit" disabled={isLoading}>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    {isLoading && <span className='spinner-border spinner-border-sm' role='status' ></span>}
+                    Submit
                 </button>
             </form>
-
-            <button type="button" className="btn btn-outline-danger" >
-                <Link to={"/"} >Back</Link>
-            </button>
-
+        <button className="">
+            <Link to={"/"} >Back</Link>
+        </button>
         </div>
+
     )
 }
 

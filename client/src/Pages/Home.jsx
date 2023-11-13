@@ -4,6 +4,7 @@ import { Link, useNavigate, useLocation, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { Axios } from '../helpers/axiosHelper';
 
+
 const Home = () => {
     const location = useLocation();
     const navigate = useNavigate();
@@ -21,14 +22,10 @@ const Home = () => {
 
     const openModal = () => {
         setIsModalOpen(true);
-        // const modal = new window.bootstrap.Modal(document.getElementById('exampleModal'));
-        // modal.show();
     };
 
     const closeModal = () => {
         setIsModalOpen(false);
-        // const modal = new window.bootstrap.Modal(document.getElementById('exampleModal'));
-        // modal.hide();
     };
 
     // GET ALL GAMES
@@ -143,7 +140,6 @@ const Home = () => {
             <Link to={"/games"} type="button" className="btn btn-outline-primary">Games</Link>
             <Link to={"/rounds"} type="button" className="btn btn-outline-primary">Rounds</Link>
             <Link to={"/courses"} type="button" className="btn btn-outline-primary">Courses</Link>
-            {/* <Link to={"/new/round"} type="button" className="btn btn-outline-primary">Create a Round</Link> */}
 
             <div>
                 <form onSubmit={handleSubmit}>
@@ -164,7 +160,7 @@ const Home = () => {
                     </div>
                     {/* Courses Dropdown */}
                     <div className='mt-4'>
-                        <select className='form-select' onChange={(e) => handleSelect(e, 'course')}>
+                        <select onChange={(e) => handleSelect(e, 'course')}>
                             <option>Select Course</option>
                             {
                                 course && course.length > 0 ? (

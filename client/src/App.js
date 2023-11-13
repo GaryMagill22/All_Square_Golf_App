@@ -28,7 +28,7 @@ function App() {
 
     useEffect(() => {
         initSocket()
-    }, [])
+    }, []);
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     console.log('on app file', isLoggedIn);
     return (

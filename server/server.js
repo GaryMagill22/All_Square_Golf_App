@@ -10,10 +10,11 @@ const GameScoreCard = require('./models/gameScorecard.model');
 const fs = require('fs');
 const https = require('https').createServer(app);
 
+
 // CONFIG EXPRESS ===================================================================
 app.use(cors({
     credentials: true,
-    origin: 'https://allsquare.club',
+    origin: 'http://localhost:3000',
 }));
 
 app.use(express.json({
@@ -298,34 +299,3 @@ io.on("connection", (socket) => {
 
     });
 });
-// ==========================================================================================================================================
-// app.post('/webhook', express.raw({ type: 'application/json' }), (req, res) => {
-//     const endpointSecret = "whsec_bVUixsBX7f7rlVvegivfLaGIiveyiFZV";
-//     const sig = req.headers['stripe-signature'];
-//     let event;
-
-//     try {
-//         event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
-//         console.log('--- event ---', event);
-//     } catch (err) {
-//         console.log('error', err.message);
-//         res.status(400).send(`Webhook Error: ${err.message}`);
-//         return;
-//     }
-
-//     res.send().end();
-// });
-
-
-
-// const server = app.listen(port, () => console.log(`Listening on port: ${port}`));
-
-// const { Server } = require("socket.io");
-// const io = new Server(server, { cors: true });
-
-
-// ssl certificate key and certificates
-// const options = {
-//     key: fs.readFileSync('/etc/ssl/private/mssl.key'),
-//     cert: fs.readFileSync('/etc/ssl/certs/mssl.crt'),
-// };

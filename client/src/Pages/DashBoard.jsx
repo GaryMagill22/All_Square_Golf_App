@@ -12,8 +12,8 @@ const DashBoard = () => {
     return (
 
         <div>
-            <button type="button" className="btn btn-outline-danger" ><Link to={"/register"} >Register</Link></button>
-            <button type="button" className="btn btn-outline-danger" ><Link to={"/login"} >Login</Link></button>
+            <button  className="" type="button"  ><Link to={"/register"} >Register</Link></button>
+            <button  className="" type="button"><Link to={"/login"} >Login</Link></button>
         </div>
 
     )
