@@ -135,7 +135,7 @@ const Home = () => {
     }
 
     return (
-        <div style={{ margin: "20px", gap: "20px" }} className="btn-group-vertical">
+        <div style={{ margin: "20px", gap: "20px" }} className="btn-group-vertica">
             <Link to={"/profile"} type="button" className="btn btn-outline-primary">Profile</Link>
             <Link to={"/games"} type="button" className="btn btn-outline-primary">Games</Link>
             <Link to={"/rounds"} type="button" className="btn btn-outline-primary">Rounds</Link>
