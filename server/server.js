@@ -63,8 +63,8 @@ app.get('/', (req, res) => {
 
 
 
-
-const socketServer = require('https').createServer(app);
+// had to change this to http for socket to work on local machine
+const socketServer = require('http').createServer(app);
 
 const io = require('socket.io')(socketServer, {
     cors: {
