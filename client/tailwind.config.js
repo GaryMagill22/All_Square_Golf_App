@@ -9,6 +9,11 @@ module.exports = {
           normal: '#0284c7', // Custom blue default shade
           dark: '#172554', // Custom blue dark shade
         },
+        indigo: {
+          light: '#c7d2fe',
+          normal: '#6366f1',
+          dark: '#1e1b4b',
+        },
         red: {
           light: '#fecaca',
           normal: '#b91c1c',
@@ -19,6 +24,11 @@ module.exports = {
           normal: '#ff49db', // Custom pink default shade
           dark: '#ff16d1', // Custom pink dark shade
         },
+        green: {
+          light: '#bbf7d0',
+          normal: '#16a34a',
+          dark: '#052e16',
+        },
         salmon: {
           light: '#ffe4e6', // Custom salmon light shade
           normal: '#fda4af', // Custom salmon default shade
@@ -28,6 +38,16 @@ module.exports = {
           light: '#fed7aa', // Custom orange light shade (fixed typo)
           normal: '#fb923c', // Custom orange default shade
           dark: '#7c2d12', // Custom orange dark shade
+        },
+        maroon: {
+          light:'',
+          normal: '#500724',
+          dark: '',
+        },
+        gray: {
+          light:'#9ca3af',
+          normal:'#1f2937',
+          dark: '#0f172a',
         },
         // Add more custom colors here
       },

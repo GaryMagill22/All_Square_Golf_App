@@ -98,8 +98,7 @@ const Login = () => {
                                 id="email"
                                 name="email"
                                 type="email"
-                                autoComplete="email"
-                                className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                className="appearance-none block w-full px-3 py-2 rounded-md bg-gray-light focus:outline-none focus:ring-4 focus:ring-orange-light sm:text-sm"
                                 value={formInfo.email}
                                 onChange={changeHandler}
                             />
@@ -115,8 +114,8 @@ const Login = () => {
                                 id="password"
                                 name="password"
                                 type="password"
-                                autoComplete="current-password"
-                                className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                className="appearance-none block w-full px-3 py-2 rounded-md bg-gray-light focus:outline-none focus:ring-4 focus:ring-orange-light sm:text-sm"
+
                                 value={formInfo.password}
                                 onChange={changeHandler}
                             />
@@ -127,7 +126,7 @@ const Login = () => {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-maroon-normal hover:bg-gray-normal focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-salmon-light"
                         >
                             {isLoading ? (
                                 <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
@@ -145,14 +144,14 @@ const Login = () => {
                         </div>
                         <div className="relative flex justify-center text-sm">
                             <span className="px-2 bg-gray-900 text-white">
-                                Or continue with
+                                {/* Or continue with */}
                             </span>
                         </div>
                     </div>
 
-                    <div className="mt-6 grid grid-cols-3 gap-3">
+                    <div className="mt-6 grid">
                         <div>
-                            <Link to="/" className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                            <Link to="/" className="w-full inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm bg-maroon-normal text-sm font-medium text-white hover:bg-gray-normal no-underline">
                                 Back
                             </Link>
                         </div>
