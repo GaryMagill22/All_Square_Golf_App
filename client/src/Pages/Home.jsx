@@ -3,8 +3,10 @@ import 'bootstrap/dist/css/bootstrap.css';
 import { Link, useNavigate, useLocation, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { Dialog, Transition } from '@headlessui/react';
-import { CheckIcon, HomeIcon, UserIcon, PlayCircleIcon, MapPinIcon, ChartBarIcon, TrophyIcon} from '@heroicons/react/24/outline';
+import { CheckIcon, HomeIcon, UserIcon, PlayCircleIcon, MapPinIcon, ChartBarIcon, TrophyIcon } from '@heroicons/react/24/outline';
 import { Axios } from '../helpers/axiosHelper';
+import logo from '../assets/All_Square_Logo.png'; // Adjust the path if your assets folder is structured differently
+
 
 
 const Home = () => {
@@ -167,37 +169,37 @@ const Home = () => {
     }
 
     return (
-        <div>
-            <nav className="flex items-center justify-center h-screen" aria-label="Sidebar">
-            <ul role="list" className="-flex flex-col">
-                {navigation.map((item) => (
-                    <li key={item.name}>
-                        <Link
-                            to={item.to}
-                            className={classNames(
-                                item.current ? 'bg-gray-50 text-indigo-600' : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50',
-                                'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold hover:no-underline'
-                            )}
-                        >
-                            <item.icon
-                                className={classNames(
-                                    item.current ? 'text-indigo-600' : 'text-gray-400 group-hover:text-indigo-600',
-                                    'h-6 w-6 shrink-0'
-                                )}
-                                aria-hidden="true"
-                            />
-                            {item.name}
-                        </Link>
-                    </li>
-                ))}
-            </ul>
-        </nav>
+        <div className="bg-gray-900 min-h-screen overflow-hidden">
+            <div className="flex justify-center items-center w-full">
+                <img className="max-w-full h-auto ml-3" src={logo} alt="All Square Logo" />
+            </div>
+            <nav className="flex items-center justify-center overflow-y-auto m:h-screen" aria-label="Sidebar">
+                <ul role="list" className="-flex flex-col space-y-4">
+                    {navigation.map((item) => (
+                        <li key={item.name}>
+                            <Link
+                                to={item.to}
+                                className="w-30 pr-3 bg-gray-light text-black hover:text-indigo-600 hover:bg-gray-50 group flex gap-x-3 rounded-full p-1.5 text-md leading-6 font-semibold hover:no-underline"
+                            >
+                                <item.icon
+                                    className={classNames(
+                                        item.current ? 'text-black' : 'textwhite group-hover:text-maroon-dark',
+                                        'h-6 w-6 shrink-0'
+                                    )}
+                                    aria-hidden="true"
+                                />
+                                {item.name}
+                            </Link>
+                        </li>
+                    ))}
+                </ul>
+            </nav>
 
 
             <div>
                 <form onSubmit={handleSubmit}>
                     <div>
-                        <select className='form-select' onChange={(e) => handleSelect(e, 'game')}>
+                        <select className='mt-4' onChange={(e) => handleSelect(e, 'game')}>
                             <option>Select game</option>
                             {
                                 games && games.length > 0 ? (
@@ -228,7 +230,7 @@ const Home = () => {
                         </select>
                     </div>
                     <div className='mt-4'>
-                        <button className='btn btn-success' disabled={!selectedGame || !selectedCourse}>Create Lobby</button>
+                        <button className='btn btn-success' disabled={!selectedGame}>Create Lobby</button>
                     </div>
                 </form>
             </div>
@@ -236,9 +238,12 @@ const Home = () => {
             {/* <Button className="btn btn-primary" variant="primary" onClick={handleShow}>
                 Join Round
             </Button> */}
-            <button type="button" className="btn btn-primary" onClick={openModal}>
-                Join Game
-            </button>
+
+            <div className="mt-4" >
+                <button type="button" className="btn btn-primary" onClick={openModal}>
+                    Join Game
+                </button>
+            </div>
 
             <Transition.Root show={open} as={Fragment}>
                 <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={() => setOpen(false)}>

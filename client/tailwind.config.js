@@ -35,7 +35,7 @@ module.exports = {
           dark: '#fb7185', // Custom salmon dark shade
         },
         orange: {
-          light: '#fed7aa', // Custom orange light shade (fixed typo)
+          light: '#6b7280', // Custom orange light shade (fixed typo)
           normal: '#fb923c', // Custom orange default shade
           dark: '#7c2d12', // Custom orange dark shade
         },
