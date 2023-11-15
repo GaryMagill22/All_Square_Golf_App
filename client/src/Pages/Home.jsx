@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import { Link, useNavigate, useLocation, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { Dialog, Transition } from '@headlessui/react';
-import { CheckIcon } from '@heroicons/react/24/outline';
+import { CheckIcon, HomeIcon, UserIcon, PlayCircleIcon, MapPinIcon, ChartBarIcon, TrophyIcon} from '@heroicons/react/24/outline';
 import { Axios } from '../helpers/axiosHelper';
 
 
@@ -42,6 +42,19 @@ const Home = () => {
     };
 
 
+    // Navbar setup 
+    const navigation = [
+        { name: 'Profile', to: '/profile', icon: UserIcon, current: false }, // Replace HomeIcon with the icon you want for Profile
+        { name: 'Games', to: '/games', icon: PlayCircleIcon, current: false }, // Home page, assuming it's the root
+        { name: 'Rounds', to: '/rounds', icon: TrophyIcon, current: false }, // Replace HomeIcon with the icon for Games
+        { name: 'Courses', to: '/courses', icon: MapPinIcon, current: false }, // Replace HomeIcon with the icon for Courses
+        // Add more items as needed
+    ]
+
+    // Navbar settup function
+    function classNames(...classes) {
+        return classes.filter(Boolean).join(' ')
+    };
 
 
     // GET ALL GAMES
@@ -155,10 +168,31 @@ const Home = () => {
 
     return (
         <div>
-            <Link to={"/profile"} type="button" className="btn btn-outline-primary">Profile</Link>
-            <Link to={"/games"} type="button" className="btn btn-outline-primary">Games</Link>
-            <Link to={"/rounds"} type="button" className="btn btn-outline-primary">Rounds</Link>
-            <Link to={"/courses"} type="button" className="btn btn-outline-primary">Courses</Link>
+            <nav className="flex items-center justify-center h-screen" aria-label="Sidebar">
+            <ul role="list" className="-flex flex-col">
+                {navigation.map((item) => (
+                    <li key={item.name}>
+                        <Link
+                            to={item.to}
+                            className={classNames(
+                                item.current ? 'bg-gray-50 text-indigo-600' : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50',
+                                'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold hover:no-underline'
+                            )}
+                        >
+                            <item.icon
+                                className={classNames(
+                                    item.current ? 'text-indigo-600' : 'text-gray-400 group-hover:text-indigo-600',
+                                    'h-6 w-6 shrink-0'
+                                )}
+                                aria-hidden="true"
+                            />
+                            {item.name}
+                        </Link>
+                    </li>
+                ))}
+            </ul>
+        </nav>
+
 
             <div>
                 <form onSubmit={handleSubmit}>
@@ -267,13 +301,13 @@ const Home = () => {
                                         </button>
                                     </div>
                                 </Dialog.Panel>
-                                </Transition.Child>
-                                </div>
-                                </div>
-                            </Dialog>
-                        </Transition.Root>
+                            </Transition.Child>
+                        </div>
                     </div>
-                    )
+                </Dialog>
+            </Transition.Root>
+        </div>
+    )
 }
 
-                    export default Home
+export default Home
