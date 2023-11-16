@@ -179,7 +179,7 @@ const Home = () => {
             <div className="flex justify-center items-center w-full">
                 <img className="max-w-full h-auto ml-3" src={logo} alt="All Square Logo" />
             </div>
-            <nav className="flex items-center justify-center overflow-y-auto m:h-screen" aria-label="Sidebar">
+            <nav className="flex items-center justify-center overflow-y-auto m:h-screen mr-1" aria-label="Sidebar">
                 <ul role="options" className="-flex flex-col space-y-4">
                     {navigation.map((item) => (
                         <li key={item.name}>
@@ -283,11 +283,11 @@ const Home = () => {
                             </Menu.Items>
                         </Transition>
                     </Menu>
-                    <div className='mt-4'>
+                    <div className='flex justify-center mt-4 mr-3'>
                         <button
                             type="submit"
                             // disabled={!selectedGame || !selectedCourse}
-                            className={`w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${selectedGame && selectedCourse ? 'bg-gray-normal' : 'bg-maroon-normal'
+                            className={`w-40 flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${selectedGame && selectedCourse ? 'bg-gray-normal' : 'bg-maroon-normal'
                                 } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-salmon-light`}
                         >
                             Create Lobby
@@ -295,7 +295,7 @@ const Home = () => {
                         <div >
                             {showValidationMessage && (
                                 <p className="text-red-500 text-xs italic mt-2">
-                                    Please select both a game and a course.
+                                    Please select Game and Course.
                                 </p>
                             )}
                         </div>
@@ -303,8 +303,8 @@ const Home = () => {
                 </form>
             </div>
 
-            <div className="mt-4" >
-                <button type="button" className="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-maroon-normal hover:bg-gray-normal focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-salmon-light" onClick={openModal}>
+            <div className="flex justify-center mt-4" >
+                <button type="button" className="w-40 flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-maroon-normal hover:bg-gray-normal focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-salmon-light" onClick={openModal}>
                     Join Game
                 </button>
             </div>
@@ -334,23 +334,23 @@ const Home = () => {
                                 leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                                 leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                             >
-                                <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
+                                <Dialog.Panel className="bg-gray-normal relative transform overflow-hidden rounded-lg px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
                                     {/* Modal Content Here */}
-                                    <div className="modal-body">
-                                        <label htmlFor="lobbyIdInput" className="block text-sm font-medium text-gray-700">
-                                            Enter Lobby ID:
+                                    <div className=" bg-gray-normal modal-body">
+                                        <label htmlFor="lobbyIdInput" className="block text-md text-center font-medium text-white">
+                                            Enter Lobby ID Code:
                                         </label>
                                         <input
                                             type="text"
                                             id="lobbyIdInput"
-                                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                            className="bg-gray-light mt-1 block w-full px-3 py-2 border rounded-full focus:outline-none focus:ring focus:ring-maroon-normal sm:text-md text"
                                             placeholder="Lobby ID"
                                         />
                                     </div>
-                                    <div className="modal-footer flex space-x-3">
+                                    <div className="bg-gray-normal modal-footer inline-flex justify-center space-x-3">
                                         <button
                                             type="button"
-                                            className="inline-flex justify-center rounded-md border border-transparent px-4 py-2 text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                            className="rounded-full inline-flex border-solid border-4 border-salmon-light px-4 py-2 text-sm font-medium text-maroon-normal bg-gray-light hover:bg-maroon-normal hover:text-white focus:outline-gray-dark "
                                             onClick={closeModal}
                                             ref={cancelButtonRef}
                                         >
@@ -358,7 +358,7 @@ const Home = () => {
                                         </button>
                                         <button
                                             type="button"
-                                            className="inline-flex justify-center rounded-md border border-transparent px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                            className="rounded-full inline-flex justify-center border-solid border-4 border-salmon-light px-4 py-2 text-sm font-medium text-maroon-normal bg-gray-light hover:bg-maroon-normal hover:text-white focus:outline-gray-dark"
                                             onClick={() => {
                                                 const lobbyId = document.getElementById('lobbyIdInput').value;
                                                 closeModal();
