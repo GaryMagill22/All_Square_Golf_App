@@ -22,32 +22,30 @@ export default function SelectGameType() {
     }
 
     return (
-        <div>
-            <div className="mt-4">
-                <h2>Select a game type to play</h2>
-                <div className="mt-5">
-                    {
-                        (isIndividual || isTeamPlay) && <h5>Selected game: { isIndividual ? 'Individual' : 'Team'}</h5>
-                    }
-                    
-                </div>
-                <div class="d-grid gap-5 col-6 mx-auto mt-5">
-                    <button class="btn btn-primary px-4 py-4" type="button" onClick={() => handleRedirect('individual')}>
-                        {
-                            isIndividual && <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512" fill="white">
-                                <path d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-111 111-47-47c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l64 64c9.4 9.4 24.6 9.4 33.9 0L369 209z"/>
-                            </svg>
-                        }
-                        <span className="ml-2">Individual play</span>
-                    </button>
-                    <button class="btn btn-info px-4 py-4" type="button" onClick={() => handleRedirect('team')}>
-                        {
-                            isTeamPlay && <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512" fill="white">
-                                <path d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-111 111-47-47c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l64 64c9.4 9.4 24.6 9.4 33.9 0L369 209z"/>
-                            </svg>
-                        }
-                        <span className="ml-2">Team play</span>
-                    </button>
+        <div className="bg-gray-dark min-h-screen">
+            <div className="pt-4 text-center">
+                <h2 className="text-white text-2xl font-bold">Select Game Type</h2>
+                {(isIndividual || isTeamPlay) && (
+                    <h5 className="text-white mt-2">Selected game: {isIndividual ? 'Individual' : 'Team'}</h5>
+                )}
+                <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 mt-5 mx-auto p-4">
+                    {/* Individual Play Card */}
+                    <div className="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                        <h5 className="mb-2 text-2xl font-bold tracking-tight text-maroon-normal dark:text-blue-dark">Individual Play</h5>
+                        <p className="mb-3 font-normal text-gray-dark dark:text-gray-dark">Play others individually - every man for themselves.</p>
+                        <button onClick={() => handleRedirect('individual')} className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-normal rounded-lg hover:bg-blue-dark focus:ring-4 focus:outline-none focus:ring-salmon-light dark:bg-blue-noaml dark:hover:bg-blue-dark dark:focus:ring-blue-800">
+                            Select
+                        </button>
+                    </div>
+
+                    {/* Team Play Card */}
+                    <div className="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                        <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-blue-dark">Team Play</h5>
+                        <p className="mb-3 font-normal text-gray-700 dark:text-gray-dark">Play as a team. Choose your team and compete together.</p>
+                        <button onClick={() => handleRedirect('team')} className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-normal rounded-lg hover:bg-blue-dark focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-normal dark:hover:bg-blue-dark dark:focus:ring-salmon-light">
+                            Select
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

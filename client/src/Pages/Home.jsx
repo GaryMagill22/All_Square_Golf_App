@@ -2,9 +2,8 @@ import React, { useEffect, useState, useRef, Fragment } from 'react'
 import 'bootstrap/dist/css/bootstrap.css';
 import { Link, useNavigate, useLocation, useParams } from 'react-router-dom';
 import axios from 'axios';
-import { Dialog, Transition, Menu } from '@headlessui/react';
-import { ChevronDownIcon } from '@heroicons/react/20/solid';
-import { CheckIcon, UserIcon, PlayCircleIcon, MapPinIcon, TrophyIcon } from '@heroicons/react/24/outline';
+import { Dialog, Transition, Listbox } from '@headlessui/react';
+import { UserIcon, PlayCircleIcon, MapPinIcon, TrophyIcon, CheckIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline';
 import { Axios } from '../helpers/axiosHelper';
 import logo from '../assets/All_Square_Logo.png'; // Adjust the path if your assets folder is structured differently
 
@@ -175,8 +174,8 @@ const Home = () => {
     }
 
     return (
-        <div className="bg-gray-900 min-h-screen overflow-hidden">
-            <div className="flex justify-center items-center w-full">
+        <div className=" bg-gray-900 min-h-screen overflow-hidden">
+            <div className="flex justify-center w-full">
                 <img className="max-w-full h-auto ml-3" src={logo} alt="All Square Logo" />
             </div>
             <nav className="flex items-center justify-center overflow-y-auto m:h-screen mr-1" aria-label="Sidebar">
@@ -203,91 +202,121 @@ const Home = () => {
 
 
             <div className="flex justify-center " >
-                <form onSubmit={handleSubmit} className="space-x-4">
-                    <Menu as="div" className="relative inline-block text-left mt-4">
-                        <Menu.Button className="inline-flex w-full justify-center rounded-md bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none">
-                            {selectedGame ? selectedGame.name : "Select Game"}
-                            <ChevronDownIcon className="-mr-1 ml-2 h-5 w-5" aria-hidden="true" />
-                        </Menu.Button>
-
+                <form onSubmit={handleSubmit} className="justify-center">
+                    {/* Dropdown Menu for Games */}
+                    <Listbox value={selectedGame} onChange={setSelectedGame}>
+            {({ open }) => (
+                <>
+                    {/* <Listbox.Label className="block text-sm font-medium leading-6 text-white">Select Game:</Listbox.Label> */}
+                    <div className="relative mt-2">
+                        <Listbox.Button className="relative w-full cursor-default mb-2 rounded-md bg-blue-light py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                            <span className="block truncate">{selectedGame ? selectedGame.name : 'Select Game'}</span>
+                            <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                                <ChevronUpDownIcon className="h-5 w-5 text-black" aria-hidden="true" />
+                            </span>
+                        </Listbox.Button>
                         <Transition
+                            show={open}
                             as={Fragment}
-                            enter="transition ease-out duration-100"
-                            enterFrom="transform opacity-0 scale-95"
-                            enterTo="transform opacity-100 scale-100"
-                            leave="transition ease-in duration-75"
-                            leaveFrom="transform opacity-100 scale-100"
-                            leaveTo="transform opacity-0 scale-95"
+                            leave="transition ease-in duration-100"
+                            leaveFrom="opacity-100"
+                            leaveTo="opacity-0"
                         >
-                            <Menu.Items className="absolute z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                <div className="py-1">
-                                    {games && games.length > 0 ? (
-                                        games.map((game) => (
-                                            <Menu.Item key={game._id}>
-                                                {({ active }) => (
-                                                    <button
-                                                        type="button"
-                                                        className={`${active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
-                                                            } block w-full px-4 py-2 text-sm text-left`}
-                                                        onClick={() => handleSelect(game, 'game')}
+                            <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                                {games.map((game) => (
+                                    <Listbox.Option
+                                        key={game._id}
+                                        value={game}
+                                        className={({ active }) =>
+                                            `relative cursor-default select-none py-2 pl-3 pr-9 ${
+                                                active ? 'bg-gray-dark text-white' : 'text-gray-900'
+                                            }`
+                                        }
+                                    >
+                                        {({ selected, active }) => (
+                                            <>
+                                                <span className={`block truncate ${selected ? 'font-semibold' : 'font-normal'}`}>
+                                                    {game.name}
+                                                </span>
+                                                {selected && (
+                                                    <span
+                                                        className={`absolute inset-y-0 right-0 flex items-center pr-4 ${
+                                                            active ? 'text-white' : 'text-indigo-600'
+                                                        }`}
                                                     >
-                                                        {game.name}
-                                                    </button>
+                                                        <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                                                    </span>
                                                 )}
-                                            </Menu.Item>
-                                        ))
-                                    ) : (
-                                        <div className="px-4 py-2 text-sm text-gray-700">No games available</div>
-                                    )}
-                                </div>
-                            </Menu.Items>
+                                            </>
+                                        )}
+                                    </Listbox.Option>
+                                ))}
+                            </Listbox.Options>
                         </Transition>
-                    </Menu>
-                    {/* Courses Dropdown */}
-                    <Menu as="div" className="relative inline-block text-left mt-4">
-                        <Menu.Button className="inline-flex w-full justify-center rounded-md bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none">
-                            {selectedCourse ? selectedCourse.name : "Select Course"}
-                            <ChevronDownIcon className="-mr-1 ml-2 h-5 w-5" aria-hidden="true" />
-                        </Menu.Button>
+                    </div>
+                </>
+            )}
+        </Listbox>
 
+        {/* Listbox for Courses */}
+        <Listbox value={selectedCourse} onChange={setSelectedCourse}>
+            {({ open }) => (
+                <>
+                    {/* <Listbox.Label className="block text-sm font-medium leading-6 text-white mt-1">Select Course:</Listbox.Label> */}
+                    <div className="relative mt-2">
+                        <Listbox.Button className="relative w-full cursor-default rounded-md bg-blue-light py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                            <span className="block truncate">{selectedCourse ? selectedCourse.name : 'Select Course'}</span>
+                            <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                                <ChevronUpDownIcon className="h-5 w-5 text-black" aria-hidden="true" />
+                            </span>
+                        </Listbox.Button>
                         <Transition
+                            show={open}
                             as={Fragment}
-                            enter="transition ease-out duration-100"
-                            enterFrom="transform opacity-0 scale-95"
-                            enterTo="transform opacity-100 scale-100"
-                            leave="transition ease-in duration-75"
-                            leaveFrom="transform opacity-100 scale-100"
-                            leaveTo="transform opacity-0 scale-95"
+                            leave="transition ease-in duration-100"
+                            leaveFrom="opacity-100"
+                            leaveTo="opacity-0"
                         >
-                            <Menu.Items className="absolute z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                <div className="py-1">
-                                    {course && course.length > 0 ? (
-                                        course.map((course) => (
-                                            <Menu.Item key={course._id}>
-                                                {({ active }) => (
-                                                    <button
-                                                        type="button"
-                                                        className={`${active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
-                                                            } block w-full px-4 py-2 text-sm text-left`}
-                                                        onClick={() => handleSelect(course, 'course')}
+                            <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                                {course.map((courseItem) => (
+                                    <Listbox.Option
+                                        key={courseItem._id}
+                                        value={courseItem}
+                                        className={({ active }) =>
+                                            `relative cursor-default select-none py-2 pl-3 pr-9 ${
+                                                active ? 'bg-gray-dark text-white' : 'text-gray-900'
+                                            }`
+                                        }
+                                    >
+                                        {({ selected, active }) => (
+                                            <>
+                                                <span className={`block truncate ${selected ? 'font-semibold' : 'font-normal'}`}>
+                                                    {courseItem.name}
+                                                </span>
+                                                {selected && (
+                                                    <span
+                                                        className={`absolute inset-y-0 right-0 flex items-center pr-4 ${
+                                                            active ? 'text-white' : 'text-indigo-600'
+                                                        }`}
                                                     >
-                                                        {course.name}
-                                                    </button>
+                                                        <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                                                    </span>
                                                 )}
-                                            </Menu.Item>
-                                        ))
-                                    ) : (
-                                        <div className="px-4 py-2 text-sm text-gray-700">No games available</div>
-                                    )}
-                                </div>
-                            </Menu.Items>
+                                            </>
+                                        )}
+                                    </Listbox.Option>
+                                ))}
+                            </Listbox.Options>
                         </Transition>
-                    </Menu>
-                    <div className='flex justify-center mt-4 mr-3'>
+                    </div>
+                </>
+            )}
+        </Listbox>
+                    <div className='flex justify-center mt-4'>
                         <button
                             type="submit"
                             // disabled={!selectedGame || !selectedCourse}
-                            className={`w-40 flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${selectedGame && selectedCourse ? 'bg-gray-normal' : 'bg-maroon-normal'
+                            className={`w-60 flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${selectedGame && selectedCourse ? 'bg-gray-normal' : 'bg-maroon-normal'
                                 } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-salmon-light`}
                         >
                             Create Lobby
@@ -303,12 +332,13 @@ const Home = () => {
                 </form>
             </div>
 
-            <div className="flex justify-center mt-4" >
-                <button type="button" className="w-40 flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-maroon-normal hover:bg-gray-normal focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-salmon-light" onClick={openModal}>
+            <div className="flex justify-center m-3" >
+                <button type="button" className="w-60 flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-maroon-normal hover:bg-gray-normal focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-salmon-light" onClick={openModal}>
                     Join Game
                 </button>
             </div>
 
+        {/* Tailwind css Modal for joining Game */}
             <Transition.Root show={open} as={Fragment}>
                 <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={() => setOpen(false)}>
                     <Transition.Child
@@ -334,7 +364,7 @@ const Home = () => {
                                 leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                                 leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                             >
-                                <Dialog.Panel className="bg-gray-normal relative transform overflow-hidden rounded-lg px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
+                                <Dialog.Panel className="bg-gray-normal relative transform overflow-hidden rounded-lg px-4 pb-4 pt-5 text-white transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
                                     {/* Modal Content Here */}
                                     <div className=" bg-gray-normal modal-body">
                                         <label htmlFor="lobbyIdInput" className="block text-md text-center font-medium text-white">
@@ -343,14 +373,14 @@ const Home = () => {
                                         <input
                                             type="text"
                                             id="lobbyIdInput"
-                                            className="bg-gray-light mt-1 block w-full px-3 py-2 border rounded-full focus:outline-none focus:ring focus:ring-maroon-normal sm:text-md text"
+                                            className="bg-gray-light mt-1 block w-full px-3 py-2 rounded-full focus:outline-none focus:ring focus:ring-salmon-light sm:text-md text"
                                             placeholder="Lobby ID"
                                         />
                                     </div>
                                     <div className="bg-gray-normal modal-footer inline-flex justify-center space-x-3">
                                         <button
                                             type="button"
-                                            className="rounded-full inline-flex border-solid border-4 border-salmon-light px-4 py-2 text-sm font-medium text-maroon-normal bg-gray-light hover:bg-maroon-normal hover:text-white focus:outline-gray-dark "
+                                            className="rounded-full inline-flex border-solid border-2 border-salmon-light px-4 py-2 text-sm font-medium text-maroon-normal bg-gray-light hover:bg-maroon-normal hover:text-white focus:outline-gray-dark "
                                             onClick={closeModal}
                                             ref={cancelButtonRef}
                                         >
@@ -358,7 +388,7 @@ const Home = () => {
                                         </button>
                                         <button
                                             type="button"
-                                            className="rounded-full inline-flex justify-center border-solid border-4 border-salmon-light px-4 py-2 text-sm font-medium text-maroon-normal bg-gray-light hover:bg-maroon-normal hover:text-white focus:outline-gray-dark"
+                                            className="rounded-full justify-center border-solid border-2 border-salmon-light px-4 py-2 text-sm font-medium text-maroon-normal bg-gray-light hover:bg-maroon-normal hover:text-white focus:outline-gray-dark"
                                             onClick={() => {
                                                 const lobbyId = document.getElementById('lobbyIdInput').value;
                                                 closeModal();

@@ -21,6 +21,8 @@
     "bootstrap": "^4.6.2",
     "cookie-parser": "^1.4.6",
     "ejs": "^3.1.9",
+    "flowbite": "^2.1.1",
+    "flowbite-react": "^0.6.4",
     "jsonwebtoken": "^9.0.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.8.0",

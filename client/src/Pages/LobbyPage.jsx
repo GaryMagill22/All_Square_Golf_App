@@ -234,122 +234,89 @@ const LobbyPage = () => {
 
 
     return (
-        <div className='container'>
-            <div>
-                <h1>Lobby Code: {lobbyId}</h1>
-
-            </div>
-            <div className="player-container">
-                <p></p>
-
-            </div>
-            <div className="loadingPlayerContainer" >
-                <h3>Players Loading...</h3>
-                {
-                    players.map((p, i) => {
-                        return <h4 key={i} >{p.username}</h4>
-                    })
-                }
+        <div className='container mx-auto p-4'>
+            <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-4 mb-6">
+                <h1 className="text-xl font-semibold">Lobby Code: {lobbyId}</h1>
             </div>
 
-            <div className='mt-5'>
-                {
-                    (isCreator && gameType === 'team') && <div>
-                        <p>Note: Create two teams and add users to each team to be able to participate in the game</p>
-                        <div style={{ width: '80%', marginLeft: 'auto', marginRight: 'auto' }}>
-                            <div className='row'>
-                                <div className='col form-group'>
-                                    <input className='form-control' placeholder='Enter team name' onChange={(e) => setTeamValue(e.target.value)} />
-                                </div>
-                                <div className='col-auto form-group'>
-                                    <button className='btn btn-success' onClick={handleCreateTeam}>Create team</button>
-                                </div>
-                            </div>
-                            <div className='row'>
-                                <h5>Add Players to team</h5>
-                                <div className='col form-group'>
-                                    <select className='form-control' onChange={(e) => { setSelectedTeam(e.target.value) }}>
-                                        <option value="Nil">Select team</option>
-                                        {
-                                            teams.map((team, index) => {
-                                                return (
-                                                    <option key={index + 1} value={team.teamName}>{team.teamName}</option>
-                                                )
-                                            })
-                                        }
-                                    </select>
-                                </div>
-                                <div className='col form-group'>
-                                    <select className='form-control' onChange={(e) => { setSelectedPlayer(e.target.value) }}>
-                                        <option value="Nil">Select player</option>
-                                        {
-                                            players.map((player, index) => {
-                                                return (
-                                                    <option value={player.username} key={index + 1}>{player.username}</option>
-                                                )
-                                            })
-                                        }
-                                    </select>
-                                </div>
-                                <div className='col-auto form-group'>
-                                    <button className='btn btn-info' onClick={addPlayerToTeam}>Add player to team</button>
-                                </div>
+            {/* Player Loading Section */}
+            <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-4 mb-6">
+                <h3 className="font-semibold">Players Loading...</h3>
+                {players.map((p, i) => (
+                    <h4 key={i}>{p.username}</h4>
+                ))}
+            </div>
+
+            {/* Team Creation Section */}
+            {isCreator && gameType === 'team' && (
+                <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-4 mb-6">
+                    <p>Note: Create two teams and add users to each team to be able to participate in the game</p>
+                    <div className="space-y-4">
+                        <div className='flex flex-col md:flex-row items-center gap-4'>
+                            <input className='form-control flex-grow' placeholder='Enter team name' onChange={(e) => setTeamValue(e.target.value)} />
+                            <button className='btn btn-success' onClick={handleCreateTeam}>Create team</button>
+                        </div>
+                        <div>
+                            <h5>Add Players to team</h5>
+                            <div className='flex flex-col md:flex-row items-center gap-4'>
+                                <select className='form-control flex-grow' onChange={(e) => setSelectedTeam(e.target.value)}>
+                                    <option value="Nil">Select team</option>
+                                    {teams.map((team, index) => (
+                                        <option key={index} value={team.teamName}>{team.teamName}</option>
+                                    ))}
+                                </select>
+                                <select className='form-control flex-grow' onChange={(e) => setSelectedPlayer(e.target.value)}>
+                                    <option value="Nil">Select player</option>
+                                    {players.map((player, index) => (
+                                        <option key={index} value={player.username}>{player.username}</option>
+                                    ))}
+                                </select>
+                                <button className='btn btn-info' onClick={addPlayerToTeam}>Add player to team</button>
                             </div>
                         </div>
                     </div>
-                }
-                <div className='row'>
-                    {
-                        teams.length > 0 ? teams.map((item, index) => {
-                            return (
-                                <div className='col-md-6' key={index + 1}>
-                                    <h4>{item.teamName}</h4>
-                                    {
-                                        item.players && <ul>
-                                            {
-                                                item.players.map((data) => {
-                                                    return (
-                                                        <li key={data.id} className='mt-2'>
-                                                            {data.name}
-                                                            <button className='ml-2' onClick={() => removeUserFromTeam(data.id, item.teamName)}>x</button>
-                                                        </li>
-                                                    )
-                                                })
-                                            }
-                                        </ul>
-                                    }
-                                </div>
-                            )
-                        }) : <p>No teams available...</p>
-                    }
+                </div>
+            )}
+
+            {/* Teams Display Section */}
+            <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-4 mb-6">
+                <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                    {teams.length > 0 ? teams.map((item, index) => (
+                        <div key={index} className='border border-gray-200 rounded-lg p-4'>
+                            <h4 className="font-semibold">{item.teamName}</h4>
+                            {item.players && (
+                                <ul className="list-disc pl-5">
+                                    {item.players.map((data) => (
+                                        <li key={data.id} className='mt-2'>
+                                            {data.name}
+                                            <button className='ml-2 text-red-500' onClick={() => removeUserFromTeam(data.id, item.teamName)}>x</button>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                        </div>
+                    )) : <p>No teams available...</p>}
                 </div>
             </div>
-            <hr />
-            <form className="mb-3 p-4" onSubmit={handleSubmit} style={{ width: '80%', marginLeft: 'auto', marginRight: 'auto' }}>
-                <label htmlFor="bettingAmount" className="form-label">Place Money to bet (18 Holes)</label>
-                <input
-                    type="number"
-                    className="form-control"
-                    name="bettingAmount"
-                    placeholder='Enter amount'
-                    disabled={!isCreator}
-                    onChange={(e) => setBettingAmount(parseInt(e.target.value))}
-                />
-                <button type="submit" className="btn btn-primary mt-2" disabled={!isCreator} >Submit</button>
 
-                <div>
-                    {isCreator ? (
-                        <Link to="/home" className="btn btn-outline-primary btn-sm m-2">
+            {/* Betting Amount Section */}
+            <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-4 mb-6">
+                <form onSubmit={handleSubmit}>
+                    <div className="mb-4">
+                        <label htmlFor="bettingAmount" className="block text-sm font-medium text-gray-700">Place Money to bet (18 Holes)</label>
+                        <input type="number" className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" name="bettingAmount" placeholder='Enter amount' disabled={!isCreator} onChange={(e) => setBettingAmount(parseInt(e.target.value))} />
+                    </div>
+                    <button type="submit" className="btn btn-primary">Submit</button>
+                </form>
+            </div>
+            <div className="mt-2">
+                        <Link to="/home" className="w-9/12 inline-flex justify-center py-2 px-4 border border-transparent rounded-md text-sm font-medium text-white bg-maroon-normal hover:bg-gray-normal focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-salmon-light">
                             Home
                         </Link>
-                    ) : (
-                        <button className="btn btn-outline-primary btn-sm m-2" disabled>
-                            Home
-                        </button>
-                    )}
-                </div>
-            </form>
+                    </div>
         </div>
+
+
 
 
 

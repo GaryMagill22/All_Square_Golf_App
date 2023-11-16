@@ -5,7 +5,7 @@ module.exports = {
     extend: {
       colors: {
         blue: {
-          light: '#38bdf8', // Custom blue light shade
+          light: '#93c5fd', // Custom blue light shade
           normal: '#0284c7', // Custom blue default shade
           dark: '#172554', // Custom blue dark shade
         },
