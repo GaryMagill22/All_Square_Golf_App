@@ -5,7 +5,7 @@ module.exports = {
     extend: {
       colors: {
         blue: {
-          light: '#93c5fd', // Custom blue light shade
+          light: '#38bdf8', // Custom blue light shade
           normal: '#0284c7', // Custom blue default shade
           dark: '#172554', // Custom blue dark shade
         },
@@ -45,6 +45,7 @@ module.exports = {
           dark: '',
         },
         gray: {
+          lightest: '#d1d5db',
           light:'#9ca3af',
           normal:'#1f2937',
           dark: '#0f172a',
