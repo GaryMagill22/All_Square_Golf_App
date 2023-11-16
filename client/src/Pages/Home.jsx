@@ -2,8 +2,9 @@ import React, { useEffect, useState, useRef, Fragment } from 'react'
 import 'bootstrap/dist/css/bootstrap.css';
 import { Link, useNavigate, useLocation, useParams } from 'react-router-dom';
 import axios from 'axios';
-import { Dialog, Transition } from '@headlessui/react';
-import { CheckIcon, HomeIcon, UserIcon, PlayCircleIcon, MapPinIcon, ChartBarIcon, TrophyIcon } from '@heroicons/react/24/outline';
+import { Dialog, Transition, Menu } from '@headlessui/react';
+import { ChevronDownIcon } from '@heroicons/react/20/solid';
+import { CheckIcon, UserIcon, PlayCircleIcon, MapPinIcon, TrophyIcon } from '@heroicons/react/24/outline';
 import { Axios } from '../helpers/axiosHelper';
 import logo from '../assets/All_Square_Logo.png'; // Adjust the path if your assets folder is structured differently
 
@@ -23,6 +24,8 @@ const Home = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [show, setShow] = useState(false);
     const handleClose = () => { setShow(false) };
+    // validation for empty game/course
+    const [showValidationMessage, setShowValidationMessage] = useState(false);
 
     // Tailwind css Modal 
     const [open, setOpen] = useState(false);
@@ -83,23 +86,43 @@ const Home = () => {
             });
     }, []);
 
-    const handleSelect = (event, type) => {
+
+    // old way of handling select with Bootstrap
+    // const handleSelect = (event, type) => {
+    //     if (type === 'game') {
+    //         setSelectedGame(event.target.value);
+    //         const filteredGame = games.filter((game) => game._id === event.target.value);
+    //         const gameName = filteredGame[0].name;
+    //         localStorage.setItem('user_selected_game', JSON.stringify(gameName.toLowerCase()));
+    //         return;
+    //     } else {
+    //         setSelectedCourse(event.target.value);
+    //     }
+    // }
+
+
+    // New way of handling select with Tailwind
+    const handleSelect = (item, type) => {
         if (type === 'game') {
-            setSelectedGame(event.target.value);
-            const filteredGame = games.filter((game) => game._id === event.target.value);
-            const gameName = filteredGame[0].name;
-            localStorage.setItem('user_selected_game', JSON.stringify(gameName.toLowerCase()));
+            setSelectedGame(item);
+            // const filteredGame = games.filter((game) => game._id === selectedGame);
+            // const gameName = filteredGame[0].name;
+            localStorage.setItem('user_selected_game', JSON.stringify(item.name.toLowerCase()));
             return;
-        } else {
-            setSelectedCourse(event.target.value);
+        } else if (type === 'course') {
+            setSelectedCourse(item);
         }
     }
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         if (!selectedGame || !selectedCourse) {
-            alert('Kindly select the course and game values');
+            // alert('Kindly select the course and game values');
+            setShowValidationMessage(true); // Hide validation message
+            setTimeout(() => setShowValidationMessage(false), 2000);
+            return;
         }
+        setShowValidationMessage(false); // Hide validation message
 
         try {
             const response = await Axios({
@@ -110,9 +133,13 @@ const Home = () => {
                     selectedGame
                 }
             });
+            console.log("Form submitted with", selectedGame, selectedCourse);
+            if (response && response.data && response.data.lobby) {
+                navigate(`/select-game/${response.data.lobby.lobbyId}`); // Ensure the path matches your app's routes
+            }
             navigate(`/select-game/${response.lobby.lobbyId}`);
         } catch (err) {
-            console.log(err)
+            console.error("Error submitting form:", err);
         }
     }
 
@@ -135,27 +162,6 @@ const Home = () => {
     }
 
 
-    // To close modal after inputting the key and navigating to next page.
-    // useEffect(() => {
-    //     const myModal = document.getElementById('myModal');
-    //     const myInput = document.getElementById('myInput');
-
-    //     const handleModalShown = () => {
-    //         myInput.focus();
-    //     };
-
-    //     if (myModal) {
-    //         myModal.addEventListener('shown.bs.modal', handleModalShown);
-    //     }
-
-    //     // This is the cleanup function
-    //     return () => {
-    //         if (myModal) {
-    //             myModal.removeEventListener('shown.bs.modal', handleModalShown);
-    //         }
-    //     };
-    // }, []);
-
     const handleJoinRoom = async (lobbyId) => {
         const inputLobbyId = document.getElementById('lobbyIdInput').value;
 
@@ -174,7 +180,7 @@ const Home = () => {
                 <img className="max-w-full h-auto ml-3" src={logo} alt="All Square Logo" />
             </div>
             <nav className="flex items-center justify-center overflow-y-auto m:h-screen" aria-label="Sidebar">
-                <ul role="list" className="-flex flex-col space-y-4">
+                <ul role="options" className="-flex flex-col space-y-4">
                     {navigation.map((item) => (
                         <li key={item.name}>
                             <Link
@@ -196,51 +202,109 @@ const Home = () => {
             </nav>
 
 
-            <div>
-                <form onSubmit={handleSubmit}>
-                    <div>
-                        <select className='mt-4' onChange={(e) => handleSelect(e, 'game')}>
-                            <option>Select game</option>
-                            {
-                                games && games.length > 0 ? (
-                                    games.map(game => (
-                                        <option value={game._id} key={game._id}>{game.name}</option>
-                                    ))
-                                ) : (
-                                    <option value=''>No games available</option>
-                                )
-                            }
+            <div className="flex justify-center " >
+                <form onSubmit={handleSubmit} className="space-x-4">
+                    <Menu as="div" className="relative inline-block text-left mt-4">
+                        <Menu.Button className="inline-flex w-full justify-center rounded-md bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none">
+                            {selectedGame ? selectedGame.name : "Select Game"}
+                            <ChevronDownIcon className="-mr-1 ml-2 h-5 w-5" aria-hidden="true" />
+                        </Menu.Button>
 
-                        </select>
-                    </div>
+                        <Transition
+                            as={Fragment}
+                            enter="transition ease-out duration-100"
+                            enterFrom="transform opacity-0 scale-95"
+                            enterTo="transform opacity-100 scale-100"
+                            leave="transition ease-in duration-75"
+                            leaveFrom="transform opacity-100 scale-100"
+                            leaveTo="transform opacity-0 scale-95"
+                        >
+                            <Menu.Items className="absolute z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                <div className="py-1">
+                                    {games && games.length > 0 ? (
+                                        games.map((game) => (
+                                            <Menu.Item key={game._id}>
+                                                {({ active }) => (
+                                                    <button
+                                                        type="button"
+                                                        className={`${active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
+                                                            } block w-full px-4 py-2 text-sm text-left`}
+                                                        onClick={() => handleSelect(game, 'game')}
+                                                    >
+                                                        {game.name}
+                                                    </button>
+                                                )}
+                                            </Menu.Item>
+                                        ))
+                                    ) : (
+                                        <div className="px-4 py-2 text-sm text-gray-700">No games available</div>
+                                    )}
+                                </div>
+                            </Menu.Items>
+                        </Transition>
+                    </Menu>
                     {/* Courses Dropdown */}
-                    <div className='mt-4'>
-                        <select onChange={(e) => handleSelect(e, 'course')}>
-                            <option>Select Course</option>
-                            {
-                                course && course.length > 0 ? (
-                                    course.map(course => (
-                                        <option value={course._id} key={course._id}>{course.name}</option>
-                                    ))
-                                ) : (
-                                    <option value=''>No courses available</option>
-                                )
-                            }
+                    <Menu as="div" className="relative inline-block text-left mt-4">
+                        <Menu.Button className="inline-flex w-full justify-center rounded-md bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none">
+                            {selectedCourse ? selectedCourse.name : "Select Course"}
+                            <ChevronDownIcon className="-mr-1 ml-2 h-5 w-5" aria-hidden="true" />
+                        </Menu.Button>
 
-                        </select>
-                    </div>
+                        <Transition
+                            as={Fragment}
+                            enter="transition ease-out duration-100"
+                            enterFrom="transform opacity-0 scale-95"
+                            enterTo="transform opacity-100 scale-100"
+                            leave="transition ease-in duration-75"
+                            leaveFrom="transform opacity-100 scale-100"
+                            leaveTo="transform opacity-0 scale-95"
+                        >
+                            <Menu.Items className="absolute z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                <div className="py-1">
+                                    {course && course.length > 0 ? (
+                                        course.map((course) => (
+                                            <Menu.Item key={course._id}>
+                                                {({ active }) => (
+                                                    <button
+                                                        type="button"
+                                                        className={`${active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
+                                                            } block w-full px-4 py-2 text-sm text-left`}
+                                                        onClick={() => handleSelect(course, 'course')}
+                                                    >
+                                                        {course.name}
+                                                    </button>
+                                                )}
+                                            </Menu.Item>
+                                        ))
+                                    ) : (
+                                        <div className="px-4 py-2 text-sm text-gray-700">No games available</div>
+                                    )}
+                                </div>
+                            </Menu.Items>
+                        </Transition>
+                    </Menu>
                     <div className='mt-4'>
-                        <button className='btn btn-success' disabled={!selectedGame}>Create Lobby</button>
+                        <button
+                            type="submit"
+                            // disabled={!selectedGame || !selectedCourse}
+                            className={`w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${selectedGame && selectedCourse ? 'bg-gray-normal' : 'bg-maroon-normal'
+                                } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-salmon-light`}
+                        >
+                            Create Lobby
+                        </button>
+                        <div >
+                            {showValidationMessage && (
+                                <p className="text-red-500 text-xs italic mt-2">
+                                    Please select both a game and a course.
+                                </p>
+                            )}
+                        </div>
                     </div>
                 </form>
             </div>
 
-            {/* <Button className="btn btn-primary" variant="primary" onClick={handleShow}>
-                Join Round
-            </Button> */}
-
             <div className="mt-4" >
-                <button type="button" className="btn btn-primary" onClick={openModal}>
+                <button type="button" className="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-maroon-normal hover:bg-gray-normal focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-salmon-light" onClick={openModal}>
                     Join Game
                 </button>
             </div>
@@ -283,7 +347,7 @@ const Home = () => {
                                             placeholder="Lobby ID"
                                         />
                                     </div>
-                                    <div className="modal-footer flex justify-end space-x-3">
+                                    <div className="modal-footer flex space-x-3">
                                         <button
                                             type="button"
                                             className="inline-flex justify-center rounded-md border border-transparent px-4 py-2 text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
