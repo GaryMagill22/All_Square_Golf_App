@@ -1,4 +1,5 @@
 import React, { StrictMode } from 'react';
+import './tailwind.css';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, Link, useParams } from 'react-router-dom';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.css';
-import Chat from './Chat';
 import { getSocket } from '../helpers/socketHelper';
 import { Axios } from '../helpers/axiosHelper';
 
@@ -429,43 +428,55 @@ const ScoreCard = () => {
     return (
         <main>
             {!isSubmitted ?
-                <section>
+                <section className="bg-gray-dark">
                     <div>
                         <h6>Game Selected: {selectedGame[0]}, Game type: {gameType}</h6>
-                        <h1 className="HoleNumber">Hole #{currentHoleNumber}</h1>
+                        <h1 className="text-salmon-light">Hole #{currentHoleNumber}</h1>
                     </div>
                     {
-                        gameType === 'individual' && <table className="table" style={{ border: "solid black", margin: "20px auto", maxWidth: "800px" }} >
-                            <thead>
-                                <tr>
-                                    <th style={{ width: '15%' }}>Player</th>
-                                    <th style={{ width: '15%' }}>Score</th>
-                                    <th style={{ width: '70%' }}>Record Score</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    players.map((player) => {
-                                        return (
-                                            <tr>
-                                                <td>{player.username}</td>
-                                                <td>{selectedPlayer[player.username].score}</td>
-                                                <td>
-                                                    <div className="d-flex justify-content-between">
-                                                        <button type="button" className="btn btn-primary btn-sm" value={-2} onClick={() => handleScoreUpdate(player.username, -2)} disabled={!isCreator}>Eagle</button>
-                                                        <button type="button" className="btn btn-secondary btn-sm" value={-1} onClick={() => handleScoreUpdate(player.username, -1)} disabled={!isCreator}>Birdie</button>
-                                                        <button type="button" className="btn btn-dark btn-sm" value={0} onClick={() => handleScoreUpdate(player.username, 0)} disabled={!isCreator}>Par</button>
-                                                        <button type="button" className="btn btn-info btn-sm" value={1} onClick={() => handleScoreUpdate(player.username, 1)} disabled={!isCreator}>Bogie</button>
-                                                        <button type="button" className="btn btn-warning btn-sm" value={2} onClick={() => handleScoreUpdate(player.username, 2)} disabled={!isCreator}>Double Bogey</button>
-                                                        <button type="button" className="btn btn-danger btn-sm" value={10} onClick={() => handleScoreUpdate(player.username, 10)} disabled={!isCreator}>X</button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        )
-                                    })
-                                }
-                            </tbody>
-                        </table>
+                        gameType === 'individual' &&
+                        <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                            <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                    <tr className="text-white">
+                                        <th scope="col" className="px-2 py-3 text-center">Player</th>
+                                        <th scope="col" className="px-2 py-3">Score</th>
+                                        <th scope="col" className="px-2 py-3 text-center">Record Score</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        players.map((player) => {
+                                            return (
+                                                <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                                    <td className="px-2 py-4 whitespace-nowrap" >
+                                                        <div className="flex items-center space-x-3">
+                                                            <div className="w-6 h-6 overflow-hidden bg-salmon-light rounded-full dark:bg-blue-dark">
+                                                                <svg className="w-full h-full text-salmon-light" fill="currentColor" viewBox="2 0 15 10" xmlns="http://www.w3.org/2000/svg">
+                                                                    <path fillRule="evenodd" d="M10 5a2 2 0 100-4 2 2 0 000 4zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"></path>
+                                                                </svg>
+                                                            </div>
+                                                            <span className="font-medium text-gray-900 dark:text-blue-dark">{player.username}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-4 py-4">{selectedPlayer[player.username].score}</td>
+                                                    <td className="px-4 py-4">
+                                                        <div className="flex items-center gap-1">
+                                                            <button type="button" className="text-white bg-blue-dark hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-3 py-2.5 text-center " onClick={() => handleScoreUpdate(player.username, -2)} disabled={!isCreator}>-2</button>
+                                                            <button type="button" className="text-white bg-maroon-normal hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-3 py-2.5 text-center " onClick={() => handleScoreUpdate(player.username, -1)} disabled={!isCreator}>-1</button>
+                                                            <button type="button" className="text-white bg-blue-light hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-3 py-2.5 text-center " onClick={() => handleScoreUpdate(player.username, 0)} disabled={!isCreator}>Par</button>
+                                                            <button type="button" className="text-white bg-salmon-light hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-3 py-2.5 text-center " onClick={() => handleScoreUpdate(player.username, 1)} disabled={!isCreator}>+1</button>
+                                                            <button type="button" className="text-white bg-indigo-normal hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-3 py-2.5 text-center " onClick={() => handleScoreUpdate(player.username, 2)} disabled={!isCreator}>+2</button>
+                                                            <button type="button" className="text-white bg-red-normal hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-3 py-2.5 text-center " onClick={() => handleScoreUpdate(player.username, 10)} disabled={!isCreator}>X</button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            )
+                                        })
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
                     }
                     {
                         gameType === 'team' && teams.map((team) => {
@@ -475,7 +486,7 @@ const ScoreCard = () => {
                                     {
                                         team.players.map((player) => {
                                             return (
-                                                <table className="table" style={{ border: "solid black", margin: "20px auto", maxWidth: "800px" }} >
+                                                <table className="" style={{ border: "solid black", margin: "20px auto", maxWidth: "800px" }} >
                                                     <thead>
                                                         <tr>
                                                             <th style={{ width: '15%' }}>Player</th>
@@ -486,7 +497,7 @@ const ScoreCard = () => {
                                                     <tbody>
                                                         <tr>
                                                             <td>{player.name}</td>
-                                                            <td>{selectedPlayer[player.name].score}</td>
+                                                            <td>{selectedPlayer[player.username].score}</td>
                                                             <td>
                                                                 <div className="d-flex justify-content-between">
                                                                     <button type="button" className="btn btn-primary" value={-2} onClick={() => handleScoreUpdate(player.name, -2)} disabled={!isCreator}>Eagle</button>
@@ -510,45 +521,43 @@ const ScoreCard = () => {
                     <div className="row justify-content-center">
                         <div className="col-6 text-center">
 
-                            <button style={{ margin: "20px" }} type="submit" onClick={(event) => submitScore(event)} className="btn btn-success" disabled={!isCreator}>Submit Score</button>
+                            <button type="submit" disabled={!isCreator} className="inline-flex justify-center py-2 px-4 border border-transparent rounded-md text-sm font-medium text-white bg-maroon-normal" onClick={(event) => submitScore(event)}>Submit Score</button>
                         </div>
                     </div>
-                    <div className="container"  >
-                        <div className="row justify-content-center">
-                            <div className="col-md-4">
-                                <h1>ScoreCard</h1>
-                                <table className="table" style={{ border: "solid black" }}>
-                                    <thead>
-                                        <tr>
-                                            <th>Player</th>
-                                            <th id="totalScore">Score</th>
-                                            <th>Points</th>
+                    <div className="container mx-auto py-4">
+                        <h1 className="text-salmon-light text-center text-3xl font-bold mb-4">ScoreCard</h1>
+                        <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                            <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                    <tr className="text-white " >
+                                        <th className="px-6 py-3">Player</th>
+                                        <th id="totalScore" className="px-6 py-3">Score</th>
+                                        <th className="px-6 py-3">Points</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        gameType === 'individual'
+                                            ? scorePoints.map((player) => (
+                                                <tr key={player.user} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                                    <td className="px-6 py-4 whitespace-nowrap">{player.user}</td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">{player.score}</td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">{player.point}</td>
+                                                </tr>
+                                            ))
+                                            : teamPoints.map((team) => (
+                                                <tr key={team.team} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                                    <td className="px-6 py-4 whitespace-nowrap">{team.team}</td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">{team.score}</td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">{team.point}</td>
+                                                </tr>
+                                            ))
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
 
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            gameType === 'individual'
-                                                ? scorePoints.map((player) => (
-                                                    <tr key={player.user}>
-                                                        <td>{player.user}</td>
-                                                        <td>{player.score}</td>
-                                                        <td>{player.point}</td>
-                                                    </tr>
-                                                ))
-                                                : teamPoints.map((team) => (
-                                                    <tr key={team.team}>
-                                                        <td>{team.team}</td>
-                                                        <td>{team.score}</td>
-                                                        <td>{team.point}</td>
-                                                    </tr>
-                                                ))
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
                     <div>
                         <h4>Betting Amount: ${bettingAmount}</h4>
                     </div>
@@ -627,6 +636,7 @@ const ScoreCard = () => {
             <Link to="/home" className="btn btn-outline-primary btn-sm m-2">
                 Home
             </Link>
+
         </main >
 
     )

@@ -1,7 +1,6 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
 import axios from 'axios';
-import 'bootstrap/dist/css/bootstrap.css';
 import { Link, useNavigate, useLocation, useParams } from 'react-router-dom';
 import generateRandomRoomName from '../helpers/roomKeyGenarator';
 import { getSocket } from '../helpers/socketHelper';
@@ -16,7 +15,7 @@ const LobbyPage = () => {
     const [gamePicked, setGamePicked] = useState('');
     const [coursePicked, setCoursePicked] = useState('');
     const [course, setCourse] = useState([]);
-    const [loaded, setLoaded] = useState(false);
+    const [setLoaded] = useState(false);
     const [games, setGames] = useState([]);
     const [players, setPlayers] = useState([]);
     const [creator, setCreator] = useState('');
@@ -234,122 +233,106 @@ const LobbyPage = () => {
 
 
     return (
-        <div className='container'>
-            <div>
-                <h1>Lobby Code: {lobbyId}</h1>
-
-            </div>
-            <div className="player-container">
-                <p></p>
-
-            </div>
-            <div className="loadingPlayerContainer" >
-                <h3>Players Loading...</h3>
-                {
-                    players.map((p, i) => {
-                        return <h4 key={i} >{p.username}</h4>
-                    })
-                }
+        <div className=' flex flex-col container min-h-screeen bg-gray-dark   mx-auto p-4'>
+            <div className="bg-gray-light dark:bg-gray-light shadow rounded-lg p-4 mb-4 flex-grow border-2 border-salmon-light">
+                <h1 class="mb-4 text-3xl font-extrabold text-gray-normal dark:text-gray-dark md:text-5xl lg:text-6xl"><span class="text-transparent bg-clip-text bg-gradient-to-r to-blue-normal from-maroon-normal">Lobby Code:</span> {lobbyId}</h1>
+                <p class="text-lg font-normal text-black lg:text-lg dark:text-gray-400">Give Lobby Code to playing partners; Note that it is case sensative.</p>
+                {/* <h1 className="text-xl font-semibold">Lobby Code: {lobbyId}</h1> */}
             </div>
 
-            <div className='mt-5'>
-                {
-                    (isCreator && gameType === 'team') && <div>
-                        <p>Note: Create two teams and add users to each team to be able to participate in the game</p>
-                        <div style={{ width: '80%', marginLeft: 'auto', marginRight: 'auto' }}>
-                            <div className='row'>
-                                <div className='col form-group'>
-                                    <input className='form-control' placeholder='Enter team name' onChange={(e) => setTeamValue(e.target.value)} />
-                                </div>
-                                <div className='col-auto form-group'>
-                                    <button className='btn btn-success' onClick={handleCreateTeam}>Create team</button>
+            {/* Player Loading Section */}
+            <div className="bg-gray-light dark:bg-gray-light shadow rounded-lg p-4 mb-6 flex-grow border-2 border-salmon-light">
+                <h3 className="font-bold text-white">Players</h3>
+                <div className="justify-center space-y-2">
+                    {players.map((p, i) => (
+                        <div key={i} className="flex justify-center items-center space-x-2 space-y-0">
+                            <div className="flex-shrink-0">
+                                <div className="w-6 h-6 overflow-hidden bg-salmon-light rounded-full dark:bg-blue-dark">
+                                    <svg className="w-full h-full text-salmon-light" fill="currentColor" viewBox="2 0 15 10" xmlns="http://www.w3.org/2000/svg">
+                                        <path fillRule="evenodd" d="M10 5a2 2 0 100-4 2 2 0 000 4zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"></path>
+                                    </svg>
                                 </div>
                             </div>
-                            <div className='row'>
-                                <h5>Add Players to team</h5>
-                                <div className='col form-group'>
-                                    <select className='form-control' onChange={(e) => { setSelectedTeam(e.target.value) }}>
-                                        <option value="Nil">Select team</option>
-                                        {
-                                            teams.map((team, index) => {
-                                                return (
-                                                    <option key={index + 1} value={team.teamName}>{team.teamName}</option>
-                                                )
-                                            })
-                                        }
-                                    </select>
-                                </div>
-                                <div className='col form-group'>
-                                    <select className='form-control' onChange={(e) => { setSelectedPlayer(e.target.value) }}>
-                                        <option value="Nil">Select player</option>
-                                        {
-                                            players.map((player, index) => {
-                                                return (
-                                                    <option value={player.username} key={index + 1}>{player.username}</option>
-                                                )
-                                            })
-                                        }
-                                    </select>
-                                </div>
-                                <div className='col-auto form-group'>
-                                    <button className='btn btn-info' onClick={addPlayerToTeam}>Add player to team</button>
-                                </div>
+                            <h5 className=" text-gray-800 dark:text-blue-dark">{p.username}</h5>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+
+
+
+            {/* Team Creation Section */}
+            {isCreator && gameType === 'team' && (
+                <div className="bg-gray-light dark:bg-gray-light shadow rounded-lg p-4 mb-6 flex flex-col border-2 border-salmon-light">
+                    <p>Note: Create two teams and add users to each team to be able to participate in the game</p>
+                    <div className="space-y-4">
+                        <div className='flex flex-col md:flex-row items-center gap-4 flex-grow'>
+                            <input className='form-control flex-grow' placeholder='Enter team name' onChange={(e) => setTeamValue(e.target.value)} />
+                            <button className='btn btn-success' onClick={handleCreateTeam}>Create team</button>
+                        </div>
+                        <div>
+                            <h5>Add Players to team</h5>
+                            <div className='flex flex-col md:flex-row items-center gap-4 border-2 border-salmon-light'>
+                                <select className='form-control flex-grow' onChange={(e) => setSelectedTeam(e.target.value)}>
+                                    <option value="Nil">Select team</option>
+                                    {teams.map((team, index) => (
+                                        <option key={index} value={team.teamName}>{team.teamName}</option>
+                                    ))}
+                                </select>
+                                <select className='form-control flex-grow' onChange={(e) => setSelectedPlayer(e.target.value)}>
+                                    <option value="Nil">Select player</option>
+                                    {players.map((player, index) => (
+                                        <option key={index} value={player.username}>{player.username}</option>
+                                    ))}
+                                </select>
+                                <button className='btn btn-info' onClick={addPlayerToTeam}>Add player to team</button>
                             </div>
                         </div>
                     </div>
-                }
-                <div className='row'>
-                    {
-                        teams.length > 0 ? teams.map((item, index) => {
-                            return (
-                                <div className='col-md-6' key={index + 1}>
-                                    <h4>{item.teamName}</h4>
-                                    {
-                                        item.players && <ul>
-                                            {
-                                                item.players.map((data) => {
-                                                    return (
-                                                        <li key={data.id} className='mt-2'>
-                                                            {data.name}
-                                                            <button className='ml-2' onClick={() => removeUserFromTeam(data.id, item.teamName)}>x</button>
-                                                        </li>
-                                                    )
-                                                })
-                                            }
-                                        </ul>
-                                    }
-                                </div>
-                            )
-                        }) : <p>No teams available...</p>
-                    }
                 </div>
-            </div>
-            <hr />
-            <form className="mb-3 p-4" onSubmit={handleSubmit} style={{ width: '80%', marginLeft: 'auto', marginRight: 'auto' }}>
-                <label htmlFor="bettingAmount" className="form-label">Place Money to bet (18 Holes)</label>
-                <input
-                    type="number"
-                    className="form-control"
-                    name="bettingAmount"
-                    placeholder='Enter amount'
-                    disabled={!isCreator}
-                    onChange={(e) => setBettingAmount(parseInt(e.target.value))}
-                />
-                <button type="submit" className="btn btn-primary mt-2" disabled={!isCreator} >Submit</button>
+            )}
 
-                <div>
-                    {isCreator ? (
-                        <Link to="/home" className="btn btn-outline-primary btn-sm m-2">
-                            Home
-                        </Link>
-                    ) : (
-                        <button className="btn btn-outline-primary btn-sm m-2" disabled>
-                            Home
-                        </button>
-                    )}
+            {/* Teams Display Section */}
+            {gameType === 'team' && (
+                <div className="flex flex-col bg-gray-light dark:bg-gray-light shadow rounded-lg p-4 mb-6 border-2 border-salmon-light">
+                    <div className='grid grid-cols-1 md:grid-cols-2 gap-4 flex-grow'>
+                        {teams.length > 0 ? teams.map((item, index) => (
+                            <div key={index} className='border border-gray-200 rounded-lg p-4'>
+                                <h4 className="font-semibold">{item.teamName}</h4>
+                                {item.players && (
+                                    <ul className="list-disc pl-5">
+                                        {item.players.map((data) => (
+                                            <li key={data.id} className='mt-2'>
+                                                {data.name}
+                                                <button className='ml-2 text-red-500' onClick={() => removeUserFromTeam(data.id, item.teamName)}>x</button>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </div>
+                        )) : <p>No teams available...</p>}
+                    </div>
                 </div>
-            </form>
+            )}
+            {/* Betting Amount Section */}
+            <div className="bg-gray-light dark:bg-gray-light shadow rounded-lg p-4 mb-6 border-2 border-salmon-light">
+                <form onSubmit={handleSubmit}>
+                    <div className="mb-4">
+                        <label htmlFor="bettingAmount" className="block text-lg font-medium text-gray-700">Bet Amount</label>
+                        <input type="number" className="mt-1 block w-full border-2 border-salmon-light rounded-md shadow-sm focus:border-blue-dark focus:ring-blue-dark sm:text-sm" name="bettingAmount" placeholder='Enter amount' disabled={!isCreator} onChange={(e) => setBettingAmount(parseInt(e.target.value))} />
+                    </div>
+                    <button type="submit" disabled={!isCreator} className="inline-flex justify-center py-2 px-4 border border-transparent rounded-md text-sm font-medium text-white bg-maroon-normal hover:bg-gray-normal focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-salmon-light">Submit</button>
+                </form>
+            </div>
+            <div className="mt-2">
+                <Link to="/home" disabled={!isCreator} className="w-9/12 inline-flex justify-center py-2 px-4 border border-transparent rounded-md text-sm font-medium text-white bg-gray-normal hover:bg-gray-normal focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-salmon-light">
+                    Home
+                </Link>
+            </div>
         </div>
+
+
 
 
 
@@ -359,4 +342,3 @@ const LobbyPage = () => {
 
 
 export default LobbyPage;
-

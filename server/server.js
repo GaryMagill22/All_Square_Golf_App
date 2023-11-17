@@ -60,17 +60,17 @@ app.get('/', (req, res) => {
 
 
 
- const options = {
-     key: fs.readFileSync('/etc/ssl/private/mssl.key'),
-     cert: fs.readFileSync('/etc/ssl/certs/mssl.crt'),
- };
+const options = {
+    key: fs.readFileSync('/etc/ssl/private/mssl.key'),
+    cert: fs.readFileSync('/etc/ssl/certs/mssl.crt'),
+};
 
 
 const socketServer = require('https').createServer(options);
 
 const io = require('socket.io')(socketServer, {
     cors: {
-            origin: '*',
+        origin: '*',
     },
 });
 
@@ -91,7 +91,7 @@ socketServer.on('clientError', (error, socket) => {
 app.listen(port, () => console.log(`Listening on port: ${port}`));
 
 socketServer.listen(9000, () => {
-        console.log(`Socket Server is started at port 9000`);
+    console.log(`Socket Server is started at port 9000`);
 });
 
 
