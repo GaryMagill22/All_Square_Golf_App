@@ -1,7 +1,6 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
 import axios from 'axios';
-import 'bootstrap/dist/css/bootstrap.css';
 import { Link, useNavigate, useLocation, useParams } from 'react-router-dom';
 import generateRandomRoomName from '../helpers/roomKeyGenarator';
 import { getSocket } from '../helpers/socketHelper';
@@ -243,11 +242,25 @@ const LobbyPage = () => {
 
             {/* Player Loading Section */}
             <div className="bg-gray-light dark:bg-gray-light shadow rounded-lg p-4 mb-6 flex-grow border-2 border-salmon-light">
-                <h3 className="font-semibold">Players Loading...</h3>
-                {players.map((p, i) => (
-                    <h4 key={i}>{p.username}</h4>
-                ))}
+                <h3 className="font-bold text-white">Players</h3>
+                <div className="justify-center space-y-2">
+                    {players.map((p, i) => (
+                        <div key={i} className="flex justify-center items-center space-x-2 space-y-0">
+                            <div className="flex-shrink-0">
+                                <div className="w-6 h-6 overflow-hidden bg-salmon-light rounded-full dark:bg-blue-dark">
+                                    <svg className="w-full h-full text-salmon-light" fill="currentColor" viewBox="2 0 15 10" xmlns="http://www.w3.org/2000/svg">
+                                        <path fillRule="evenodd" d="M10 5a2 2 0 100-4 2 2 0 000 4zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <h5 className=" text-gray-800 dark:text-blue-dark">{p.username}</h5>
+                        </div>
+                    ))}
+                </div>
             </div>
+
+
+
 
             {/* Team Creation Section */}
             {isCreator && gameType === 'team' && (
@@ -282,38 +295,38 @@ const LobbyPage = () => {
 
             {/* Teams Display Section */}
             {gameType === 'team' && (
-            <div className="flex flex-col bg-gray-light dark:bg-gray-light shadow rounded-lg p-4 mb-6 border-2 border-salmon-light">
-                <div className='grid grid-cols-1 md:grid-cols-2 gap-4 flex-grow'>
-                    {teams.length > 0 ? teams.map((item, index) => (
-                        <div key={index} className='border border-gray-200 rounded-lg p-4'>
-                            <h4 className="font-semibold">{item.teamName}</h4>
-                            {item.players && (
-                                <ul className="list-disc pl-5">
-                                    {item.players.map((data) => (
-                                        <li key={data.id} className='mt-2'>
-                                            {data.name}
-                                            <button className='ml-2 text-red-500' onClick={() => removeUserFromTeam(data.id, item.teamName)}>x</button>
-                                        </li>
-                                    ))}
-                                </ul>
-                            )}
-                        </div>
-                    )) : <p>No teams available...</p>}
+                <div className="flex flex-col bg-gray-light dark:bg-gray-light shadow rounded-lg p-4 mb-6 border-2 border-salmon-light">
+                    <div className='grid grid-cols-1 md:grid-cols-2 gap-4 flex-grow'>
+                        {teams.length > 0 ? teams.map((item, index) => (
+                            <div key={index} className='border border-gray-200 rounded-lg p-4'>
+                                <h4 className="font-semibold">{item.teamName}</h4>
+                                {item.players && (
+                                    <ul className="list-disc pl-5">
+                                        {item.players.map((data) => (
+                                            <li key={data.id} className='mt-2'>
+                                                {data.name}
+                                                <button className='ml-2 text-red-500' onClick={() => removeUserFromTeam(data.id, item.teamName)}>x</button>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </div>
+                        )) : <p>No teams available...</p>}
+                    </div>
                 </div>
-            </div>
             )}
             {/* Betting Amount Section */}
             <div className="bg-gray-light dark:bg-gray-light shadow rounded-lg p-4 mb-6 border-2 border-salmon-light">
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">
-                        <label htmlFor="bettingAmount" className="block text-sm font-medium text-gray-700">Place Money to bet (18 Holes)</label>
-                        <input type="number" className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" name="bettingAmount" placeholder='Enter amount' disabled={!isCreator} onChange={(e) => setBettingAmount(parseInt(e.target.value))} />
+                        <label htmlFor="bettingAmount" className="block text-lg font-medium text-gray-700">Bet Amount</label>
+                        <input type="number" className="mt-1 block w-full border-2 border-salmon-light rounded-md shadow-sm focus:border-blue-dark focus:ring-blue-dark sm:text-sm" name="bettingAmount" placeholder='Enter amount' disabled={!isCreator} onChange={(e) => setBettingAmount(parseInt(e.target.value))} />
                     </div>
-                    <button type="submit" className="inline-flex justify-center py-2 px-4 border border-transparent rounded-md text-sm font-medium text-white bg-maroon-normal hover:bg-gray-normal focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-salmon-light">Submit</button>
+                    <button type="submit" disabled={!isCreator} className="inline-flex justify-center py-2 px-4 border border-transparent rounded-md text-sm font-medium text-white bg-maroon-normal hover:bg-gray-normal focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-salmon-light">Submit</button>
                 </form>
             </div>
             <div className="mt-2">
-                <Link to="/home" className="w-9/12 inline-flex justify-center py-2 px-4 border border-transparent rounded-md text-sm font-medium text-white bg-gray-normal hover:bg-gray-normal focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-salmon-light">
+                <Link to="/home" disabled={!isCreator} className="w-9/12 inline-flex justify-center py-2 px-4 border border-transparent rounded-md text-sm font-medium text-white bg-gray-normal hover:bg-gray-normal focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-salmon-light">
                     Home
                 </Link>
             </div>
