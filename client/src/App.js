@@ -8,7 +8,6 @@ import Home from './Pages/Home';
 import GamesPage from './Pages/GamesPage';
 import LobbyPage from './Pages/LobbyPage';
 import ProfileCard from './Components/ProfileCard';
-import Register from './Pages/Register';
 import Cookie from './Pages/Cookie';
 import Login from './Pages/Login';
 import DashBoard from './Pages/DashBoard';
