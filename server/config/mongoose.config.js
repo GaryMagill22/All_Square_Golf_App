@@ -12,4 +12,5 @@ mongoose.connect((`mongodb+srv://${username}:${dbPassword}@mongopractice.zp13odz
     .catch(err => console.log("Something went wrong when connecting to MongoDB", err));
 
 
+    
 module.exports = db;
