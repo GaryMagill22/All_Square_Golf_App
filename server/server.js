@@ -73,6 +73,18 @@ const io = require('socket.io')(socketServer, {
 });
 
 
+io.on('connection', (socket) => {
+    console.log('A user connected with Socket.io');
+});
+
+
+// Handle client errors on the server
+socketServer.on('clientError', (error, socket) => {
+    console.error('Client Error on Socket.io Server:', error);
+    socket.destroy();
+});
+
+
 // Express Server listening on port 8000
 app.listen(port, () => console.log(`Express Server Listening on port: ${port}`));
 

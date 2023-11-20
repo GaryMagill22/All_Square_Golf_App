@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, Link, useParams } from 'react-router-dom';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.css';
-import Chat from './Chat';
 import { getSocket } from '../helpers/socketHelper';
 import { Axios } from '../helpers/axiosHelper';
 
@@ -125,7 +124,7 @@ const ScoreCard = () => {
             }
 
             // Make a POST request to the backend to save the round data
-            await axios.post('http://localhost:8000/api/rounds/new', roundData);
+            await axios.post('http://localhost:8000.club/api/rounds/new', roundData);
             navigate("/home");
         } catch (error) {
             console.log('Error saving round data:', error);
@@ -431,7 +430,7 @@ const ScoreCard = () => {
             {!isSubmitted ?
                 <section className="bg-gray-dark">
                     <div>
-                        <h6>Game Selected: {selectedGame[0]}, Game type: {gameType}</h6>
+                        <h6 className="text-white" >Game Selected: {selectedGame[0]}, Game type: {gameType}</h6>
                         <h1 className="text-salmon-light">Hole #{currentHoleNumber}</h1>
                     </div>
                     {
@@ -633,15 +632,14 @@ const ScoreCard = () => {
                         </button>
                     </div>
                 </div>
-                }
-                    <Link to="/home" className="btn btn-outline-primary btn-sm m-2">
-                        Home
-                    </Link>
+            }
+            <Link to="/home" className="btn btn-outline-primary btn-sm m-2">
+                Home
+            </Link>
 
         </main >
 
     )
-
 
 };
 export default ScoreCard;

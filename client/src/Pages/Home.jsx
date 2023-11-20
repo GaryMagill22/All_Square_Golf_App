@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useRef, Fragment } from 'react'
-import 'bootstrap/dist/css/bootstrap.css';
 import { Link, useNavigate, useLocation, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { Dialog, Transition, Listbox } from '@headlessui/react';
 import { UserIcon, PlayCircleIcon, MapPinIcon, TrophyIcon, CheckIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline';
 import { Axios } from '../helpers/axiosHelper';
 import logo from '../assets/All_Square_Logo.png'; // Adjust the path if your assets folder is structured differently
+import 'tailwindcss/tailwind.css';
 
 
 
@@ -97,24 +97,26 @@ const Home = () => {
     //     } else {
     //         setSelectedCourse(event.target.value);
     //     }
-    // }
+    // };
 
 
     // New way of handling select with Tailwind
-    const handleSelect = (item, type) => {
+    const handleSelect = (selectedItem, type) => {
         if (type === 'game') {
-            setSelectedGame(item);
+            setSelectedGame(selectedItem);
             // const filteredGame = games.filter((game) => game._id === selectedGame);
-            // const gameName = filteredGame[0].name;
-            localStorage.setItem('user_selected_game', JSON.stringify(item.name.toLowerCase()));
+            const gameName = selectedItem.name;
+            localStorage.setItem('user_selected_game', JSON.stringify(gameName.toLowerCase()));
             return;
         } else if (type === 'course') {
-            setSelectedCourse(item);
+            setSelectedCourse(selectedItem);
         }
-    }
+    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        console.log('Selected Game:', selectedGame);
+        console.log('Selected Course:', selectedCourse);
         if (!selectedGame || !selectedCourse) {
             // alert('Kindly select the course and game values');
             setShowValidationMessage(true); // Hide validation message
@@ -204,130 +206,125 @@ const Home = () => {
             <div className="flex justify-center " >
                 <form onSubmit={handleSubmit} className="justify-center">
                     {/* Dropdown Menu for Games */}
-                    <Listbox value={selectedGame} onChange={setSelectedGame}>
-            {({ open }) => (
-                <>
-                    {/* <Listbox.Label className="block text-sm font-medium leading-6 text-white">Select Game:</Listbox.Label> */}
-                    <div className="relative mt-2">
-                        <Listbox.Button className="relative w-full cursor-default mb-2 rounded-md bg-blue-light py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                            <span className="block truncate">{selectedGame ? selectedGame.name : 'Select Game'}</span>
-                            <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                                <ChevronUpDownIcon className="h-5 w-5 text-black" aria-hidden="true" />
-                            </span>
-                        </Listbox.Button>
-                        <Transition
-                            show={open}
-                            as={Fragment}
-                            leave="transition ease-in duration-100"
-                            leaveFrom="opacity-100"
-                            leaveTo="opacity-0"
-                        >
-                            <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                                {games.map((game) => (
-                                    <Listbox.Option
-                                        key={game._id}
-                                        value={game}
-                                        className={({ active }) =>
-                                            `relative cursor-default select-none py-2 pl-3 pr-9 ${
-                                                active ? 'bg-gray-dark text-white' : 'text-gray-900'
-                                            }`
-                                        }
+                    <Listbox value={selectedGame} onChange={(item) => handleSelect(item, 'game')}>
+                        {/* <Listbox value={selectedGame} onChange={setSelectedGame}> */}
+                        {({ open }) => (
+                            <>
+                                {/* <Listbox.Label className="block text-sm font-medium leading-6 text-white">Select Game:</Listbox.Label> */}
+                                <div className="relative mt-2">
+                                    <Listbox.Button className="relative w-full cursor-default mb-2 rounded-md bg-blue-light py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                        <span className="block truncate">{selectedGame ? selectedGame.name : 'Select Game'}</span>
+                                        <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                                            <ChevronUpDownIcon className="h-5 w-5 text-black" aria-hidden="true" />
+                                        </span>
+                                    </Listbox.Button>
+                                    <Transition
+                                        show={open}
+                                        as={Fragment}
+                                        leave="transition ease-in duration-100"
+                                        leaveFrom="opacity-100"
+                                        leaveTo="opacity-0"
                                     >
-                                        {({ selected, active }) => (
-                                            <>
-                                                <span className={`block truncate ${selected ? 'font-semibold' : 'font-normal'}`}>
-                                                    {game.name}
-                                                </span>
-                                                {selected && (
-                                                    <span
-                                                        className={`absolute inset-y-0 right-0 flex items-center pr-4 ${
-                                                            active ? 'text-white' : 'text-indigo-600'
-                                                        }`}
-                                                    >
-                                                        <CheckIcon className="h-5 w-5" aria-hidden="true" />
-                                                    </span>
-                                                )}
-                                            </>
-                                        )}
-                                    </Listbox.Option>
-                                ))}
-                            </Listbox.Options>
-                        </Transition>
-                    </div>
-                </>
-            )}
-        </Listbox>
+                                        <Listbox.Options className="form-select absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                                            {games.map((gameItem) => (
+                                                <Listbox.Option
+                                                    key={games._id}
+                                                    value={gameItem}
+                                                    className={({ active }) =>
+                                                        `relative cursor-default select-none py-2 pl-3 pr-9 ${active ? 'bg-gray-dark text-white' : 'text-gray-900'
+                                                        }`
+                                                    }
+                                                >
+                                                    {({ selected, active }) => (
+                                                        <>
+                                                            <span className={`block truncate ${selected ? 'font-semibold' : 'font-normal'}`}>
+                                                                {gameItem.name}
+                                                            </span>
+                                                            {selected && (
+                                                                <span
+                                                                    className={`absolute inset-y-0 right-0 flex items-center pr-4 ${active ? 'text-white' : 'text-indigo-600'
+                                                                        }`}
+                                                                >
+                                                                    <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                                                                </span>
+                                                            )}
+                                                        </>
+                                                    )}
+                                                </Listbox.Option>
+                                            ))}
+                                        </Listbox.Options>
+                                    </Transition>
+                                </div>
+                            </>
+                        )}
+                    </Listbox>
 
-        {/* Listbox for Courses */}
-        <Listbox value={selectedCourse} onChange={setSelectedCourse}>
-            {({ open }) => (
-                <>
-                    {/* <Listbox.Label className="block text-sm font-medium leading-6 text-white mt-1">Select Course:</Listbox.Label> */}
-                    <div className="relative mt-2">
-                        <Listbox.Button className="relative w-full cursor-default rounded-md bg-blue-light py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                            <span className="block truncate">{selectedCourse ? selectedCourse.name : 'Select Course'}</span>
-                            <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                                <ChevronUpDownIcon className="h-5 w-5 text-black" aria-hidden="true" />
-                            </span>
-                        </Listbox.Button>
-                        <Transition
-                            show={open}
-                            as={Fragment}
-                            leave="transition ease-in duration-100"
-                            leaveFrom="opacity-100"
-                            leaveTo="opacity-0"
-                        >
-                            <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                                {course.map((courseItem) => (
-                                    <Listbox.Option
-                                        key={courseItem._id}
-                                        value={courseItem}
-                                        className={({ active }) =>
-                                            `relative cursor-default select-none py-2 pl-3 pr-9 ${
-                                                active ? 'bg-gray-dark text-white' : 'text-gray-900'
-                                            }`
-                                        }
+                    {/* Listbox for Courses */}
+                    <Listbox value={selectedCourse} onChange={(item) => handleSelect(item, 'course')}>
+                        {/* <Listbox value={selectedCourse} onChange={setSelectedCourse}> */}
+                        {({ open }) => (
+                            <>
+                                {/* <Listbox.Label className="block text-sm font-medium leading-6 text-white mt-1">Select Course:</Listbox.Label> */}
+                                <div className="relative mt-2">
+                                    <Listbox.Button className="relative w-full cursor-default rounded-md bg-blue-light py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                        <span className="block truncate">{selectedCourse ? selectedCourse.name : 'Select Course'}</span>
+                                        <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                                            <ChevronUpDownIcon className="h-5 w-5 text-black" aria-hidden="true" />
+                                        </span>
+                                    </Listbox.Button>
+                                    <Transition
+                                        show={open}
+                                        as={Fragment}
+                                        leave="transition ease-in duration-100"
+                                        leaveFrom="opacity-100"
+                                        leaveTo="opacity-0"
                                     >
-                                        {({ selected, active }) => (
-                                            <>
-                                                <span className={`block truncate ${selected ? 'font-semibold' : 'font-normal'}`}>
-                                                    {courseItem.name}
-                                                </span>
-                                                {selected && (
-                                                    <span
-                                                        className={`absolute inset-y-0 right-0 flex items-center pr-4 ${
-                                                            active ? 'text-white' : 'text-indigo-600'
-                                                        }`}
-                                                    >
-                                                        <CheckIcon className="h-5 w-5" aria-hidden="true" />
-                                                    </span>
-                                                )}
-                                            </>
-                                        )}
-                                    </Listbox.Option>
-                                ))}
-                            </Listbox.Options>
-                        </Transition>
-                    </div>
-                </>
-            )}
-        </Listbox>
-                    <div className='flex justify-center mt-4'>
+                                        <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                                            {course.map((courseItem) => (
+                                                <Listbox.Option
+                                                    key={course._id}
+                                                    value={courseItem}
+                                                    className={({ active }) =>
+                                                        `relative cursor-default select-none py-2 pl-3 pr-9 ${active ? 'bg-gray-dark text-white' : 'text-gray-900'
+                                                        }`
+                                                    }
+                                                >
+                                                    {({ selected, active }) => (
+                                                        <>
+                                                            <span className={`block truncate ${selected ? 'font-semibold' : 'font-normal'}`}>
+                                                                {courseItem.name}
+                                                            </span>
+                                                            {selected && (
+                                                                <span
+                                                                    className={`absolute inset-y-0 right-0 flex items-center pr-4 ${active ? 'text-white' : 'text-indigo-600'
+                                                                        }`}
+                                                                >
+                                                                    <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                                                                </span>
+                                                            )}
+                                                        </>
+                                                    )}
+                                                </Listbox.Option>
+                                            ))}
+                                        </Listbox.Options>
+                                    </Transition>
+                                </div>
+                            </>
+                        )}
+                    </Listbox>
+                    <div className='flex flex-col items-center mt-4'>
                         <button
                             type="submit"
-                            // disabled={!selectedGame || !selectedCourse}
-                            className={`w-60 flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${selectedGame && selectedCourse ? 'bg-gray-normal' : 'bg-maroon-normal'
+                            className={`w-60 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${selectedGame && selectedCourse ? 'bg-gray-normal' : 'bg-maroon-normal'
                                 } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-salmon-light`}
                         >
                             Create Lobby
                         </button>
-                        <div >
-                            {showValidationMessage && (
-                                <p className="text-red-500 text-xs italic mt-2">
-                                    Please select Game and Course.
-                                </p>
-                            )}
-                        </div>
+                        {showValidationMessage && (
+                            <p className="w-60 text-red-500 text-md italic mt-2 text-center">
+                                Please select Game and Course.
+                            </p>
+                        )}
                     </div>
                 </form>
             </div>
@@ -338,7 +335,7 @@ const Home = () => {
                 </button>
             </div>
 
-        {/* Tailwind css Modal for joining Game */}
+            {/* Tailwind css Modal for joining Game */}
             <Transition.Root show={open} as={Fragment}>
                 <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={() => setOpen(false)}>
                     <Transition.Child

@@ -1,6 +1,9 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
 import axios from 'axios';
+import 'bootstrap/dist/css/bootstrap.css';
+import 'tailwindcss/tailwind.css';
+
 import { Link, useNavigate, useLocation, useParams } from 'react-router-dom';
 import generateRandomRoomName from '../helpers/roomKeyGenarator';
 import { getSocket } from '../helpers/socketHelper';
@@ -75,7 +78,7 @@ const LobbyPage = () => {
         axios.get('http://localhost:8000/api/games')
             .then((res) => {
                 setGames(res.data);
-                setLoaded(true);
+                // setLoaded(true);
             })
             .catch((err) => {
                 console.log(`Error fetching games: ${err}`);
@@ -134,7 +137,7 @@ const LobbyPage = () => {
         axios.get('http://localhost:8000/api/courses')
             .then((res) => {
                 setCourse(res.data);
-                setLoaded(true);
+                // setLoaded(true);
             })
             .catch((err) => {
                 console.log(`Error fetching games: ${err}`);
@@ -220,8 +223,10 @@ const LobbyPage = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
+        console.log('Game Selected: ', gamePicked);
         // store player data in storage
         localStorage.setItem('players', JSON.stringify(players));
+        // localStorage.setItem('game', JSON.stringify(selectedGame));
         handleBettingAmount();
         const gamePayload = {
             players,
