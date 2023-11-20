@@ -86,20 +86,6 @@ const Home = () => {
     }, []);
 
 
-    // old way of handling select with Bootstrap
-    // const handleSelect = (event, type) => {
-    //     if (type === 'game') {
-    //         setSelectedGame(event.target.value);
-    //         const filteredGame = games.filter((game) => game._id === event.target.value);
-    //         const gameName = filteredGame[0].name;
-    //         localStorage.setItem('user_selected_game', JSON.stringify(gameName.toLowerCase()));
-    //         return;
-    //     } else {
-    //         setSelectedCourse(event.target.value);
-    //     }
-    // };
-
-
     // New way of handling select with Tailwind
     const handleSelect = (selectedItem, type) => {
         if (type === 'game') {
@@ -154,7 +140,7 @@ const Home = () => {
     const handleUserUpdateIntoTheLobby = async (lobbyId, room) => {
         try {
             const storedPlayers = localStorage.getItem('players');
-            const response = await axios.post(`http://localhost:8000/api/lobbys/update-users/${lobbyId}`, { updatedPlayers: JSON.parse(storedPlayers) });
+            const response = await axios.post(`https://allsquare.club/api/lobbys/update-users/${lobbyId}`, { updatedPlayers: JSON.parse(storedPlayers) });
 
             navigate(`/new/round/${lobbyId}`);
         } catch (error) {
