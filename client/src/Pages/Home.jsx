@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useRef, Fragment } from 'react'
-import 'bootstrap/dist/css/bootstrap.css';
 import { Link, useNavigate, useLocation, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { Dialog, Transition, Listbox } from '@headlessui/react';
 import { UserIcon, PlayCircleIcon, MapPinIcon, TrophyIcon, CheckIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline';
 import { Axios } from '../helpers/axiosHelper';
 import logo from '../assets/All_Square_Logo.png'; // Adjust the path if your assets folder is structured differently
+import 'tailwindcss/tailwind.css';
 
 
 
@@ -86,35 +86,23 @@ const Home = () => {
     }, []);
 
 
-    // old way of handling select with Bootstrap
-    // const handleSelect = (event, type) => {
-    //     if (type === 'game') {
-    //         setSelectedGame(event.target.value);
-    //         const filteredGame = games.filter((game) => game._id === event.target.value);
-    //         const gameName = filteredGame[0].name;
-    //         localStorage.setItem('user_selected_game', JSON.stringify(gameName.toLowerCase()));
-    //         return;
-    //     } else {
-    //         setSelectedCourse(event.target.value);
-    //     }
-    // }
-
-
     // New way of handling select with Tailwind
-    const handleSelect = (item, type) => {
+    const handleSelect = (selectedItem, type) => {
         if (type === 'game') {
-            setSelectedGame(item);
+            setSelectedGame(selectedItem);
             // const filteredGame = games.filter((game) => game._id === selectedGame);
-            // const gameName = filteredGame[0].name;
-            localStorage.setItem('user_selected_game', JSON.stringify(item.name.toLowerCase()));
+            const gameName = selectedItem.name;
+            localStorage.setItem('user_selected_game', JSON.stringify(gameName.toLowerCase()));
             return;
         } else if (type === 'course') {
-            setSelectedCourse(item);
+            setSelectedCourse(selectedItem);
         }
-    }
+    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        console.log('Selected Game:', selectedGame);
+        console.log('Selected Course:', selectedCourse);
         if (!selectedGame || !selectedCourse) {
             // alert('Kindly select the course and game values');
             setShowValidationMessage(true); // Hide validation message
@@ -204,7 +192,8 @@ const Home = () => {
             <div className="flex justify-center " >
                 <form onSubmit={handleSubmit} className="justify-center">
                     {/* Dropdown Menu for Games */}
-                    <Listbox value={selectedGame} onChange={setSelectedGame}>
+                    <Listbox value={selectedGame} onChange={(item) => handleSelect(item, 'game')}>
+                        {/* <Listbox value={selectedGame} onChange={setSelectedGame}> */}
                         {({ open }) => (
                             <>
                                 {/* <Listbox.Label className="block text-sm font-medium leading-6 text-white">Select Game:</Listbox.Label> */}
@@ -222,11 +211,11 @@ const Home = () => {
                                         leaveFrom="opacity-100"
                                         leaveTo="opacity-0"
                                     >
-                                        <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                                            {games.map((game) => (
+                                        <Listbox.Options className="form-select absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                                            {games.map((gameItem) => (
                                                 <Listbox.Option
-                                                    key={game._id}
-                                                    value={game}
+                                                    key={games._id}
+                                                    value={gameItem}
                                                     className={({ active }) =>
                                                         `relative cursor-default select-none py-2 pl-3 pr-9 ${active ? 'bg-gray-dark text-white' : 'text-gray-900'
                                                         }`
@@ -235,7 +224,7 @@ const Home = () => {
                                                     {({ selected, active }) => (
                                                         <>
                                                             <span className={`block truncate ${selected ? 'font-semibold' : 'font-normal'}`}>
-                                                                {game.name}
+                                                                {gameItem.name}
                                                             </span>
                                                             {selected && (
                                                                 <span
@@ -257,7 +246,8 @@ const Home = () => {
                     </Listbox>
 
                     {/* Listbox for Courses */}
-                    <Listbox value={selectedCourse} onChange={setSelectedCourse}>
+                    <Listbox value={selectedCourse} onChange={(item) => handleSelect(item, 'course')}>
+                        {/* <Listbox value={selectedCourse} onChange={setSelectedCourse}> */}
                         {({ open }) => (
                             <>
                                 {/* <Listbox.Label className="block text-sm font-medium leading-6 text-white mt-1">Select Course:</Listbox.Label> */}
@@ -278,7 +268,7 @@ const Home = () => {
                                         <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                                             {course.map((courseItem) => (
                                                 <Listbox.Option
-                                                    key={courseItem._id}
+                                                    key={course._id}
                                                     value={courseItem}
                                                     className={({ active }) =>
                                                         `relative cursor-default select-none py-2 pl-3 pr-9 ${active ? 'bg-gray-dark text-white' : 'text-gray-900'
@@ -308,22 +298,19 @@ const Home = () => {
                             </>
                         )}
                     </Listbox>
-                    <div className='flex justify-center mt-4'>
+                    <div className='flex flex-col items-center mt-4'>
                         <button
                             type="submit"
-                            // disabled={!selectedGame || !selectedCourse}
-                            className={`w-60 flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${selectedGame && selectedCourse ? 'bg-gray-normal' : 'bg-maroon-normal'
+                            className={`w-60 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${selectedGame && selectedCourse ? 'bg-gray-normal' : 'bg-maroon-normal'
                                 } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-salmon-light`}
                         >
                             Create Lobby
                         </button>
-                        <div >
-                            {showValidationMessage && (
-                                <p className="text-red-500 text-xs italic mt-2">
-                                    Please select Game and Course.
-                                </p>
-                            )}
-                        </div>
+                        {showValidationMessage && (
+                            <p className="w-60 text-red-500 text-md italic mt-2 text-center">
+                                Please select Game and Course.
+                            </p>
+                        )}
                     </div>
                 </form>
             </div>
