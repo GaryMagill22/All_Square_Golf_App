@@ -61,16 +61,43 @@ const ScoreCard = () => {
     const [earningsPerWinner, setEarningsPerWinner] = useState(0); // set state for earnings 
     const [roundData, setRoundData] = useState({});
     const [teams, setTeams] = useState(JSON.parse(localStorage.getItem('teams')));
-    const [selectedPlayer, setSelectedPlayer] = useState(Object.fromEntries(players.map(player => [player.username, { score: 0, point: 0 }])));
     const scoreUpdating = Object.values(totalScores);
     const selectedGame = useState(JSON.parse(localStorage.getItem('user_selected_game')));
     const [isPlayerRecordChosen, setIsPlayerRecordChosen] = useState(false);
 
+    // Function to calculate the total scores for teams and indiduals
+    // const [selectedPlayer, setSelectedPlayer] = useState(Object.fromEntries(players.map(player => [player.username, { score: 0, point: 0 }])));
+    const [selectedPlayer, setSelectedPlayer] = useState(() => {
+        const initialScores = {};
+
+        // For team games
+        if (gameType === 'team') {
+            const teamsData = JSON.parse(localStorage.getItem('teams')) || [];
+
+            teamsData.forEach(team => {
+                team.players.forEach(player => {
+                    initialScores[player.name] = { score: 0, point: 0 };
+                });
+            });
+        } else {
+            // For individual games
+            const playersData = JSON.parse(localStorage.getItem('players')) || [];
+            playersData.forEach(player => {
+                initialScores[player.username] = { score: 0, point: 0 };
+            });
+        }
+
+        return initialScores;
+    });
+
+
     // Function to handle score update for each player
     const handleScoreUpdate = (player, score) => {
         var points;
-        if (score === 2) {
-            points = 2; // Double Bogey
+        if (score === 10) {
+            points = -2; // X
+        } if (score === 2) {
+            points = 0; // Double Bogey
         } if (score === 1) {
             points = 1; // Bogey
         } else if (score === 0) {
@@ -82,6 +109,7 @@ const ScoreCard = () => {
         } else {
             points = 0;
         }
+
 
         setSelectedPlayer(prevData => ({
             ...prevData,
@@ -430,7 +458,7 @@ const ScoreCard = () => {
             {!isSubmitted ?
                 <section className="bg-gray-dark">
                     <div>
-                        <h6>Game Selected: {selectedGame[0]}, Game type: {gameType}</h6>
+                        <h6 className="text-white" >Game Selected: {selectedGame[0]}, Game type: {gameType}</h6>
                         <h1 className="text-salmon-light">Hole #{currentHoleNumber}</h1>
                     </div>
                     {
@@ -481,31 +509,43 @@ const ScoreCard = () => {
                     {
                         gameType === 'team' && teams.map((team) => {
                             return (
-                                <div>
-                                    <h4>{team.teamName}</h4>
+                                <div key={team.teamName} className="relative overflow-x-auto shadow-md sm:rounded-lg my-4">
+                                    <h4 className="text-salmon-light text-center text-2xl font-bold mb-2">{team.teamName}</h4>
                                     {
                                         team.players.map((player) => {
+                                            // Check if 'player.name' exists in 'selectedPlayer'. If it does, use its 'score'. If not, default to 0.
+                                            const playerScore = selectedPlayer[player.name] ? selectedPlayer[player.name].score : 0;
+
                                             return (
-                                                <table className="" style={{ border: "solid black", margin: "20px auto", maxWidth: "800px" }} >
-                                                    <thead>
-                                                        <tr>
-                                                            <th style={{ width: '15%' }}>Player</th>
-                                                            <th style={{ width: '15%' }}>Score</th>
-                                                            <th style={{ width: '70%' }}>Record Score</th>
+                                                <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                                                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                                        <tr className="text-white">
+                                                            <th scope="col" className="px-2 py-3 text-center">Player</th>
+                                                            <th scope="col"  className="px-2 py-3">Score</th>
+                                                            <th scope="col" className="px-2 py-3 text-center">Record Score</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr>
-                                                            <td>{player.name}</td>
-                                                            <td>{selectedPlayer[player.username].score}</td>
+                                                        <tr key={player.username} className="bg-gray-light border-b dark:bg-gray-normal dark:border-gray-700">
+                                                            <td className="px-2 py-4 whitespace-nowrap" >
+                                                                <div className="flex items-center space-x-3">
+                                                                    <div className="w-6 h-6 overflow-hidden bg-salmon-light rounded-full dark:bg-blue-dark">
+                                                                        <svg className="w-full h-full text-salmon-light" fill="currentColor" viewBox="2 0 15 10" xmlns="http://www.w3.org/2000/svg">
+                                                                            <path fillRule="evenodd" d="M10 5a2 2 0 100-4 2 2 0 000 4zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"></path>
+                                                                        </svg>
+                                                                    </div>
+                                                                    <span className="font-medium text-white dark:text-blue-dark">{player.name}</span>
+                                                                </div>
+                                                            </td>
+                                                            <td className="px-4 py-4">{playerScore}</td>
                                                             <td>
-                                                                <div className="d-flex justify-content-between">
-                                                                    <button type="button" className="btn btn-primary" value={-2} onClick={() => handleScoreUpdate(player.name, -2)} disabled={!isCreator}>Eagle</button>
-                                                                    <button type="button" className="btn btn-secondary" value={-1} onClick={() => handleScoreUpdate(player.name, -1)} disabled={!isCreator}>Birdie</button>
-                                                                    <button type="button" className="btn btn-dark" value={0} onClick={() => handleScoreUpdate(player.name, 0)} disabled={!isCreator}>Par</button>
-                                                                    <button type="button" className="btn btn-info" value={1} onClick={() => handleScoreUpdate(player.name, 1)} disabled={!isCreator}>Bogie</button>
-                                                                    <button type="button" className="btn btn-warning" value={2} onClick={() => handleScoreUpdate(player.name, 2)} disabled={!isCreator}>Double Bogey</button>
-                                                                    <button type="button" className="btn btn-danger" value={10} onClick={() => handleScoreUpdate(player.name, 10)} disabled={!isCreator}>X</button>
+                                                                <div className="flex items-center gap-1">
+                                                                    <button type="button" className="text-white bg-blue-dark hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-3 py-2.5 text-center " value={-2} onClick={() => handleScoreUpdate(player.name, -2)} disabled={!isCreator}>-2</button>
+                                                                    <button type="button" className="text-white bg-maroon-normal hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-3 py-2.5 text-center " value={-1} onClick={() => handleScoreUpdate(player.name, -1)} disabled={!isCreator}>-1</button>
+                                                                    <button type="button" className="text-white bg-blue-light hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-3 py-2.5 text-center " value={0} onClick={() => handleScoreUpdate(player.name, 0)} disabled={!isCreator}>Par</button>
+                                                                    <button type="button" className="text-white bg-salmon-light hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-3 py-2.5 text-center " value={1} onClick={() => handleScoreUpdate(player.name, 1)} disabled={!isCreator}>+1</button>
+                                                                    <button type="button" className="text-white bg-indigo-normal hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-3 py-2.5 text-center " value={2} onClick={() => handleScoreUpdate(player.name, 2)} disabled={!isCreator}>+2</button>
+                                                                    <button type="button" className="text-white bg-red-normal hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-3 py-2.5 text-center " value={10} onClick={() => handleScoreUpdate(player.name, 10)} disabled={!isCreator}>X</button>
                                                                 </div>
                                                             </td>
                                                         </tr>
@@ -561,15 +601,11 @@ const ScoreCard = () => {
                     <div>
                         <h4>Betting Amount: ${bettingAmount}</h4>
                     </div>
-                    <div>
-                        {isCreator ? (
-                            <Link to="/home" className="btn btn-outline-primary btn-sm m-2">
+                    <div className="m-2">
+                        {isCreator && (
+                            <Link to="/home" className="btn btn-outline-primary btn-sm">
                                 Home
                             </Link>
-                        ) : (
-                            <button className="btn btn-outline-primary btn-sm m-2" disabled>
-                                Home
-                            </button>
                         )}
                     </div>
                 </section>
@@ -631,11 +667,11 @@ const ScoreCard = () => {
                             Save Round
                         </button>
                     </div>
+                    <Link to="/home" className="btn btn-outline-primary btn-sm m-2">
+                        Home
+                    </Link>
                 </div>
             }
-            <Link to="/home" className="btn btn-outline-primary btn-sm m-2">
-                Home
-            </Link>
 
         </main >
 
