@@ -3,7 +3,6 @@ import { Routes, Route, BrowserRouter, Link } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import { initSocket } from './helpers/socketHelper';
 import ProtectedRoute from './Components/ProtectedRoute.jsx';
-import BottomNav from './Components/BottomNav';
 import Home from './Pages/Home';
 import GamesPage from './Pages/GamesPage';
 import LobbyPage from './Pages/LobbyPage';

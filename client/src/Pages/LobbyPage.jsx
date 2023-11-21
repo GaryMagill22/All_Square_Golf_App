@@ -1,11 +1,11 @@
 import React from 'react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Fragment } from 'react'
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'tailwindcss/tailwind.css';
-
+import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline';
+import {  Transition, Listbox } from '@headlessui/react';
 import { Link, useNavigate, useLocation, useParams } from 'react-router-dom';
-import generateRandomRoomName from '../helpers/roomKeyGenarator';
 import { getSocket } from '../helpers/socketHelper';
 
 
@@ -163,15 +163,6 @@ const LobbyPage = () => {
     };
 
 
-    // const handlePlayerChange = (index, value) => {
-    //     // console.log(user, 'from within hamndle player change func')
-    //     // players[0] = user.username;// 
-    //     const updatedPlayers = [...players];
-    //     updatedPlayers[index] = value;
-    //     // console.log(updatedPlayers)
-    //     setPlayers(updatedPlayers);
-    // }
-
     const handleCreateTeam = () => {
         if (teams.length === 2) {
             alert('You cannot create a new team');
@@ -226,7 +217,6 @@ const LobbyPage = () => {
         console.log('Game Selected: ', gamePicked);
         // store player data in storage
         localStorage.setItem('players', JSON.stringify(players));
-        // localStorage.setItem('game', JSON.stringify(selectedGame));
         handleBettingAmount();
         const gamePayload = {
             players,
@@ -241,8 +231,7 @@ const LobbyPage = () => {
         <div className=' flex flex-col container min-h-screeen bg-gray-dark   mx-auto p-4'>
             <div className="bg-gray-light dark:bg-gray-light shadow rounded-lg p-4 mb-4 flex-grow border-2 border-salmon-light">
                 <h1 class="mb-4 text-3xl font-extrabold text-gray-normal dark:text-gray-dark md:text-5xl lg:text-6xl"><span class="text-transparent bg-clip-text bg-gradient-to-r to-blue-normal from-maroon-normal">Lobby Code:</span> {lobbyId}</h1>
-                <p class="text-lg font-normal text-black lg:text-lg dark:text-gray-400">Give Lobby Code to playing partners; Note that it is case sensative.</p>
-                {/* <h1 className="text-xl font-semibold">Lobby Code: {lobbyId}</h1> */}
+                <p class="text-lg font-normal text-black lg:text-lg dark:text-gray-400">Give Lobby Code to playing partners - Note that it is case sensative.</p>
             </div>
 
             {/* Player Loading Section */}
@@ -267,7 +256,6 @@ const LobbyPage = () => {
 
 
 
-            {/* Team Creation Section */}
             {isCreator && gameType === 'team' && (
                 <div className="bg-gray-light dark:bg-gray-light shadow rounded-lg p-4 mb-6 flex flex-col border-2 border-salmon-light">
                     <p>Note: Create two teams and add users to each team to be able to participate in the game</p>
@@ -278,20 +266,81 @@ const LobbyPage = () => {
                         </div>
                         <div>
                             <h5>Add Players to team</h5>
-                            <div className='flex flex-col md:flex-row items-center gap-4 border-2 border-salmon-light'>
-                                <select className='form-control flex-grow' onChange={(e) => setSelectedTeam(e.target.value)}>
-                                    <option value="Nil">Select team</option>
-                                    {teams.map((team, index) => (
-                                        <option key={index} value={team.teamName}>{team.teamName}</option>
-                                    ))}
-                                </select>
-                                <select className='form-control flex-grow' onChange={(e) => setSelectedPlayer(e.target.value)}>
-                                    <option value="Nil">Select player</option>
-                                    {players.map((player, index) => (
-                                        <option key={index} value={player.username}>{player.username}</option>
-                                    ))}
-                                </select>
-                                <button className='btn btn-info' onClick={addPlayerToTeam}>Add player to team</button>
+                            <div className='flex flex-col md:flex-row items-center gap-4'>
+
+                                {/* Team Selection Dropdown */}
+                                <Listbox value={selectedTeam} onChange={setSelectedTeam}>
+                                    {({ open }) => (
+                                        <>
+                                            <Listbox.Button className="relative w-full py-2 pl-3 pr-10 text-left bg-white rounded-lg shadow-md cursor-default focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                                <span className="block truncate">{selectedTeam || "Select Team"}</span>
+                                                <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                                                    <ChevronUpDownIcon className="w-5 h-5 text-gray-400" aria-hidden="true" />
+                                                </span>
+                                            </Listbox.Button>
+                                            <Transition
+                                                show={open}
+                                                as={Fragment}
+                                                leave="transition ease-in duration-100"
+                                                leaveFrom="opacity-100"
+                                                leaveTo="opacity-0"
+                                            >
+                                                <Listbox.Options className="absolute z-10 w-full mt-1 bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
+                                                    {teams.map((team, index) => (
+                                                        <Listbox.Option key={index} value={team.teamName} className={({ active }) => `cursor-default select-none relative py-2 pl-10 pr-4 ${active ? 'text-amber-900 bg-amber-100' : 'text-gray-900'}`}>
+                                                            <span className={`block truncate ${selectedTeam === team.teamName ? 'font-medium' : 'font-normal'}`}>
+                                                                {team.teamName}
+                                                            </span>
+                                                            {selectedTeam === team.teamName && (
+                                                                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
+                                                                    <CheckIcon className="w-5 h-5" aria-hidden="true" />
+                                                                </span>
+                                                            )}
+                                                        </Listbox.Option>
+                                                    ))}
+                                                </Listbox.Options>
+                                            </Transition>
+                                        </>
+                                    )}
+                                </Listbox>
+
+                                {/* Player Selection Dropdown */}
+                                <Listbox value={selectedPlayer} onChange={setSelectedPlayer}>
+                                    {({ open }) => (
+                                        <>
+                                            <Listbox.Button className="relative w-full py-2 pl-3 pr-10 text-left bg-white rounded-lg shadow-md cursor-default focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                                <span className="block truncate">{selectedPlayer || "Select Player"}</span>
+                                                <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                                                    <ChevronUpDownIcon className="w-5 h-5 text-gray-400" aria-hidden="true" />
+                                                </span>
+                                            </Listbox.Button>
+                                            <Transition
+                                                show={open}
+                                                as={Fragment}
+                                                leave="transition ease-in duration-100"
+                                                leaveFrom="opacity-100"
+                                                leaveTo="opacity-0"
+                                            >
+                                                <Listbox.Options className="absolute z-10 w-full mt-1 bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
+                                                    {players.map((player, index) => (
+                                                        <Listbox.Option key={index} value={player.username} className={({ active }) => `cursor-default select-none relative py-2 pl-10 pr-4 ${active ? 'text-amber-900 bg-amber-100' : 'text-gray-900'}`}>
+                                                            <span className={`block truncate ${selectedPlayer === player.username ? 'font-medium' : 'font-normal'}`}>
+                                                                {player.username}
+                                                            </span>
+                                                            {selectedPlayer === player.username && (
+                                                                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
+                                                                    <ChevronUpDownIcon className="w-5 h-5" aria-hidden="true" />
+                                                                </span>
+                                                            )}
+                                                        </Listbox.Option>
+                                                    ))}
+                                                </Listbox.Options>
+                                            </Transition>
+                                        </>
+                                    )}
+                                </Listbox>
+
+                                <button className='btn btn-info' onClick={addPlayerToTeam}>Add Player to Team</button>
                             </div>
                         </div>
                     </div>
@@ -320,6 +369,7 @@ const LobbyPage = () => {
                     </div>
                 </div>
             )}
+
             {/* Betting Amount Section */}
             <div className="bg-gray-light dark:bg-gray-light shadow rounded-lg p-4 mb-6 border-2 border-salmon-light">
                 <form onSubmit={handleSubmit}>
@@ -336,6 +386,7 @@ const LobbyPage = () => {
                 </Link>
             </div>
         </div>
+
 
 
 

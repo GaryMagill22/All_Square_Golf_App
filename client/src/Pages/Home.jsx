@@ -2,7 +2,8 @@ import React, { useEffect, useState, useRef, Fragment } from 'react'
 import { Link, useNavigate, useLocation, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { Dialog, Transition, Listbox } from '@headlessui/react';
-import { UserIcon, PlayCircleIcon, MapPinIcon, TrophyIcon, CheckIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline';
+// import {  CheckIcon, PlayCircleIcon, TrophyIcon, ChevronUpDownIcon } from '@heroicons/react/outline';
+import { CheckIcon, UserIcon, PlayCircleIcon, MapPinIcon, TrophyIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline';
 import { Axios } from '../helpers/axiosHelper';
 import logo from '../assets/All_Square_Logo.png'; // Adjust the path if your assets folder is structured differently
 import 'tailwindcss/tailwind.css';
@@ -15,7 +16,7 @@ const Home = () => {
     const { lobbyId } = useParams();
 
     // State values
-    const [games, setGames] = useState([]);
+    const [games, setGames] = useState([]); 
     const [course, setCourse] = useState([]);
     const [selectedGame, setSelectedGame] = useState(null);
     const [selectedCourse, setSelectedCourse] = useState(null);
@@ -140,7 +141,7 @@ const Home = () => {
     const handleUserUpdateIntoTheLobby = async (lobbyId, room) => {
         try {
             const storedPlayers = localStorage.getItem('players');
-            const response = await axios.post(`https://allsquare.club/api/lobbys/update-users/${lobbyId}`, { updatedPlayers: JSON.parse(storedPlayers) });
+            const response = await axios.post(`http://localhost:8000/api/lobbys/update-users/${lobbyId}`, { updatedPlayers: JSON.parse(storedPlayers) });
 
             navigate(`/new/round/${lobbyId}`);
         } catch (error) {
@@ -193,10 +194,8 @@ const Home = () => {
                 <form onSubmit={handleSubmit} className="justify-center">
                     {/* Dropdown Menu for Games */}
                     <Listbox value={selectedGame} onChange={(item) => handleSelect(item, 'game')}>
-                        {/* <Listbox value={selectedGame} onChange={setSelectedGame}> */}
                         {({ open }) => (
                             <>
-                                {/* <Listbox.Label className="block text-sm font-medium leading-6 text-white">Select Game:</Listbox.Label> */}
                                 <div className="relative mt-2">
                                     <Listbox.Button className="relative w-full cursor-default mb-2 rounded-md bg-blue-light py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                         <span className="block truncate">{selectedGame ? selectedGame.name : 'Select Game'}</span>
@@ -247,7 +246,6 @@ const Home = () => {
 
                     {/* Listbox for Courses */}
                     <Listbox value={selectedCourse} onChange={(item) => handleSelect(item, 'course')}>
-                        {/* <Listbox value={selectedCourse} onChange={setSelectedCourse}> */}
                         {({ open }) => (
                             <>
                                 {/* <Listbox.Label className="block text-sm font-medium leading-6 text-white mt-1">Select Course:</Listbox.Label> */}
