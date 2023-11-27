@@ -539,17 +539,17 @@ const ScoreCard = () => {
                                                             <span className="font-medium text-white dark:text-blue-dark">{player.username}</span>
                                                         </div>
                                                     </td>
-                                                    <td className="px-4 py-4 border-2 border-indigo-light">{selectedPlayer[player.username].score}</td>
-                                                    <td className="px-4 py-4">
+                                                    <td className="px-2 py-2 border-2 border-indigo-light">{selectedPlayer[player.username].score}</td>
+                                                    <td className="px-2 py-2">
                                                         <div className="grid grid-cols-3 gap-1 py-1">
-                                                            <button type="button" className="text-black bg-salmon-light hover:bg-blue-light focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-3 py-2.5 text-center" onClick={() => handleScoreUpdate(player.username, -2)} disabled={!isCreator}>-2</button>
-                                                            <button type="button" className="text-black bg-salmon-light hover:bg-blue-light focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-3 py-2.5 text-center" onClick={() => handleScoreUpdate(player.username, -1)} disabled={!isCreator}>-1</button>
-                                                            <button type="button" className="text-black bg-salmon-light hover:bg-blue-light focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-3 py-2.5 text-center" onClick={() => handleScoreUpdate(player.username, 0)} disabled={!isCreator}>Par</button>
+                                                            <button type="button" className="text-black bg-salmon-light hover:bg-blue-light focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-2 py-2.5 text-center" onClick={() => handleScoreUpdate(player.username, -2)} disabled={!isCreator}>-2</button>
+                                                            <button type="button" className="text-black bg-salmon-light hover:bg-blue-light focus:bg-blue-light focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-2 py-2.5 text-center" onClick={() => handleScoreUpdate(player.username, -1)} disabled={!isCreator}>-1</button>
+                                                            <button type="button" className="text-black bg-salmon-light hover:bg-blue-light focus:bg-blue-light focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-2 py-2.5 text-center" onClick={() => handleScoreUpdate(player.username, 0)} disabled={!isCreator}>Par</button>
                                                         </div>
-                                                        <div className="grid grid-cols-3 gap-1 ">
-                                                            <button type="button" className="text-black bg-salmon-light hover:bg-blue-light focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-3 py-2.5 text-center" onClick={() => handleScoreUpdate(player.username, 1)} disabled={!isCreator}>+1</button>
-                                                            <button type="button" className="text-black bg-salmon-light hover:bg-blue-light focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-3 py-2.5 text-center" onClick={() => handleScoreUpdate(player.username, 2)} disabled={!isCreator}>+2</button>
-                                                            <button type="button" className="text-white bg-maroon-normal hover:bg-blue-light focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-3 py-2.5 text-center" onClick={() => handleScoreUpdate(player.username, 10)} disabled={!isCreator}>X</button>
+                                                        <div className="grid grid-cols-3 gap-1 py-1 ">
+                                                            <button type="button" className="text-black bg-salmon-light hover:bg-blue-light focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-2 py-2.5 text-center" onClick={() => handleScoreUpdate(player.username, 1)} disabled={!isCreator}>+1</button>
+                                                            <button type="button" className="text-black bg-salmon-light hover:bg-blue-light focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-2 py-2.5 text-center" onClick={() => handleScoreUpdate(player.username, 2)} disabled={!isCreator}>+2</button>
+                                                            <button type="button" className="text-white bg-maroon-normal hover:bg-blue-light focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-2 py-2.5 text-center" onClick={() => handleScoreUpdate(player.username, 10)} disabled={!isCreator}>X</button>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -580,7 +580,7 @@ const ScoreCard = () => {
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr key={player.username} className="bg-gray-light border-2 border-indigo-light dark:bg-gray-normal dark:border-indigo-light">
+                                                        <tr key={player.username} className="bg-gray-light border-2 border-indigo-light dark:bg-gray-normal dark:border-indigo-light text-center">
                                                             <td className="px-2 py-4 whitespace-nowrap" >
                                                                 <div className="flex items-center space-x-3">
                                                                     <div className="w-6 h-6 overflow-hidden bg-salmon-light rounded-full dark:bg-blue-dark">
@@ -591,14 +591,14 @@ const ScoreCard = () => {
                                                                     <span className="font-medium text-white dark:text-blue-dark">{player.name}</span>
                                                                 </div>
                                                             </td>
-                                                            <td className="px-4 py-4 border-2 border-l border-indigo-light">{playerScore}</td>
-                                                            <td className="px-4 py-4 border-2 border-l border-indigo-light">
-                                                                <div className="grid grid-cols-3 gap-1">
+                                                            <td className="px-2 py-2 border-2 border-l border-indigo-light">{playerScore}</td>
+                                                            <td className="px-2 py-2 border-2 border-l border-indigo-light">
+                                                                <div className="grid grid-cols-3 gap-1 py-1">
                                                                     <button type="button" className="text-black bg-salmon-light hover:bg-blue-light focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-2 py-2.5 text-center" onClick={() => handleScoreUpdate(player.name, -2)} disabled={!isCreator}>-2</button>
                                                                     <button type="button" className="text-black bg-salmon-light hover:bg-blue-light focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-2 py-2.5 text-center" onClick={() => handleScoreUpdate(player.name, -1)} disabled={!isCreator}>-1</button>
                                                                     <button type="button" className="text-black bg-salmon-light hover:bg-blue-light focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-2 py-2.5 text-center" onClick={() => handleScoreUpdate(player.name, 0)} disabled={!isCreator}>Par</button>
                                                                 </div>
-                                                                <div className="grid grid-cols-3 gap-1 ">
+                                                                <div className="grid grid-cols-3 gap-1 py-1">
                                                                     <button type="button" className="text-black bg-salmon-light hover:bg-blue-light focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-2 py-2.5 text-center" onClick={() => handleScoreUpdate(player.name, 1)} disabled={!isCreator}>+1</button>
                                                                     <button type="button" className="text-black bg-salmon-light hover:bg-blue-light focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-2 py-2.5 text-center" onClick={() => handleScoreUpdate(player.name, 2)} disabled={!isCreator}>+2</button>
                                                                     <button type="button" className="text-white bg-maroon-normal hover:bg-blue-light focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-2 py-2.5 text-center" onClick={() => handleScoreUpdate(player.name, 10)} disabled={!isCreator}>X</button>
