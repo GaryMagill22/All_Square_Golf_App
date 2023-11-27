@@ -136,7 +136,7 @@ const ScoreCard = () => {
             // Get winners data
             const winnersData = handleWinners();
             let roundData;
-    
+
             if (gameType === 'individual') {
                 // Handle individual game winners
                 roundData = {
@@ -161,7 +161,7 @@ const ScoreCard = () => {
                     point: gameWinner.point,
                     // Include any other relevant data here
                 }));
-    
+
                 roundData = {
                     teams: teamWinnerList,
                     winningTeam: gameWinner.team,
@@ -171,7 +171,7 @@ const ScoreCard = () => {
                     coursePicked: coursePicked,
                 };
             }
-    
+
             // Make a POST request to the backend to save the round data
             await axios.post('http://localhost:8000/api/rounds/new', roundData);
             navigate("/home");
@@ -179,7 +179,7 @@ const ScoreCard = () => {
             console.log('Error saving round data:', error);
         }
     };
-    
+
 
     // Old function that only supported Individual games
     // const saveRoundData = async () => {
@@ -516,9 +516,9 @@ const ScoreCard = () => {
                     {
                         gameType === 'individual' &&
                         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                            <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                            <table className="w-full text-sm text-center text-gray-500 dark:text-gray-400">
                                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                                    <tr className="text-white">
+                                    <tr className="text-white border-2 border-indigo-light">
                                         <th scope="col" className="px-2 py-3 text-center">Player</th>
                                         <th scope="col" className="px-2 py-3">Score</th>
                                         <th scope="col" className="px-2 py-3 text-center">Record Score</th>
@@ -528,26 +528,28 @@ const ScoreCard = () => {
                                     {
                                         players.map((player) => {
                                             return (
-                                                <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                                    <td className="px-2 py-4 whitespace-nowrap" >
+                                                <tr className="bg-gray-light border-2 border-indigo-light dark:bg-gray-800 dark:border-indigo-light">
+                                                    <td className="px-2 py-4 whitespace-nowrap border-2 border-indigo-light" >
                                                         <div className="flex items-center space-x-3">
                                                             <div className="w-6 h-6 overflow-hidden bg-salmon-light rounded-full dark:bg-blue-dark">
                                                                 <svg className="w-full h-full text-salmon-light" fill="currentColor" viewBox="2 0 15 10" xmlns="http://www.w3.org/2000/svg">
                                                                     <path fillRule="evenodd" d="M10 5a2 2 0 100-4 2 2 0 000 4zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"></path>
                                                                 </svg>
                                                             </div>
-                                                            <span className="font-medium text-gray-900 dark:text-blue-dark">{player.username}</span>
+                                                            <span className="font-medium text-white dark:text-blue-dark">{player.username}</span>
                                                         </div>
                                                     </td>
-                                                    <td className="px-4 py-4">{selectedPlayer[player.username].score}</td>
+                                                    <td className="px-4 py-4 border-2 border-indigo-light">{selectedPlayer[player.username].score}</td>
                                                     <td className="px-4 py-4">
-                                                        <div className="flex items-center gap-1">
-                                                            <button type="button" className="text-white bg-blue-dark hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-3 py-2.5 text-center " onClick={() => handleScoreUpdate(player.username, -2)} disabled={!isCreator}>-2</button>
-                                                            <button type="button" className="text-white bg-maroon-normal hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-3 py-2.5 text-center " onClick={() => handleScoreUpdate(player.username, -1)} disabled={!isCreator}>-1</button>
-                                                            <button type="button" className="text-white bg-blue-light hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-3 py-2.5 text-center " onClick={() => handleScoreUpdate(player.username, 0)} disabled={!isCreator}>Par</button>
-                                                            <button type="button" className="text-white bg-salmon-light hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-3 py-2.5 text-center " onClick={() => handleScoreUpdate(player.username, 1)} disabled={!isCreator}>+1</button>
-                                                            <button type="button" className="text-white bg-indigo-normal hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-3 py-2.5 text-center " onClick={() => handleScoreUpdate(player.username, 2)} disabled={!isCreator}>+2</button>
-                                                            <button type="button" className="text-white bg-red-normal hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-3 py-2.5 text-center " onClick={() => handleScoreUpdate(player.username, 10)} disabled={!isCreator}>X</button>
+                                                        <div className="grid grid-cols-3 gap-1 py-1">
+                                                            <button type="button" className="text-black bg-salmon-light hover:bg-blue-light focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-3 py-2.5 text-center" onClick={() => handleScoreUpdate(player.username, -2)} disabled={!isCreator}>-2</button>
+                                                            <button type="button" className="text-black bg-salmon-light hover:bg-blue-light focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-3 py-2.5 text-center" onClick={() => handleScoreUpdate(player.username, -1)} disabled={!isCreator}>-1</button>
+                                                            <button type="button" className="text-black bg-salmon-light hover:bg-blue-light focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-3 py-2.5 text-center" onClick={() => handleScoreUpdate(player.username, 0)} disabled={!isCreator}>Par</button>
+                                                        </div>
+                                                        <div className="grid grid-cols-3 gap-1 ">
+                                                            <button type="button" className="text-black bg-salmon-light hover:bg-blue-light focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-3 py-2.5 text-center" onClick={() => handleScoreUpdate(player.username, 1)} disabled={!isCreator}>+1</button>
+                                                            <button type="button" className="text-black bg-salmon-light hover:bg-blue-light focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-3 py-2.5 text-center" onClick={() => handleScoreUpdate(player.username, 2)} disabled={!isCreator}>+2</button>
+                                                            <button type="button" className="text-white bg-maroon-normal hover:bg-blue-light focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-3 py-2.5 text-center" onClick={() => handleScoreUpdate(player.username, 10)} disabled={!isCreator}>X</button>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -569,16 +571,16 @@ const ScoreCard = () => {
                                             const playerScore = selectedPlayer[player.name] ? selectedPlayer[player.name].score : 0;
 
                                             return (
-                                                <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                                                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                                                        <tr className="text-white">
+                                                <table className="w-full mx-auto text-sm text-left text-white dark:text-white  border-2 border-b border-indigo-light">
+                                                    <thead className="text-xs text-white uppercase bg-gray-light dark:bg-gray-light dark:text-white">
+                                                        <tr className="text-black border-2 border-indigo-light">
                                                             <th scope="col" className="px-2 py-3 text-center">Player</th>
-                                                            <th scope="col"  className="px-2 py-3">Score</th>
+                                                            <th scope="col" className="px-2 py-3 text-center ">Score</th>
                                                             <th scope="col" className="px-2 py-3 text-center">Record Score</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr key={player.username} className="bg-gray-light border-b dark:bg-gray-normal dark:border-gray-700">
+                                                        <tr key={player.username} className="bg-gray-light border-2 border-indigo-light dark:bg-gray-normal dark:border-indigo-light">
                                                             <td className="px-2 py-4 whitespace-nowrap" >
                                                                 <div className="flex items-center space-x-3">
                                                                     <div className="w-6 h-6 overflow-hidden bg-salmon-light rounded-full dark:bg-blue-dark">
@@ -589,15 +591,17 @@ const ScoreCard = () => {
                                                                     <span className="font-medium text-white dark:text-blue-dark">{player.name}</span>
                                                                 </div>
                                                             </td>
-                                                            <td className="px-4 py-4">{playerScore}</td>
-                                                            <td>
-                                                                <div className="flex items-center gap-1">
-                                                                    <button type="button" className="text-white bg-blue-dark hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-3 py-2.5 text-center " value={-2} onClick={() => handleScoreUpdate(player.name, -2)} disabled={!isCreator}>-2</button>
-                                                                    <button type="button" className="text-white bg-maroon-normal hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-3 py-2.5 text-center " value={-1} onClick={() => handleScoreUpdate(player.name, -1)} disabled={!isCreator}>-1</button>
-                                                                    <button type="button" className="text-white bg-blue-light hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-3 py-2.5 text-center " value={0} onClick={() => handleScoreUpdate(player.name, 0)} disabled={!isCreator}>Par</button>
-                                                                    <button type="button" className="text-white bg-salmon-light hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-3 py-2.5 text-center " value={1} onClick={() => handleScoreUpdate(player.name, 1)} disabled={!isCreator}>+1</button>
-                                                                    <button type="button" className="text-white bg-indigo-normal hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-3 py-2.5 text-center " value={2} onClick={() => handleScoreUpdate(player.name, 2)} disabled={!isCreator}>+2</button>
-                                                                    <button type="button" className="text-white bg-red-normal hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-3 py-2.5 text-center " value={10} onClick={() => handleScoreUpdate(player.name, 10)} disabled={!isCreator}>X</button>
+                                                            <td className="px-4 py-4 border-2 border-l border-indigo-light">{playerScore}</td>
+                                                            <td className="px-4 py-4 border-2 border-l border-indigo-light">
+                                                                <div className="grid grid-cols-3 gap-1">
+                                                                    <button type="button" className="text-black bg-salmon-light hover:bg-blue-light focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-2 py-2.5 text-center" onClick={() => handleScoreUpdate(player.name, -2)} disabled={!isCreator}>-2</button>
+                                                                    <button type="button" className="text-black bg-salmon-light hover:bg-blue-light focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-2 py-2.5 text-center" onClick={() => handleScoreUpdate(player.name, -1)} disabled={!isCreator}>-1</button>
+                                                                    <button type="button" className="text-black bg-salmon-light hover:bg-blue-light focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-2 py-2.5 text-center" onClick={() => handleScoreUpdate(player.name, 0)} disabled={!isCreator}>Par</button>
+                                                                </div>
+                                                                <div className="grid grid-cols-3 gap-1 ">
+                                                                    <button type="button" className="text-black bg-salmon-light hover:bg-blue-light focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-2 py-2.5 text-center" onClick={() => handleScoreUpdate(player.name, 1)} disabled={!isCreator}>+1</button>
+                                                                    <button type="button" className="text-black bg-salmon-light hover:bg-blue-light focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-2 py-2.5 text-center" onClick={() => handleScoreUpdate(player.name, 2)} disabled={!isCreator}>+2</button>
+                                                                    <button type="button" className="text-white bg-maroon-normal hover:bg-blue-light focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-2 py-2.5 text-center" onClick={() => handleScoreUpdate(player.name, 10)} disabled={!isCreator}>X</button>
                                                                 </div>
                                                             </td>
                                                         </tr>
@@ -613,15 +617,15 @@ const ScoreCard = () => {
                     <div className="row justify-content-center">
                         <div className="col-6 text-center">
 
-                            <button type="submit" disabled={!isCreator} className="inline-flex justify-center py-2 px-4 border border-transparent rounded-md text-sm font-medium text-white bg-maroon-normal" onClick={(event) => submitScore(event)}>Submit Score</button>
+                            <button type="submit" disabled={!isCreator} className="inline-flex justify-center py-2 px-4 mt-3 border border-salmon-light rounded-md text-sm font-medium text-white bg-maroon-normal" onClick={(event) => submitScore(event)}>Submit Score</button>
                         </div>
                     </div>
                     <div className="container mx-auto py-4">
                         <h1 className="text-salmon-light text-center text-3xl font-bold mb-4">ScoreCard</h1>
                         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                            <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                                    <tr className="text-white " >
+                            <table className="w-full text-sm text-center text-black dark:text-white">
+                                <thead className="text-xs text-black uppercase bg-gray-light dark:bg-gray-light dark:text-black">
+                                    <tr className="text-black">
                                         <th className="px-6 py-3">Player</th>
                                         <th id="totalScore" className="px-6 py-3">Score</th>
                                         <th className="px-6 py-3">Points</th>
@@ -631,14 +635,14 @@ const ScoreCard = () => {
                                     {
                                         gameType === 'individual'
                                             ? scorePoints.map((player) => (
-                                                <tr key={player.user} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                                <tr key={player.user} className="bg-white dark:bg-gray-light">
                                                     <td className="px-6 py-4 whitespace-nowrap">{player.user}</td>
                                                     <td className="px-6 py-4 whitespace-nowrap">{player.score}</td>
                                                     <td className="px-6 py-4 whitespace-nowrap">{player.point}</td>
                                                 </tr>
                                             ))
                                             : teamPoints.map((team) => (
-                                                <tr key={team.team} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                                <tr key={team.team} className="bg-white dark:bg-gray-light">
                                                     <td className="px-6 py-4 whitespace-nowrap">{team.team}</td>
                                                     <td className="px-6 py-4 whitespace-nowrap">{team.score}</td>
                                                     <td className="px-6 py-4 whitespace-nowrap">{team.point}</td>
