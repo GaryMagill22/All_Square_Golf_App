@@ -130,34 +130,86 @@ const ScoreCard = () => {
         }
     };
 
+
     const saveRoundData = async () => {
         try {
-            // Create Object to save rounds
-            const roundData = {
-                players: calculatedPoints.map(player => ({
-                    name: player.player,
-                    score: totalScores[player.player],
-                    points: player.points,
-                })),
-                winners: handleWinners().winners.map(player => player.player),
-                payout: handleWinners().payout,
-                amountBet: bettingAmount,
-                game: gamePicked,
-                coursePicked: coursePicked,
-            };
-            // // Create payout data object
-            const payoutData = {
-                userId: user.id,  // The ID of the user who won
-                amount: handleWinners().payout // The amount to pay out
+            // Get winners data
+            const winnersData = handleWinners();
+            let roundData;
+    
+            if (gameType === 'individual') {
+                // Handle individual game winners
+                roundData = {
+                    players: winnersData.map(player => ({
+                        name: player.player,
+                        score: totalScores[player.player],
+                        points: player.points,
+                    })),
+                    winners: winnersData.map(player => player.player),
+                    payout: earnings,
+                    amountBet: bettingAmount,
+                    game: gamePicked,
+                    coursePicked: coursePicked,
+                };
+            } else if (gameType === 'team') {
+                // Handle team game winners
+                // Here, adjust the structure based on how your team data is structured
+                const gameWinner = teamWinnerCalculation();
+                const retrievedWinners = teams.filter((item) => item.teamName === gameWinner.team);
+                const teamWinnerList = retrievedWinners[0].players.map(item => ({
+                    name: item.name,
+                    point: gameWinner.point,
+                    // Include any other relevant data here
+                }));
+    
+                roundData = {
+                    teams: teamWinnerList,
+                    winningTeam: gameWinner.team,
+                    payout: earnings,
+                    amountBet: bettingAmount,
+                    game: gamePicked,
+                    coursePicked: coursePicked,
+                };
             }
-
+    
             // Make a POST request to the backend to save the round data
-            await axios.post('http://localhost:8000.club/api/rounds/new', roundData);
+            await axios.post('http://localhost:8000/api/rounds/new', roundData);
             navigate("/home");
         } catch (error) {
             console.log('Error saving round data:', error);
         }
     };
+    
+
+    // Old function that only supported Individual games
+    // const saveRoundData = async () => {
+    //     try {
+    //         // Create Object to save rounds
+    //         const roundData = {
+    //             players: calculatedPoints.map(player => ({
+    //                 name: player.player,
+    //                 score: totalScores[player.player],
+    //                 points: player.points,
+    //             })),
+    //             winners: handleWinners().winners.map(player => player.player),
+    //             payout: handleWinners().payout,
+    //             amountBet: bettingAmount,
+    //             game: gamePicked,
+    //             coursePicked: coursePicked,
+    //         };
+    //         // // Create payout data object
+    //         const payoutData = {
+    //             userId: user.id,  // The ID of the user who won
+    //             amount: handleWinners().payout // The amount to pay out
+    //         }
+
+    //         // Make a POST request to the backend to save the round data
+    //         await axios.post('http://localhost:8000/api/rounds/new', roundData);
+    //         navigate("/home");
+    //     } catch (error) {
+    //         console.log('Error saving round data:', error);
+    //     }
+    // };
 
     const findSmallestScoreForEachTeam = (players, teams) => {
         // Initialize the teamScores object with the maximum possible score as a starting point
@@ -663,7 +715,7 @@ const ScoreCard = () => {
                             }
                             Sign scorecard to confirm winner(s) payout
                         </button>
-                        <button className="btn btn-primary">
+                        <button onClick={saveRoundData} className="btn btn-primary">
                             Save Round
                         </button>
                     </div>
