@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { Axios } from '../helpers/axiosHelper';
+import 'bootstrap/dist/css/bootstrap.css';
+
 
 
 
@@ -9,33 +11,65 @@ import { Axios } from '../helpers/axiosHelper';
 const GamesPage = () => {
     const [games, setGames] = useState([]);
     const [loaded, setLoaded] = useState(false);
-    const [activeGame, setActiveGame] = useState(null);
+    const [activeIndex, setActiveIndex] = useState(null); // Track the active accordion item
+
 
     useEffect(() => {
-
-        // environment variables for local/production
-        const apiURL = process.env.REACT_APP_API_URL;
-
-        axios.get(`${apiURL}/api/games`)
+        axios.get('/games')
             .then((res) => {
-                setActiveGame(res.data);
+                setGames(res.data);
                 setLoaded(true);
             })
             .catch((err) => {
-                console.log(`Error fetching games: ${err}`);
+                console.log(`Error fetching games: ${err}, ${err.stack}`);
             });
     }, []);
 
-
-    const handleGameClick = (gameId) => {
-        setActiveGame(gameId);
-        // saving game selected to local storage //
-        console.log('HELLO');
+    const toggleAccordion = (index) => {
+        setActiveIndex(activeIndex === index ? null : index);
     };
 
     return (
 
-        <main className="grid place-items-center px-6 py-24 sm:py-32 lg:px-8 bg-gray-dark min-h-screen">
+
+        <div className="container mx-auto p-4 bg-gray-dark">
+            {loaded ? (
+                <div id="accordion-color" data-accordion="collapse">
+                    {games.map((game, index) => (
+                        <div key={game._id}>
+                            <h4 id={`accordion-color-heading-${index}`}>
+                                <button type="button" className="flex items-center justify-between w-full p-2 text-sm font-medium text-white border border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-200 dark:focus:ring-salmon-light dark:border-gray-700 dark:text-gray-400 hover:bg-blue-100 dark:hover:bg-gray-800 gap-2" onClick={() => toggleAccordion(index)} aria-expanded={activeIndex === index}>
+                                    <span>{game.name}</span>
+                                    <svg className={activeIndex === index ? 'transform rotate-180 w-3 h-3' : 'w-3 h-3'} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5 5 1 1 5" />
+                                    </svg>
+                                </button>
+                            </h4>
+                            <div id={`accordion-color-body-${index}`} className={activeIndex === index ? 'block' : 'hidden'} aria-labelledby={`accordion-color-heading-${index}`}>
+                                <div className="p-5 border border-b-0 border-gray-200 dark:border-gray-700 dark:bg-gray-900">
+                                    <p className="text-white dark:text-white">{game.howToPlay}</p>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            ) : (
+                <p>Loading games...</p>
+            )}
+            <div className="mt-4">
+                <Link to="/home" className="inline-block px-6 py-2 text-sm font-medium leading-6 text-center text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:ring">
+                    Home
+                </Link>
+            </div>
+        </div>
+    );
+};
+
+
+export default GamesPage;
+
+
+{/* <main className="grid place-items-center px-6 py-24 sm:py-32 lg:px-8 bg-gray-dark min-h-screen">
             <div className="text-center">
                 <p className="text-base font-semibold text-blue-light">404</p>
                 <h1 className="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-5xl">Page not found</h1>
@@ -47,46 +81,4 @@ const GamesPage = () => {
                             Back
                         </Link>
                     </div>
-        </main>
-        // <div className="accordion" id="accordionExample">
-        //     {loaded &&
-        //         games.map((game, i) => {
-        //             const isGameActive = (activeGame === game.id);
-
-        //             return (
-        //                 <div className="accordion-item" key={i}>
-        //                     <h2 className="accordion-header">
-        //                         <button
-        //                             className="accordion-button"
-        //                             type="accordion-button"
-        //                             data-bs-toggle="collapse"
-        //                             data-bs-target={`#collapse${i}`}
-        //                             aria-expanded="false"
-        //                             aria-controls={`#collapse${i}`}
-
-        //                             onChange={() => handleGameClick(game.id)}
-        //                         >
-        //                             {game.name}
-        //                         </button>
-        //                     </h2>
-        //                     <div
-        //                         id={`collapse${i}`}
-        //                         className="accordion-collapse collapse"
-        //                         aria-labelledby={`heading${game.id}`}
-        //                         data-bs-parent="#accordionExample"
-        //                     >
-        //                         <div className="accordion-body">
-        //                             {game.howToPlay}
-        //                         </div>
-        //                     </div>
-        //                 </div>
-        //             );
-        //         })}
-        //     <Link to="/home" className="btn btn-outline-primary btn-sm m-2">
-        //         Home
-        //     </Link>
-        // </div>
-    );
-};
-
-export default GamesPage;
+        </main> */}
