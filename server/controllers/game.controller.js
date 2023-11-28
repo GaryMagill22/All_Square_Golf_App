@@ -21,7 +21,7 @@ module.exports.createGame = (req, res) => {
 module.exports.getAllGames = (req, res) => {
     Game.find({})
         .then(game => res.json(game))
-        .catch(err => res.json(err))
+        .catch(err => res.status(500).json(err))
 }
 
 
