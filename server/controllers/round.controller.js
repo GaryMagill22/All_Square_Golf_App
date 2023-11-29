@@ -1,15 +1,11 @@
-// const { request } = require('express');
-
 const Round = require("../models/round.model")
-
-
 
 
 // Create new Round
 module.exports.createRound = (req, res) => {
     const roundData = req.body;
-    // console.log(req.body);
-    Round.create(req.body)
+    console.log('Data received from the frontend: ', roundData);
+    Round.create(roundData)
         .then(round => res.json(round))
         .catch(err => res.status(400).json(err));
 };

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { Axios } from '../helpers/axiosHelper';
-import 'bootstrap/dist/css/bootstrap.css';
 
 
 
@@ -33,12 +32,15 @@ const GamesPage = () => {
 
 
         <div className="container mx-auto p-4 bg-gray-dark">
+            <div>
+                <h1 className="text-3xl font-semibold text-center text-indigo-light">Games</h1>
+            </div>
             {loaded ? (
                 <div id="accordion-color" data-accordion="collapse">
                     {games.map((game, index) => (
                         <div key={game._id}>
                             <h4 id={`accordion-color-heading-${index}`}>
-                                <button type="button" className="flex items-center justify-between w-full p-2 text-sm font-medium text-white border border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-200 dark:focus:ring-salmon-light dark:border-gray-700 dark:text-gray-400 hover:bg-blue-100 dark:hover:bg-gray-800 gap-2" onClick={() => toggleAccordion(index)} aria-expanded={activeIndex === index}>
+                                <button type="button" className="flex items-center justify-between w-full p-2 text-sm font-medium text-white text-center border border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-200 dark:focus:ring-salmon-light dark:border-gray-700 dark:text-white hover:bg-blue-100 dark:hover:bg-gray-800 gap-2" onClick={() => toggleAccordion(index)} aria-expanded={activeIndex === index}>
                                     <span>{game.name}</span>
                                     <svg className={activeIndex === index ? 'transform rotate-180 w-3 h-3' : 'w-3 h-3'} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                                         <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5 5 1 1 5" />
@@ -46,8 +48,8 @@ const GamesPage = () => {
                                 </button>
                             </h4>
                             <div id={`accordion-color-body-${index}`} className={activeIndex === index ? 'block' : 'hidden'} aria-labelledby={`accordion-color-heading-${index}`}>
-                                <div className="p-5 border border-b-0 border-gray-200 dark:border-gray-700 dark:bg-gray-900">
-                                    <p className="text-white dark:text-white">{game.howToPlay}</p>
+                                <div className="p-5 mb-2 rounded-xl border-2 border-b-0 border-indigo-light dark:border-indigo-light dark:bg-gray-light">
+                                    <p className="text-black dark:text-white">{game.howToPlay}</p>
                                 </div>
                             </div>
                         </div>
@@ -57,7 +59,7 @@ const GamesPage = () => {
                 <p>Loading games...</p>
             )}
             <div className="mt-4">
-                <Link to="/home" className="inline-block px-6 py-2 text-sm font-medium leading-6 text-center text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:ring">
+                <Link to="/home" className="inline-block leading-6 text-center w-60 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white text-white bg-maroon-normal rounded-md hover:bg-blue-600 focus:outline-none focus:ring">
                     Home
                 </Link>
             </div>

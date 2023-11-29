@@ -63,7 +63,10 @@ const ScoreCard = () => {
     const [teams, setTeams] = useState(JSON.parse(localStorage.getItem('teams')));
     const scoreUpdating = Object.values(totalScores);
     const selectedGame = useState(JSON.parse(localStorage.getItem('user_selected_game')));
+    const selectedCourse = useState(JSON.parse(localStorage.getItem('user_selected_course')));
     const [isPlayerRecordChosen, setIsPlayerRecordChosen] = useState(false);
+    // state for signing scorecard to disable Save Round button until all players have signed
+    const [isScorecardSigned, setIsScorecardSigned] = useState(false);
 
     // Function to calculate the total scores for teams and indiduals
     // const [selectedPlayer, setSelectedPlayer] = useState(Object.fromEntries(players.map(player => [player.username, { score: 0, point: 0 }])));
@@ -131,54 +134,133 @@ const ScoreCard = () => {
     };
 
 
+
+
     const saveRoundData = async () => {
         try {
-            // Get winners data
-            const winnersData = handleWinners();
+            let teamScores = {};
+            if (gameType === 'team') {
+                // Calculate teamScores here before using it in roundData
+                teamScores = findSmallestScoreForEachTeam(selectedPlayer, teams);
+            }
             let roundData;
-
             if (gameType === 'individual') {
-                // Handle individual game winners
+                console.log('Course Picked - ', selectedCourse);
+                console.log('Game Picked - ', selectedGame);
+                // Extract the first element from selectedCourse if it's an array, or use it directly if it's a string
+                const courseName = Array.isArray(selectedCourse) ? selectedCourse[0] : selectedCourse;
+
+
+                // Individual game logic
                 roundData = {
-                    players: winnersData.map(player => ({
-                        name: player.player,
-                        score: totalScores[player.player],
-                        points: player.points,
+                    game: selectedGame[0],
+                    course: courseName,
+                    players: scorePoints.map(player => ({
+                        name: player.user,
+                        score: player.score,
+                        points: player.point
                     })),
-                    winners: winnersData.map(player => player.player),
+                    winners: winnersList.map(player => player.player),
                     payout: earnings,
                     amountBet: bettingAmount,
-                    game: gamePicked,
-                    coursePicked: coursePicked,
                 };
+                console.log('Round Data:from saveRoundDataFunction', roundData);
             } else if (gameType === 'team') {
-                // Handle team game winners
-                // Here, adjust the structure based on how your team data is structured
+                // Team game logic
                 const gameWinner = teamWinnerCalculation();
-                const retrievedWinners = teams.filter((item) => item.teamName === gameWinner.team);
-                const teamWinnerList = retrievedWinners[0].players.map(item => ({
-                    name: item.name,
-                    point: gameWinner.point,
-                    // Include any other relevant data here
-                }));
+
+                // Extract the first element from selectedCourse if it's an array, or use it directly if it's a string
+                const courseName = Array.isArray(selectedCourse) ? selectedCourse[0] : selectedCourse;
 
                 roundData = {
-                    teams: teamWinnerList,
-                    winningTeam: gameWinner.team,
-                    payout: earnings,
+                    teams: teamPoints.map(team => ({
+                        name: team.team,
+                        score: team.score,
+                        points: team.point
+                    })),
+                    winningTeam: gameWinner?.team, // Use optional chaining here as well
+                    payout: earnings, // Assuming 'earnings' holds the total payout for the team game
                     amountBet: bettingAmount,
-                    game: gamePicked,
-                    coursePicked: coursePicked,
+                    game: selectedGame[0],
+                    course: courseName,
                 };
             }
 
+            console.log('Round Data being sent to backend:', roundData); // Final roundData before sending
+
+
             // Make a POST request to the backend to save the round data
-            await axios.post('http://localhost:8000/api/rounds/new', roundData);
-            navigate("/home");
+            const response = await axios.post('http://localhost:8000/api/rounds/new', roundData);
+
+            // Logging the full response object
+            console.log('Full API Response:', response);
+
+            console.log('Round data saved successfully:', response.data);   // Log the data part of the response
+
+            if (response.status === 200) {
+                console.log('Round data saved successfully:', response.data);
+                navigate("/home");
+            } else {
+                console.error('Round data was not saved successfully:', response);
+            }
         } catch (error) {
-            console.log('Error saving round data:', error);
+            console.error('Error saving round data:', error);
+            console.log('Error details:', error.response ? error.response.data : error.message);
         }
     };
+
+
+
+
+    // (Old) - Save Round Data to database
+    // const saveRoundData = async () => {
+    //     try {
+    //         // Get winners data
+    //         const winnersData = handleWinners();
+    //         let roundData;
+
+    //         if (gameType === 'individual') {
+    //             // Handle individual game winners
+    //             roundData = {
+    //                 players: winnersData.map(player => ({
+    //                     name: player.player,
+    //                     score: totalScores[player.player],
+    //                     points: player.points,
+    //                 })),
+    //                 winners: winnersData.map(player => player.player),
+    //                 payout: earnings,
+    //                 amountBet: bettingAmount,
+    //                 game: gamePicked,
+    //                 coursePicked: coursePicked,
+    //             };
+    //         } else if (gameType === 'team') {
+    //             // Handle team game winners
+    //             // Here, adjust the structure based on how your team data is structured
+    //             const gameWinner = teamWinnerCalculation();
+    //             const retrievedWinners = teams.filter((item) => item.teamName === gameWinner.team);
+    //             const teamWinnerList = retrievedWinners[0].players.map(item => ({
+    //                 name: item.name,
+    //                 point: gameWinner.point,
+    //                 // Include any other relevant data here
+    //             }));
+
+    //             roundData = {
+    //                 teams: teamWinnerList,
+    //                 winningTeam: gameWinner.team,
+    //                 payout: earnings,
+    //                 amountBet: bettingAmount,
+    //                 game: gamePicked,
+    //                 coursePicked: coursePicked,
+    //             };
+    //         }
+
+    //         // Make a POST request to the backend to save the round data
+    //         await axios.post('http://localhost:8000/api/rounds/new', roundData);
+    //         navigate("/home");
+    //     } catch (error) {
+    //         console.log('Error saving round data:', error);
+    //     }
+    // };
 
 
     // Old function that only supported Individual games
@@ -331,7 +413,7 @@ const ScoreCard = () => {
             handleWinners();
             teamWinnerCalculation();
         }
-    }
+    };
 
     useEffect(() => {
         // Set initial scorepoints value of players
@@ -459,13 +541,14 @@ const ScoreCard = () => {
             }
 
             alert(response.message);
+            setIsScorecardSigned(true);
             socket.emit('checkScoreCard', lobby);
             return;
         } catch (err) {
             alert('Unable to sign scorecard');
             setIsLoading(false);
         }
-    }
+    };
 
     useEffect(() => {
         if (socket) {
@@ -719,7 +802,7 @@ const ScoreCard = () => {
                             }
                             Sign scorecard to confirm winner(s) payout
                         </button>
-                        <button onClick={saveRoundData} className="btn btn-primary">
+                        <button type='submit' onClick={saveRoundData} className="btn btn-primary" disabled={!isScorecardSigned}>
                             Save Round
                         </button>
                     </div>

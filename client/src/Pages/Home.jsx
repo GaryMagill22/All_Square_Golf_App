@@ -16,7 +16,7 @@ const Home = () => {
     const { lobbyId } = useParams();
 
     // State values
-    const [games, setGames] = useState([]); 
+    const [games, setGames] = useState([]);
     const [course, setCourse] = useState([]);
     const [selectedGame, setSelectedGame] = useState(null);
     const [selectedCourse, setSelectedCourse] = useState(null);
@@ -91,12 +91,13 @@ const Home = () => {
     const handleSelect = (selectedItem, type) => {
         if (type === 'game') {
             setSelectedGame(selectedItem);
-            // const filteredGame = games.filter((game) => game._id === selectedGame);
             const gameName = selectedItem.name;
             localStorage.setItem('user_selected_game', JSON.stringify(gameName.toLowerCase()));
             return;
         } else if (type === 'course') {
             setSelectedCourse(selectedItem);
+            const courseName = selectedItem.name; // Assuming selectedItem has a name property
+            localStorage.setItem('user_selected_course', JSON.stringify(courseName));
         }
     };
 
@@ -147,7 +148,7 @@ const Home = () => {
         } catch (error) {
             console.error("Error updating the lobby:", error);
         }
-    }
+    };
 
 
     const handleJoinRoom = async (lobbyId) => {
