@@ -183,15 +183,16 @@ const ScoreCard = () => {
                     amountBet: bettingAmount,
                 };
             } else if (gameType === 'team') {
+                // Team logic
                 roundData = {
                     teams: teamPoints.map(team => ({
                         teamName: team.team,
                         teamScore: team.score,
                         teamPoints: team.point,
-                        // Include the logged-in user's userId for each player in the team
                         players: team.players.map(player => ({
-                            userId: userId, // Use the logged-in user's userId
                             name: player.name,
+                            score: selectedPlayer[player.name].score,
+                            points: selectedPlayer[player.name].point,
                         })),
                     })),
                     winningTeam: teamWinnerCalculation()?.team,

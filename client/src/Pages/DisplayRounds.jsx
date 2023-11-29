@@ -25,7 +25,10 @@ const DisplayRounds = () => {
     //         });
     // }, []);
 
+
     // Get rounds from database only having the user ID that exists in players array    
+
+
     useEffect(() => {
         // Retrieve the user ID from local storage
         const userId = JSON.parse(localStorage.getItem('user_id'));
@@ -61,16 +64,16 @@ const DisplayRounds = () => {
     };
 
     return (
-        <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4">Previous Rounds</h1>
+        <div className="container bg-gray-dark mx-auto p-4">
+            <h1 className="text-2xl text-white font-bold mb-4">Previous Rounds</h1>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {displayRounds.map((round) => (
                     <div
                         key={round._id}
-                        className="card bg-white rounded-lg border border-gray-200 shadow-md p-4 cursor-pointer"
+                        className="card bg-white rounded-lg border border-salmon-light shadow-md p-4 cursor-pointer"
                         onClick={() => openModal(round)}
                     >
-                        <div className="card-body">
+                        <div className="card-body bg-gray-lightest">
                             <h5 className="card-title text-lg">Date: {round.formattedDate}</h5>
                             <h5 className="text-lg text-gray-600">Course: {round.course || "Not specified"}</h5>
                             <h5 className="text-lg">Players: {round.players.length > 0 ? round.players.map(player => player.name).join(', ') : "No players"}</h5>
@@ -78,10 +81,7 @@ const DisplayRounds = () => {
                     </div>
                 ))}
             </div>
-            
-            {/* <div>
-                <pre>{JSON.stringify(displayRounds, null, 2)}</pre>
-            </div> */}
+
 
             {isModalOpen && selectedRound && (
                 <Dialog open={isModalOpen} onClose={closeModal} className="relative z-10">
@@ -139,9 +139,11 @@ const DisplayRounds = () => {
                     </div>
                 </Dialog>
             )}
-            <Link to="/home" className="btn btn-outline-primary btn-sm m-2">
-                Home
-            </Link>
+            <div className="mt-4">
+                <Link to="/home" className="inline-block leading-6 text-center w-60 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white text-white bg-maroon-normal rounded-md hover:bg-blue-600 focus:outline-none focus:ring">
+                    Home
+                </Link>
+            </div>
         </div>
     );
 };
