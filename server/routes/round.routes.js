@@ -7,8 +7,14 @@ const roundRoutes = express.Router()
 
 
 
-// Create Round using RoundController
+// Create Round 
 roundRoutes.post('/new', authenticate, RoundController.createRound);
+
+
+// Get User Round History
+roundRoutes.get('/user/:userId', authenticate, RoundController.getUserRounds);
+
+
 
 // Get All Rounds
 roundRoutes.get('/', authenticate, RoundController.getAllRounds);
@@ -27,3 +33,8 @@ roundRoutes.delete(`/:id`, authenticate, RoundController.deleteRound);
 
 
 module.exports = { roundRoutes }
+
+
+
+
+

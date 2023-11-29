@@ -23,6 +23,28 @@ const DisplayRounds = () => {
             });
     }, []);
 
+
+    // get All rounds from database
+    // useEffect(() => {
+    //     // Retrieve the user ID from local storage
+    // const userId = JSON.parse(localStorage.getItem('user_id'));
+
+
+    //     axios.get('http://localhost:8000/api/rounds')
+    //         .then((res) => {
+    //             const processedRounds = res.data.map(round => {
+    //                 const roundDate = round.createdAt ? new Date(round.createdAt) : new Date();
+    //                 const formattedDate = !isNaN(roundDate.getTime()) ? roundDate.toLocaleDateString('en-US') : 'Not available';
+    //                 return { ...round, formattedDate };
+    //             });
+    //             setDisplayRounds(processedRounds);
+    //         })
+    //         .catch((err) => {
+    //             console.error(`Error fetching rounds: ${err}`);
+    //         });
+    // }, []);
+
+
     const openModal = (round) => {
         setSelectedRound(round);
         setIsModalOpen(true);
