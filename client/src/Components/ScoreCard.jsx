@@ -12,31 +12,59 @@ const ScoreCard = () => {
 
     // State values
     const [user, setUser] = useState([]);
+
+    // New way
     const [players, setPlayers] = useState(() => {
         let storedData;
         if (gameType === 'team') {
             const storedTeams = localStorage.getItem('teams');
             if (storedTeams) {
                 const teams = JSON.parse(storedTeams);
-                const extractedPlayers = teams.flatMap(team =>
+                storedData = teams.flatMap(team =>
                     team.players.map(player => ({
-                        _id: player.id,
-                        username: player.name
+                        username: player.name, // Only username is available here
+                        // userId for each player in the team needs to be added later
                     }))
                 );
-                storedData = extractedPlayers;
             } else {
                 storedData = [];
             }
         } else {
-            storedData = JSON.parse(localStorage.getItem('players'));
-            if (!storedData) {
-                storedData = [];
-            }
+            // For individual games, assuming each player object in localStorage includes their userId
+            storedData = JSON.parse(localStorage.getItem('players')) || [];
         }
 
         return storedData;
     });
+
+    // old way 
+    // const [players, setPlayers] = useState(() => {
+    //     let storedData;
+    //     if (gameType === 'team') {
+    //         const storedTeams = localStorage.getItem('teams');
+    //         if (storedTeams) {
+    //             const teams = JSON.parse(storedTeams);
+    //             const extractedPlayers = teams.flatMap(team =>
+    //                 team.players.map(player => ({
+    //                     _id: player.id,
+    //                     username: player.name
+    //                 }))
+    //             );
+    //             storedData = extractedPlayers;
+    //         } else {
+    //             storedData = [];
+    //         }
+    //     } else {
+    //         storedData = JSON.parse(localStorage.getItem('players'));
+    //         if (!storedData) {
+    //             storedData = [];
+    //         }
+    //     }
+
+    //     return storedData;
+    // });
+
+
     const [isCreator, setIsCreator] = useState(JSON.parse(localStorage.getItem('creator')));
     const [isLoading, setIsLoading] = useState(false);
     const [scorePoints, setScorePoints] = useState([]);
@@ -69,7 +97,6 @@ const ScoreCard = () => {
     const [isScorecardSigned, setIsScorecardSigned] = useState(false);
 
     // Function to calculate the total scores for teams and indiduals
-    // const [selectedPlayer, setSelectedPlayer] = useState(Object.fromEntries(players.map(player => [player.username, { score: 0, point: 0 }])));
     const [selectedPlayer, setSelectedPlayer] = useState(() => {
         const initialScores = {};
 
@@ -133,28 +160,19 @@ const ScoreCard = () => {
         }
     };
 
-
-
-
+    // New way utilizing userId for individual and team
     const saveRoundData = async () => {
         try {
-            let teamScores = {};
-            if (gameType === 'team') {
-                // Calculate teamScores here before using it in roundData
-                teamScores = findSmallestScoreForEachTeam(selectedPlayer, teams);
-            }
+            const courseName = Array.isArray(selectedCourse) ? selectedCourse[0] : selectedCourse;
+            // Get the userId of the logged-in user from localStorage
+            const userId = JSON.parse(localStorage.getItem('user_id'));
+
             let roundData;
             if (gameType === 'individual') {
-                console.log('Course Picked - ', selectedCourse);
-                console.log('Game Picked - ', selectedGame);
-                // Extract the first element from selectedCourse if it's an array, or use it directly if it's a string
-                const courseName = Array.isArray(selectedCourse) ? selectedCourse[0] : selectedCourse;
-
-
-                // Individual game logic
                 roundData = {
                     game: selectedGame[0],
                     course: courseName,
+                    userId: userId, // Use  user's userId
                     players: scorePoints.map(player => ({
                         name: player.user,
                         score: player.score,
@@ -164,39 +182,27 @@ const ScoreCard = () => {
                     payout: earnings,
                     amountBet: bettingAmount,
                 };
-                console.log('Round Data:from saveRoundDataFunction', roundData);
             } else if (gameType === 'team') {
-                // Team game logic
-                const gameWinner = teamWinnerCalculation();
-
-                // Extract the first element from selectedCourse if it's an array, or use it directly if it's a string
-                const courseName = Array.isArray(selectedCourse) ? selectedCourse[0] : selectedCourse;
-
                 roundData = {
                     teams: teamPoints.map(team => ({
-                        name: team.team,
-                        score: team.score,
-                        points: team.point
+                        teamName: team.team,
+                        teamScore: team.score,
+                        teamPoints: team.point,
+                        // Include the logged-in user's userId for each player in the team
+                        players: team.players.map(player => ({
+                            userId: userId, // Use the logged-in user's userId
+                            name: player.name,
+                        })),
                     })),
-                    winningTeam: gameWinner?.team, // Use optional chaining here as well
-                    payout: earnings, // Assuming 'earnings' holds the total payout for the team game
+                    winningTeam: teamWinnerCalculation()?.team,
+                    payout: earnings,
                     amountBet: bettingAmount,
                     game: selectedGame[0],
                     course: courseName,
                 };
             }
 
-            console.log('Round Data being sent to backend:', roundData); // Final roundData before sending
-
-
-            // Make a POST request to the backend to save the round data
             const response = await axios.post('http://localhost:8000/api/rounds/new', roundData);
-
-            // Logging the full response object
-            console.log('Full API Response:', response);
-
-            console.log('Round data saved successfully:', response.data);   // Log the data part of the response
-
             if (response.status === 200) {
                 console.log('Round data saved successfully:', response.data);
                 navigate("/home");
@@ -212,87 +218,83 @@ const ScoreCard = () => {
 
 
 
-    // (Old) - Save Round Data to database
+    // Old way before utilizing userId for individual and team
     // const saveRoundData = async () => {
     //     try {
-    //         // Get winners data
-    //         const winnersData = handleWinners();
+    //         let teamScores = {};
+    //         if (gameType === 'team') {
+    //             // Calculate teamScores here before using it in roundData
+    //             teamScores = findSmallestScoreForEachTeam(selectedPlayer, teams);
+    //         }
     //         let roundData;
 
     //         if (gameType === 'individual') {
-    //             // Handle individual game winners
+    //             console.log('Course Picked - ', selectedCourse);
+    //             console.log('Game Picked - ', selectedGame);
+    //             // Extract the first element from selectedCourse if it's an array, or use it directly if it's a string
+    //             const courseName = Array.isArray(selectedCourse) ? selectedCourse[0] : selectedCourse;
+    //             // getting userId from local storage to save in order to filter out rounds based on userId later
+    //             const userId = JSON.parse(localStorage.getItem('user_id'));
+
+    //             // Individual game logic
     //             roundData = {
-    //                 players: winnersData.map(player => ({
-    //                     name: player.player,
-    //                     score: totalScores[player.player],
-    //                     points: player.points,
+    //                 game: selectedGame[0],
+    //                 course: courseName,
+    //                 players: scorePoints.map(player => ({
+    //                     userId: player.userId,
+    //                     name: player.user,
+    //                     score: player.score,
+    //                     points: player.point
     //                 })),
-    //                 winners: winnersData.map(player => player.player),
+    //                 winners: winnersList.map(player => player.player),
     //                 payout: earnings,
     //                 amountBet: bettingAmount,
-    //                 game: gamePicked,
-    //                 coursePicked: coursePicked,
     //             };
+    //             console.log('Round Data:from saveRoundDataFunction', roundData);
     //         } else if (gameType === 'team') {
-    //             // Handle team game winners
-    //             // Here, adjust the structure based on how your team data is structured
+    //             // Team game logic
     //             const gameWinner = teamWinnerCalculation();
-    //             const retrievedWinners = teams.filter((item) => item.teamName === gameWinner.team);
-    //             const teamWinnerList = retrievedWinners[0].players.map(item => ({
-    //                 name: item.name,
-    //                 point: gameWinner.point,
-    //                 // Include any other relevant data here
-    //             }));
+
+    //             // Extract the first element from selectedCourse if it's an array, or use it directly if it's a string
+    //             const courseName = Array.isArray(selectedCourse) ? selectedCourse[0] : selectedCourse;
 
     //             roundData = {
-    //                 teams: teamWinnerList,
-    //                 winningTeam: gameWinner.team,
-    //                 payout: earnings,
+    //                 teams: teamPoints.map(team => ({
+    //                     name: team.team,
+    //                     score: team.score,
+    //                     points: team.point
+    //                 })),
+    //                 winningTeam: gameWinner?.team, // Use optional chaining here as well
+    //                 payout: earnings, // Assuming 'earnings' holds the total payout for the team game
     //                 amountBet: bettingAmount,
-    //                 game: gamePicked,
-    //                 coursePicked: coursePicked,
+    //                 game: selectedGame[0],
+    //                 course: courseName,
     //             };
     //         }
 
+    //         console.log('Round Data being sent to backend:', roundData); // Final roundData before sending
+
+
     //         // Make a POST request to the backend to save the round data
-    //         await axios.post('http://localhost:8000/api/rounds/new', roundData);
-    //         navigate("/home");
-    //     } catch (error) {
-    //         console.log('Error saving round data:', error);
-    //     }
-    // };
+    //         const response = await axios.post('http://localhost:8000/api/rounds/new', roundData);
 
+    //         // Logging the full response object
+    //         console.log('Full API Response:', response);
 
-    // Old function that only supported Individual games
-    // const saveRoundData = async () => {
-    //     try {
-    //         // Create Object to save rounds
-    //         const roundData = {
-    //             players: calculatedPoints.map(player => ({
-    //                 name: player.player,
-    //                 score: totalScores[player.player],
-    //                 points: player.points,
-    //             })),
-    //             winners: handleWinners().winners.map(player => player.player),
-    //             payout: handleWinners().payout,
-    //             amountBet: bettingAmount,
-    //             game: gamePicked,
-    //             coursePicked: coursePicked,
-    //         };
-    //         // // Create payout data object
-    //         const payoutData = {
-    //             userId: user.id,  // The ID of the user who won
-    //             amount: handleWinners().payout // The amount to pay out
+    //         if (response.status === 200) {
+    //             console.log('Round data saved successfully:', response.data);
+    //             navigate("/home");
+    //         } else {
+    //             console.error('Round data was not saved successfully:', response);
     //         }
-
-    //         // Make a POST request to the backend to save the round data
-    //         await axios.post('http://localhost:8000/api/rounds/new', roundData);
-    //         navigate("/home");
     //     } catch (error) {
-    //         console.log('Error saving round data:', error);
+    //         console.error('Error saving round data:', error);
+    //         console.log('Error details:', error.response ? error.response.data : error.message);
     //     }
     // };
 
+
+    // Function to calculate the total scores for teams and indiduals
     const findSmallestScoreForEachTeam = (players, teams) => {
         // Initialize the teamScores object with the maximum possible score as a starting point
         const teamScores = {};

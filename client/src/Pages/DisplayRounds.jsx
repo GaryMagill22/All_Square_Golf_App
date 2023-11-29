@@ -8,28 +8,9 @@ const DisplayRounds = () => {
     const [selectedRound, setSelectedRound] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    useEffect(() => {
-        axios.get('http://localhost:8000/api/rounds')
-            .then((res) => {
-                const processedRounds = res.data.map(round => {
-                    const roundDate = round.createdAt ? new Date(round.createdAt) : new Date();
-                    const formattedDate = !isNaN(roundDate.getTime()) ? roundDate.toLocaleDateString('en-US') : 'Not available';
-                    return { ...round, formattedDate };
-                });
-                setDisplayRounds(processedRounds);
-            })
-            .catch((err) => {
-                console.error(`Error fetching rounds: ${err}`);
-            });
-    }, []);
-
 
     // get All rounds from database
     // useEffect(() => {
-    //     // Retrieve the user ID from local storage
-    // const userId = JSON.parse(localStorage.getItem('user_id'));
-
-
     //     axios.get('http://localhost:8000/api/rounds')
     //         .then((res) => {
     //             const processedRounds = res.data.map(round => {
@@ -43,6 +24,31 @@ const DisplayRounds = () => {
     //             console.error(`Error fetching rounds: ${err}`);
     //         });
     // }, []);
+
+    // Get rounds from database only having the user ID that exists in players array    
+    useEffect(() => {
+        // Retrieve the user ID from local storage
+        const userId = JSON.parse(localStorage.getItem('user_id'));
+        console.log('userId:', userId);
+
+        if (userId) {
+            axios.get(`http://localhost:8000/api/rounds/user/${userId}`)
+                .then((res) => {
+                    console.log("Rounds received:", res.data);
+                    const processedRounds = res.data.map(round => {
+                        const roundDate = round.createdAt ? new Date(round.createdAt) : new Date();
+                        const formattedDate = !isNaN(roundDate.getTime()) ? roundDate.toLocaleDateString('en-US') : 'Not available';
+                        return { ...round, formattedDate };
+                    });
+                    setDisplayRounds(processedRounds);
+                })
+                .catch((err) => {
+                    console.error(`Error fetching rounds for user ${userId}:`, err);
+                });
+        } else {
+            console.error("User ID not found in localStorage");
+        }
+    }, []);
 
 
     const openModal = (round) => {
@@ -72,6 +78,10 @@ const DisplayRounds = () => {
                     </div>
                 ))}
             </div>
+            
+            {/* <div>
+                <pre>{JSON.stringify(displayRounds, null, 2)}</pre>
+            </div> */}
 
             {isModalOpen && selectedRound && (
                 <Dialog open={isModalOpen} onClose={closeModal} className="relative z-10">

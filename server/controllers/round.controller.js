@@ -19,9 +19,9 @@ module.exports.getAllRounds = (req, res) => {
 
 // Get ONLY Rounds where logged in user is listed as a player
 module.exports.getUserRounds = (req, res) => {
-    const userId = req.params.userId; // Retrieve the user ID from the request parameters
-    
-    Round.find({ 'players.userId': userId }) // Find all rounds where the user ID is in the players array
+    const userId = req.params.userId; // Retrieve the user ID 
+
+    Round.find({ 'userId': userId }) // Find all rounds where the user ID is in the players array
         .then(rounds => res.json(rounds))
         .catch(err => res.status(400).json(err));
 };
