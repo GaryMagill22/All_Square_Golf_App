@@ -59,7 +59,7 @@ const GamesPage = () => {
                 <p>Loading games...</p>
             )}
             <div className="mt-4">
-                <Link to="/home" className="inline-block leading-6 text-center w-60 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white text-white bg-maroon-normal rounded-md hover:bg-blue-600 focus:outline-none focus:ring">
+                <Link to="/home" className="inline-block leading-6 text-center w-60 py-2 px-4 border border-transparent text-sm font-medium text-white bg-maroon-normal hover:no-underline rounded-md hover:bg-cyan-normal focus:outline-none focus:ring">
                     Home
                 </Link>
             </div>

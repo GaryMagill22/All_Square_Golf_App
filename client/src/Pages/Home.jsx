@@ -176,7 +176,7 @@ const Home = () => {
                             >
                                 <item.icon
                                     className={classNames(
-                                        item.current ? 'text-black' : 'textwhite group-hover:text-maroon-dark',
+                                        item.current ? 'text-black' : 'textwhite group-hover:text-gray-darkest',
                                         'h-6 w-6 shrink-0'
                                     )}
                                     aria-hidden="true"

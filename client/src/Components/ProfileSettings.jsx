@@ -6,39 +6,39 @@ import ProfileCard from '../Components/ProfileCard';
 
 const ProfileSettings = () => {
 
-    // const [avatar, setAvatar] = useState(null);
-    // const [avatarPreview, setAvatarPreview] = useState(null);
+    const [avatar, setAvatar] = useState(null);
+    const [avatarPreview, setAvatarPreview] = useState(null);
 
 
-    // const handleAvatarChange = (e) => {
-    //     const file = e.target.files[0];
-    //     if (file) {
-    //         const reader = new FileReader();
-    //         reader.onloadend = () => {
-    //             setAvatar(file);
-    //             setAvatarPreview(reader.result);
-    //         };
-    //         reader.readAsDataURL(file);
-    //     }
-    // };
+    const handleAvatarChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setAvatar(file);
+                setAvatarPreview(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
 
-    // const handleSaveAvatar = async () => {
-    //     const formData = new FormData();
-    //     formData.append('avatar', avatar);
+    const handleSaveAvatar = async () => {
+        const formData = new FormData();
+        formData.append('avatar', avatar);
 
-    //     try {
-    //         const response = await axios.post('https://allsquare.club/api/upload-avatar', formData, {
-    //             headers: {
-    //                 'Content-Type': 'multipart/form-data',
-    //             },
-    //         });
+        try {
+            const response = await axios.post('https://allsquare.club/api/upload-avatar', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
 
-    //         // Update avatar URL here if you're receiving it from the server
-    //         setAvatarPreview(response.data.avatarUrl);
-    //     } catch (error) {
-    //         console.error("Error uploading avatar:", error);
-    //     }
-    // };
+            // Update avatar URL here if you're receiving it from the server
+            setAvatarPreview(response.data.avatarUrl);
+        } catch (error) {
+            console.error("Error uploading avatar:", error);
+        }
+    };
 
 
 
