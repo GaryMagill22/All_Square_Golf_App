@@ -14,6 +14,7 @@ import DisplayUsers from './Pages/DisplayUsers';
 import UserInfo from './Components/UserInfo';
 import ScoreCard from './Components/ScoreCard';
 import DisplayRounds from './Pages/DisplayRounds';
+import DisplayCourses from './Pages/DisplayCourses';
 import FundWallet from './Pages/FundWallet';
 import VerifyPayment from './Pages/VerifyPayment';
 import RequestStripeLink from './Pages/RequestStripeAccountLink';
@@ -78,6 +79,7 @@ function App() {
                         <Route path="/profile" element={<ProfileCard />} />
                         <Route path="/new/game/:gameType" element={<ScoreCard />} />
                         <Route path="/rounds" element={<DisplayRounds />} />
+                        <Route path="/courses" element={ <DisplayCourses />} />
                         <Route path="/new/round/:gameType/:lobbyId" element={<LobbyPage />} />
                         <Route path="/new/round/:lobbyId" element={<LobbyPage />} />
                         <Route path="/fund-wallet/:amount" element={<FundWallet />} />

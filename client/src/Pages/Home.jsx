@@ -172,7 +172,7 @@ const Home = () => {
                         <li key={item.name}>
                             <Link
                                 to={item.to}
-                                className="w-30 pr-3 bg-gray-light text-black hover:text-indigo-600 hover:bg-gray-50 group flex gap-x-3 rounded-full p-1.5 text-md leading-6 font-semibold hover:no-underline"
+                                className="w-30 pr-3 bg-gray-light text-black hover:text-indigo-600 hover:bg-gray-50 group flex gap-x-3 rounded-md p-1.5 text-md leading-6 font-semibold hover:no-underline"
                             >
                                 <item.icon
                                     className={classNames(

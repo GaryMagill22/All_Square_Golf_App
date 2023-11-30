@@ -135,16 +135,25 @@ const ProfileCard = () => {
 
     return (
         <div className="min-h-screen bg-gray-dark flex justify-center items-center p-4">
-            <div className="w-full max-w-sm bg-blue-dark border border-gray-200 rounded-lg shadow dark:bg-gray-darkest dark:border-gray-700">
+            <div className="w-full max-w-sm bg-blue-dark border border-salmon-light rounded-lg shadow dark:bg-gray-darkest dark:border-salmon-light">
                 <div className="flex flex-col items-center pb-10">
-                    <span className="inline-block h-20 w-20 m-4 overflow-hidden rounded-full bg-gray-100">
+
+                    <span className="inline-block h-28 w-28 m-4 overflow-hidden rounded-full bg-gray-100">
                         <svg className="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
                         </svg>
                     </span>
                     <h1 className="m-1 text-xxl font-medium text-orange-light dark:text-orange-light">{user && user.username}</h1>
                     <h2 className="text-xl text-salmon-light dark:text-salmon-light">Handicap: {user && user.handicap}</h2>
-                    <h2 className="text-xl text-salmon-light dark:text-salmon-light">Home Course: {user && user.homeCourse}</h2>
+                    {/* Wallet Balance */}
+                    <div className="m-3 bg-gray-light dark:bg-gray-light p-2 w-60 h-full rounded-lg shadow flex flex-col items-center justify-center border-2 border-slamon-light">
+                        <div className="text-lg font-bold text-cyan-dark dark:text-cyan-dark uppercase mb-2">
+                            Wallet Balance:
+                        </div>
+                        <div className="text-5xl font-bold text-gray-900 dark:text-cyan-dark">
+                            ${walletBalance}
+                        </div>
+                    </div>
                     <div className="flex flex-col mt-4 space-y-2 md:mt-6 md:flex-row md:space-y-0 md:space-x-2">
                         {/* Fund Wallet Button */}
                         <button
@@ -155,7 +164,7 @@ const ProfileCard = () => {
                                 setIsReadyToWithdraw(false);
                             }}
                         >
-                            Fund wallet
+                            Deposit Funds
                         </button>
                         {/* Withdraw Funds Button */}
                         <button
@@ -166,7 +175,7 @@ const ProfileCard = () => {
                                 setIsReadyToFund(false);
                             }}
                         >
-                            Withdraw funds
+                            Withdraw Funds
                         </button>
                     </div>
                     {
@@ -178,7 +187,7 @@ const ProfileCard = () => {
                                 onClick={handleFundOrWithdraw}
                                 disabled={isLoading}
                             >
-                                {isLoading ? 'Processing...' : (isReadyToFund ? 'Confirm Fund' : 'Confirm Withdraw')}
+                                {isLoading ? 'Processing...' : (isReadyToFund ? 'Confirm Deposit' : 'Confirm Withdraw')}
                             </button>
                         </div>
                     }

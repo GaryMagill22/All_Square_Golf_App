@@ -4,7 +4,7 @@ const Round = require("../models/round.model")
 // Create new Round
 module.exports.createRound = (req, res) => {
     const roundData = req.body;
-    console.log('Data received from the frontend: ', roundData);
+    console.log('Data received from the frontend:', JSON.stringify(roundData, null, 2));
     Round.create(roundData)
         .then(round => res.json(round))
         .catch(err => res.status(400).json(err));
