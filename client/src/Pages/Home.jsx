@@ -87,7 +87,7 @@ const Home = () => {
     }, []);
 
 
-    // New way of handling select with Tailwind
+    // New way of handling select with Tailwind 
     const handleSelect = (selectedItem, type) => {
         if (type === 'game') {
             setSelectedGame(selectedItem);

@@ -12,7 +12,7 @@ const ScoreCard = () => {
     // State values
     const [user, setUser] = useState([]);
 
-    // New way
+    // State variables for scorecard
     const [players, setPlayers] = useState(() => {
         let storedData;
         if (gameType === 'team') {
@@ -35,34 +35,6 @@ const ScoreCard = () => {
 
         return storedData;
     });
-
-    // old way 
-    // const [players, setPlayers] = useState(() => {
-    //     let storedData;
-    //     if (gameType === 'team') {
-    //         const storedTeams = localStorage.getItem('teams');
-    //         if (storedTeams) {
-    //             const teams = JSON.parse(storedTeams);
-    //             const extractedPlayers = teams.flatMap(team =>
-    //                 team.players.map(player => ({
-    //                     _id: player.id,
-    //                     username: player.name
-    //                 }))
-    //             );
-    //             storedData = extractedPlayers;
-    //         } else {
-    //             storedData = [];
-    //         }
-    //     } else {
-    //         storedData = JSON.parse(localStorage.getItem('players'));
-    //         if (!storedData) {
-    //             storedData = [];
-    //         }
-    //     }
-
-    //     return storedData;
-    // });
-
 
     const [isCreator, setIsCreator] = useState(JSON.parse(localStorage.getItem('creator')));
     const [isLoading, setIsLoading] = useState(false);
@@ -118,6 +90,40 @@ const ScoreCard = () => {
 
         return initialScores;
     });
+
+
+
+    // Function to send all users in Game the selectedGame, selectedCourse.
+    useEffect(() => {
+        if (isCreator) {
+            // Emit the game and course information to other players in the lobby
+            socket.emit('gameInfo', {
+                selectedGame: selectedGame[0],
+                selectedCourse: selectedCourse[0],
+            });
+        }
+    }, [isCreator, selectedGame, selectedCourse, socket]);
+
+
+
+    // listens for gameInfo event and updates the game and course information in localStorage
+    useEffect(() => {
+        if (socket) {
+            socket.on('gameInfo', (data) => {
+                localStorage.setItem('user_selected_game', JSON.stringify(data.selectedGame));
+                localStorage.setItem('user_selected_course', JSON.stringify(data.selectedCourse));
+            });
+        }
+
+        // Cleanup listener on unmount
+        return () => {
+            if (socket) {
+                socket.off('gameInfo');
+            }
+        };
+    }, [socket]);
+
+
 
 
     // Function to handle score update for each player
@@ -677,62 +683,62 @@ const ScoreCard = () => {
 
                 :
 
-                <div className="container mt-4">
-                    <h2>Round Totals</h2>
-                    <table className="table table-bordered">
-                        <thead>
+                <div className="container bg-gray-dark">
+                    <h2 className='text-salmon-light p-8'>Round Totals</h2>
+                    <table className="w-full divide-y">
+                        <thead className="bg-gray-700">
                             <tr>
-
-                                <th>{gameType === 'individual' ? 'Players' : "Teams"}</th>
-                                <th>Total Score</th>
-                                <th>Total Points</th>
+                                <th className="px-2 py-2 text-center text-xs font-medium text-white uppercase tracking-wider">{gameType === 'individual' ? 'Player' : 'Team'}</th>
+                                <th className="px-2 py-2 text-center text-xs font-medium text-white uppercase tracking-wider">Score</th>
+                                <th className="px-2 py-2 text-center text-xs font-medium text-white uppercase tracking-wider">Points</th>
+                                {gameType !== 'individual' && <th className="px-2 py-2 text-center text-xs font-medium text-white uppercase tracking-wider">Players</th>}
                             </tr>
                         </thead>
-                        <tbody>
-                            {
-                                gameType === 'individual'
-                                    ? scorePoints.map((player) => (
-                                        <tr key={player.user}>
-                                            <td>{player.user}</td>
-                                            <td>{player.score}</td>
-                                            <td>{player.point}</td>
-                                        </tr>
-                                    ))
-                                    : teamPoints.map((team) => (
-                                        <tr key={team.team}>
-                                            <td>{team.team}</td>
-                                            <td>{team.score}</td>
-                                            <td>{team.point}</td>
-                                        </tr>
-                                    ))
+                        <tbody className="bg-gray-lightest divide-y">
+                            {gameType === 'individual'
+                                ? scorePoints.map((player, index) => (
+                                    <tr key={index}>
+                                        <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-black">{player.user}</td>
+                                        <td className="px-4 py-3 whitespace-nowrap text-sm text-black">{player.score}</td>
+                                        <td className="px-4 py-3 whitespace-nowrap text-sm text-black">{player.point}</td>
+                                    </tr>
+                                ))
+                                : teamPoints.map((team, index) => (
+                                    <tr key={index}>
+                                        <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-black">{team.team}</td>
+                                        <td className="px-4 py-3 whitespace-nowrap text-sm text-black">{team.score}</td>
+                                        <td className="px-4 py-3 whitespace-nowrap text-sm text-black">{team.point}</td>
+                                        <td className="px-4 py-3 whitespace-nowrap text-sm text-black">{team.players.join(', ')}</td>
+                                    </tr>
+                                ))
                             }
                         </tbody>
                     </table>
-                    <div style={{ textAlign: "center", color: "purple" }}>
+                    <div className="min-h-screen text-white text-center mt-4 bg-gray-dark">
                         {
                             gameType === 'individual'
                                 ?
                                 Array.isArray(winnersList) && winnersList.length === 1 ? (
-                                    <h3 colSpan="4">Winner: {winnersList[0].player} won ${earnings}</h3>
+                                    <h3 className="text-orange-light" colSpan="4">Winner- {winnersList[0].player} Won ${earnings}</h3>
                                 ) : (
                                     <h3 style={{ textAlign: "center", color: "purple" }} colSpan="4">
-                                        Winners: {winnersList.map(winner => winner.player).join(", ")} each won ${earnings}
+                                        Winners- {winnersList.map(winner => winner.player).join(", ")} Each Won ${earnings}
                                     </h3>
                                 )
                                 :
-                                <p>{teamWinnerCalculation().team} won. ${earnings} each will be shared across to every player</p>
+                                <p>{teamWinnerCalculation().team} won! ${earnings} will be shared across every player on team</p>
                         }
-                        <button className='btn btn-success mr-2' onClick={handleScoreCardSigning}>
+                        <button className="inline-block leading-6 text-center m-3  w-60 py-2 px-4 border-2 text-lg font-semibold text-white bg-green-dark rounded-md hover:indigo-light focus:outline-none focus:ring" onClick={handleScoreCardSigning}>
                             {
                                 isLoading && <span className='spinner-border spinner-border-sm mr-2' role='status' aria-hidden="true"></span>
                             }
-                            Sign scorecard to confirm winner(s) payout
+                            Sign Scorecard
                         </button>
-                        <button type='submit' onClick={saveRoundData} className="btn btn-primary" disabled={!isScorecardSigned}>
+                        <button type='submit' onClick={saveRoundData} className="inline-block leading-6 text-center w-60 py-2 px-4 border border-transparent text-lg font-semibold text-white bg-maroon-normal rounded-md hover:bg-blue-600 focus:outline-none focus:ring" disabled={!isScorecardSigned}>
                             Save Round
                         </button>
                     </div>
-                    <Link to="/home" className="btn btn-outline-primary btn-sm m-2">
+                    <Link to="/home" className="inline-block leading-6 text-center w-60 py-2 px-4 border border-transparent text-sm font-medium text-white bg-maroon-normal rounded-md hover:bg-blue-600 focus:outline-none focus:ring">
                         Home
                     </Link>
                 </div>

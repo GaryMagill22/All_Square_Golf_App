@@ -177,6 +177,7 @@ const checkScoreCard = async (lobbyId) => {
 
 
 const rooms = [];
+
 // Each client that connects get their own socket id.
 io.on("connection", (socket) => {
     console.log(`User ${socket.id} connected from client side`);
@@ -208,7 +209,14 @@ io.on("connection", (socket) => {
             console.error('Error locating lobby:', err);
             return;
         }
-    })
+    });
+
+    // New event handler for game information
+    socket.on('gameInfo', (data) => {
+        const { selectedGame, selectedCourse, lobbyId } = data;
+        socket.to(lobbyId).emit('updateGameInfo', { selectedGame, selectedCourse });
+    });
+
 
     socket.on('submitScore', (data) => {
         console.log('i got called');
