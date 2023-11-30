@@ -9,7 +9,6 @@ const ScoreCard = () => {
     const socket = getSocket();
     const navigate = useNavigate();
     const { gameType } = useParams();
-
     // State values
     const [user, setUser] = useState([]);
 
