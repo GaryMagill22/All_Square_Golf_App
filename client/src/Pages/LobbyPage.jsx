@@ -7,7 +7,7 @@ import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline';
 import {  Transition, Listbox } from '@headlessui/react';
 import { Link, useNavigate, useLocation, useParams } from 'react-router-dom';
 import { getSocket } from '../helpers/socketHelper';
-
+// import { useAppContext } from '../helpers/context';
 
 const LobbyPage = () => {
     // grabbing the lobbyId from url of Home.jsx Page to use on this page.

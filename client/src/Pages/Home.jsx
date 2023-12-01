@@ -20,6 +20,10 @@ const Home = () => {
     const [course, setCourse] = useState([]);
     const [selectedGame, setSelectedGame] = useState(null);
     const [selectedCourse, setSelectedCourse] = useState(null);
+
+    // New State to allow user to input own course they are playing
+    const [userInputCourse, setUserInputCourse] = useState('');
+
     const [loaded, setLoaded] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [show, setShow] = useState(false);
@@ -87,25 +91,35 @@ const Home = () => {
     }, []);
 
 
-    // New way of handling select with Tailwind 
+    // old way of handling select - when I had course dropdown
+    // const handleSelect = (selectedItem, type) => {
+    //     if (type === 'game') {
+    //         setSelectedGame(selectedItem);
+    //         const gameName = selectedItem.name;
+    //         localStorage.setItem('user_selected_game', JSON.stringify(gameName.toLowerCase()));
+    //         return;
+    //     } else if (type === 'course') {
+    //         setSelectedCourse(selectedItem);
+    //         const courseName = selectedItem.name; // Assuming selectedItem has a name property
+    //         localStorage.setItem('user_selected_course', JSON.stringify(courseName));
+    //     }
+    // };
+
     const handleSelect = (selectedItem, type) => {
         if (type === 'game') {
             setSelectedGame(selectedItem);
             const gameName = selectedItem.name;
             localStorage.setItem('user_selected_game', JSON.stringify(gameName.toLowerCase()));
-            return;
-        } else if (type === 'course') {
-            setSelectedCourse(selectedItem);
-            const courseName = selectedItem.name; // Assuming selectedItem has a name property
-            localStorage.setItem('user_selected_course', JSON.stringify(courseName));
         }
+        // The 'else if' block for courses is removed as it's no longer needed since the state of userInputCourse will be handled by state.
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         console.log('Selected Game:', selectedGame);
-        console.log('Selected Course:', selectedCourse);
-        if (!selectedGame || !selectedCourse) {
+        console.log('userInputCourse:', userInputCourse);
+        // console.log('Selected Course:', selectedCourse);
+        if (!selectedGame || !userInputCourse) {
             // alert('Kindly select the course and game values');
             setShowValidationMessage(true); // Hide validation message
             setTimeout(() => setShowValidationMessage(false), 2000);
@@ -118,11 +132,11 @@ const Home = () => {
                 url: '/lobbys/new',
                 method: 'post',
                 body: {
-                    selectedCourse,
+                    userInputCourse,
                     selectedGame
                 }
             });
-            console.log("Form submitted with", selectedGame, selectedCourse);
+            console.log("Form submitted with", selectedGame, userInputCourse);
             if (response && response.data && response.data.lobby) {
                 navigate(`/select-game/${response.data.lobby.lobbyId}`); // Ensure the path matches your app's routes
             }
@@ -243,69 +257,25 @@ const Home = () => {
                         )}
                     </Listbox>
 
-                    {/* Listbox for Courses */}
-                    <Listbox value={selectedCourse} onChange={(item) => handleSelect(item, 'course')}>
-                        {({ open }) => (
-                            <>
-                                {/* <Listbox.Label className="block text-sm font-medium leading-6 text-white mt-1">Select Course:</Listbox.Label> */}
-                                <div className="relative mt-2">
-                                    <Listbox.Button className="relative w-full cursor-default rounded-md bg-cyan-normal py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                        <span className="block truncate">{selectedCourse ? selectedCourse.name : 'Select Course'}</span>
-                                        <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                                            <ChevronUpDownIcon className="h-5 w-5 text-black" aria-hidden="true" />
-                                        </span>
-                                    </Listbox.Button>
-                                    <Transition
-                                        show={open}
-                                        as={Fragment}
-                                        leave="transition ease-in duration-100"
-                                        leaveFrom="opacity-100"
-                                        leaveTo="opacity-0"
-                                    >
-                                        <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                                            {course.map((courseItem) => (
-                                                <Listbox.Option
-                                                    key={course._id}
-                                                    value={courseItem}
-                                                    className={({ active }) =>
-                                                        `relative cursor-default select-none py-2 pl-3 pr-9 ${active ? 'bg-gray-dark text-white' : 'text-gray-900'
-                                                        }`
-                                                    }
-                                                >
-                                                    {({ selected, active }) => (
-                                                        <>
-                                                            <span className={`block truncate ${selected ? 'font-semibold' : 'font-normal'}`}>
-                                                                {courseItem.name}
-                                                            </span>
-                                                            {selected && (
-                                                                <span
-                                                                    className={`absolute inset-y-0 right-0 flex items-center pr-4 ${active ? 'text-white' : 'text-indigo-600'
-                                                                        }`}
-                                                                >
-                                                                    <CheckIcon className="h-5 w-5" aria-hidden="true" />
-                                                                </span>
-                                                            )}
-                                                        </>
-                                                    )}
-                                                </Listbox.Option>
-                                            ))}
-                                        </Listbox.Options>
-                                    </Transition>
-                                </div>
-                            </>
-                        )}
-                    </Listbox>
+                    <input
+                        type="text"
+                        value={userInputCourse}
+                        onChange={(e) => setUserInputCourse(e.target.value)}
+                        className="relative w-full cursor-default rounded-md bg-cyan-normal py-1.5 pl-3 pr-10 text-left shadow-sm ring-1 ring-inset ring-gray-300 focus:border-2 focus:border-salmon-light sm:text-sm sm:leading-6 placeholder-black"
+                        placeholder="Enter Course Name"
+                    />
+
                     <div className='flex flex-col items-center mt-4'>
                         <button
                             type="submit"
-                            className={`w-60 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${selectedGame && selectedCourse ? 'bg-gray-normal' : 'bg-maroon-normal'
+                            className={`w-60 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${selectedGame && userInputCourse ? 'bg-gray-normal' : 'bg-maroon-normal'
                                 } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-salmon-light`}
                         >
                             Create Lobby
                         </button>
                         {showValidationMessage && (
                             <p className="w-60 text-red-500 text-md italic mt-2 text-center">
-                                Please select Game and Course.
+                                Please select Game and type in Course.
                             </p>
                         )}
                     </div>

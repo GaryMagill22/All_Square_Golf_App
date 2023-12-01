@@ -19,8 +19,7 @@ import FundWallet from './Pages/FundWallet';
 import VerifyPayment from './Pages/VerifyPayment';
 import RequestStripeLink from './Pages/RequestStripeAccountLink';
 import SelectGameType from './Pages/SelectGameType';
-import AppContext from './helpers/context';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { AppContextProvider } from './helpers/context.js';
 
 
 function App() {
@@ -40,7 +39,7 @@ function App() {
                     <Link to="/allUsers">All users</Link>|
                     <Link to="/userInfo"> User info</Link>
                 </p> */}
-                <AppContext.Provider>
+                <AppContextProvider>
                     <Routes>
                         <Route path="/register" element={<Cookie />} />
                         <Route path="/" element={<DashBoard />} />
@@ -87,7 +86,7 @@ function App() {
                         <Route path="/request-stripe-authlink" element={<RequestStripeLink />} />
                         <Route path="/select-game/:lobbyId" element={<SelectGameType />} />
                     </Routes>
-                </AppContext.Provider>
+                </AppContextProvider>
             </BrowserRouter>
 
         </div>

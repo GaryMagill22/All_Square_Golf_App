@@ -4,6 +4,7 @@ import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.css';
 import { getSocket } from '../helpers/socketHelper';
 import { Axios } from '../helpers/axiosHelper';
+import { useAppContext } from '../helpers/context';
 
 const ScoreCard = () => {
     const socket = getSocket();
@@ -11,6 +12,8 @@ const ScoreCard = () => {
     const { gameType } = useParams();
     // State values
     const [user, setUser] = useState([]);
+    const { userInputCourse } = useAppContext(); // Accessing userInputCourse from context
+
 
     // State variables for scorecard
     const [players, setPlayers] = useState(() => {
@@ -62,7 +65,7 @@ const ScoreCard = () => {
     const [teams, setTeams] = useState(JSON.parse(localStorage.getItem('teams')));
     const scoreUpdating = Object.values(totalScores);
     const selectedGame = useState(JSON.parse(localStorage.getItem('user_selected_game')));
-    const selectedCourse = useState(JSON.parse(localStorage.getItem('user_selected_course')));
+    // const selectedCourse = useState(JSON.parse(localStorage.getItem('user_selected_course')));
     const [isPlayerRecordChosen, setIsPlayerRecordChosen] = useState(false);
     // state for signing scorecard to disable Save Round button until all players have signed
     const [isScorecardSigned, setIsScorecardSigned] = useState(false);
@@ -93,35 +96,38 @@ const ScoreCard = () => {
 
 
 
-    // Function to send all users in Game the selectedGame, selectedCourse.
+    // Function to send all users in Game the selectedGame, userInputCourse.
     useEffect(() => {
         if (isCreator) {
             // Emit the game and course information to other players in the lobby
             socket.emit('gameInfo', {
                 selectedGame: selectedGame[0],
-                selectedCourse: selectedCourse[0],
+                userInputCourse: userInputCourse,
             });
         }
-    }, [isCreator, selectedGame, selectedCourse, socket]);
+    }, [isCreator, selectedGame, userInputCourse, socket]);
 
 
 
     // listens for gameInfo event and updates the game and course information in localStorage
-    useEffect(() => {
-        if (socket) {
-            socket.on('gameInfo', (data) => {
-                localStorage.setItem('user_selected_game', JSON.stringify(data.selectedGame));
-                localStorage.setItem('user_selected_course', JSON.stringify(data.selectedCourse));
-            });
-        }
+    // useEffect(() => {
+    //     if (socket) {
+    //         socket.on('gameInfo', (data) => {
+    //             localStorage.setItem('user_selected_game', JSON.stringify(data.selectedGame));
 
-        // Cleanup listener on unmount
-        return () => {
-            if (socket) {
-                socket.off('gameInfo');
-            }
-        };
-    }, [socket]);
+    //             if (data.courseName) {
+    //             setUserInputCourse(data.courseName); // Update the course using context
+    //         }
+    //         });
+    //     }
+
+    //     // Cleanup listener on unmount
+    //     return () => {
+    //         if (socket) {
+    //             socket.off('gameInfo');
+    //         }
+    //     };
+    // }, [socket, userInputCourse]);
 
 
 
@@ -165,10 +171,12 @@ const ScoreCard = () => {
         }
     };
 
+    console.log('User Input Course:', userInputCourse);
     // New way utilizing userId for individual and team
     const saveRoundData = async () => {
         try {
-            const courseName = Array.isArray(selectedCourse) ? selectedCourse[0] : selectedCourse;
+
+            const courseName = userInputCourse; // Accessing userInputCourse from context
             const userId = JSON.parse(localStorage.getItem('user_id'));
 
             let roundData;

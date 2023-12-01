@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 
 export default function SelectGameType() {
     const navigate = useNavigate();
@@ -47,6 +47,11 @@ export default function SelectGameType() {
                         </button>
                     </div>
                 </div>
+            </div>
+            <div className="mt-2">
+                <Link to="/home" className="w-40 inline-flex justify-center py-2 px-4 border border-transparent rounded-md text-sm font-medium text-white bg-maroon-normal hover:bg-gray-normal focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-salmon-light">
+                    Back
+                </Link>
             </div>
         </div>
     )
