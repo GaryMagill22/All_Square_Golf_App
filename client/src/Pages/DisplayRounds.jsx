@@ -11,6 +11,19 @@ const DisplayRounds = () => {
     useEffect(() => {
         const userId = JSON.parse(localStorage.getItem('user_id'));
 
+        // Function to calculate the winning team
+        const calculateTeamWinner = (teams) => {
+            if (!teams || teams.length === 0) return null;
+
+            let winningTeam = teams[0];
+            for (let team of teams) {
+                if (team.teamScore > winningTeam.teamScore) {
+                    winningTeam = team;
+                }
+            }
+            return winningTeam;
+        };
+
         if (userId) {
             axios.get(`http://localhost:8000/api/rounds/user/${userId}`)
                 .then((res) => {
@@ -18,7 +31,12 @@ const DisplayRounds = () => {
                         const roundDate = round.createdAt ? new Date(round.createdAt) : new Date();
                         const formattedDate = !isNaN(roundDate.getTime()) ? roundDate.toLocaleDateString('en-US') : 'Not available';
                         const gameType = round.teams && round.teams.length > 0 ? 'team' : 'individual';
-                        return { ...round, formattedDate, gameType };
+                        // Calculate winning team if the game type is 'team'
+                        let winningTeam = null;
+                        if (gameType === 'team') {
+                            winningTeam = calculateTeamWinner(round.teams);
+                        }
+                        return { ...round, formattedDate, gameType, winningTeam };
                     });
                     setDisplayRounds(processedRounds);
                 })
@@ -87,7 +105,7 @@ const DisplayRounds = () => {
                 </thead>
                 <tbody className="bg-gray-lightest divide-y">
                     {round.teams.map((team, index) => (
-                        <tr key={index}>
+                        <tr key={index} className={team.isWinner ? 'bg-green-200' : ''}>
                             <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-black">{team.teamName}</td>
                             <td className="px-4 py-3 whitespace-nowrap text-sm text-black">{team.teamScore}</td>
                             <td className="px-4 py-3 whitespace-nowrap text-sm text-black">{team.teamPoints}</td>
@@ -96,13 +114,30 @@ const DisplayRounds = () => {
                     ))}
                 </tbody>
             </table>
-            <div className="text-white">
-                {round.winners && round.winners.length > 0 && (
-                    <p>{round.winners[0]} won. ${round.payout} will be shared across to every player</p>
+            <div className="text-white mt-4">
+                {/* Display the winning team */}
+                {round.winningTeam && (
+                    <p className="font-bold">Winner- {round.winningTeam.teamName} - ${round.payout}</p>
                 )}
             </div>
         </div>
     );
+
+
+    // Function to decide who wins for Teams 
+    const calculateTeamWinner = (teams) => {
+        if (!teams || teams.length === 0) return null;
+
+        let winningTeam = teams[0];
+        for (let team of teams) {
+            if (team.teamScore > winningTeam.teamScore) {
+                winningTeam = team;
+            }
+        }
+        return winningTeam;
+    };
+
+
 
     return (
         <div className="container bg-gray-dark mx-auto p-4">
