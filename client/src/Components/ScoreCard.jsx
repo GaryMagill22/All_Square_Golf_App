@@ -207,7 +207,7 @@ const ScoreCard = () => {
             }
 
             console.log('Round data being sent to backend:', roundData);
-            const response = await axios.post('http://localhost:8000/api/rounds/new', roundData);
+            const response = await axios.post('https://allsquare.club/api/rounds/new', roundData);
             if (response.status === 200) {
                 console.log('Round data saved successfully:', response.data);
                 navigate("/home");

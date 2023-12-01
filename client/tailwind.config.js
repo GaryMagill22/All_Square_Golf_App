@@ -33,9 +33,10 @@ module.exports = {
           light: '#ffe4e6', // Custom salmon light shade
           normal: '#fda4af', // Custom salmon default shade
           dark: '#fb7185', // Custom salmon dark shade
+          darkest: '#881337',
         },
         orange: {
-          light: '#6b7280', // Custom orange light shade (fixed typo)
+          light: '#fdba74', // Custom orange light shade (fixed typo)
           normal: '#fb923c', // Custom orange default shade
           dark: '#7c2d12', // Custom orange dark shade
         },
@@ -49,10 +50,14 @@ module.exports = {
           light:'#9ca3af',
           normal:'#1f2937',
           dark: '#0f172a',
+          darkest: '#020617',
         },
-        // Add more custom colors here
+        cyan: {
+          light: '#67e8f9',
+          normal: '#0891b2',
+          dark: '#083344',
+        },
       },
-      // Custom breakpoints if needed
       screens: {
         sm: '640px',
         md: '768px',
