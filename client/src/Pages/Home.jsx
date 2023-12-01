@@ -2,7 +2,8 @@ import React, { useEffect, useState, useRef, Fragment } from 'react'
 import { Link, useNavigate, useLocation, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { Dialog, Transition, Listbox } from '@headlessui/react';
-import { UserIcon, PlayCircleIcon, MapPinIcon, TrophyIcon, CheckIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline';
+// import {  CheckIcon, PlayCircleIcon, TrophyIcon, ChevronUpDownIcon } from '@heroicons/react/outline';
+import { CheckIcon, UserIcon, PlayCircleIcon, MapPinIcon, TrophyIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline';
 import { Axios } from '../helpers/axiosHelper';
 import logo from '../assets/All_Square_Logo.png'; // Adjust the path if your assets folder is structured differently
 import 'tailwindcss/tailwind.css';
@@ -86,16 +87,17 @@ const Home = () => {
     }, []);
 
 
-    // New way of handling select with Tailwind
+    // New way of handling select with Tailwind 
     const handleSelect = (selectedItem, type) => {
         if (type === 'game') {
             setSelectedGame(selectedItem);
-            // const filteredGame = games.filter((game) => game._id === selectedGame);
             const gameName = selectedItem.name;
             localStorage.setItem('user_selected_game', JSON.stringify(gameName.toLowerCase()));
             return;
         } else if (type === 'course') {
             setSelectedCourse(selectedItem);
+            const courseName = selectedItem.name; // Assuming selectedItem has a name property
+            localStorage.setItem('user_selected_course', JSON.stringify(courseName));
         }
     };
 
@@ -146,14 +148,12 @@ const Home = () => {
         } catch (error) {
             console.error("Error updating the lobby:", error);
         }
-    }
+    };
 
 
     const handleJoinRoom = async (lobbyId) => {
         const inputLobbyId = document.getElementById('lobbyIdInput').value;
 
-        // Close the modal
-        // setIsModalOpen(false);
 
         // Use a timeout or a callback to wait for the modal to finish its closing animation (if any).
         setTimeout(() => {
@@ -172,11 +172,11 @@ const Home = () => {
                         <li key={item.name}>
                             <Link
                                 to={item.to}
-                                className="w-30 pr-3 bg-gray-light text-black hover:text-indigo-600 hover:bg-gray-50 group flex gap-x-3 rounded-full p-1.5 text-md leading-6 font-semibold hover:no-underline"
+                                className="w-30 pr-3 bg-gray-light text-black hover:text-indigo-600 hover:bg-gray-50 group flex gap-x-3 rounded-md p-1.5 text-md leading-6 font-semibold hover:no-underline"
                             >
                                 <item.icon
                                     className={classNames(
-                                        item.current ? 'text-black' : 'textwhite group-hover:text-maroon-dark',
+                                        item.current ? 'text-black' : 'textwhite group-hover:text-gray-darkest',
                                         'h-6 w-6 shrink-0'
                                     )}
                                     aria-hidden="true"
@@ -193,12 +193,10 @@ const Home = () => {
                 <form onSubmit={handleSubmit} className="justify-center">
                     {/* Dropdown Menu for Games */}
                     <Listbox value={selectedGame} onChange={(item) => handleSelect(item, 'game')}>
-                        {/* <Listbox value={selectedGame} onChange={setSelectedGame}> */}
                         {({ open }) => (
                             <>
-                                {/* <Listbox.Label className="block text-sm font-medium leading-6 text-white">Select Game:</Listbox.Label> */}
                                 <div className="relative mt-2">
-                                    <Listbox.Button className="relative w-full cursor-default mb-2 rounded-md bg-blue-light py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <Listbox.Button className="relative w-full cursor-default mb-2 rounded-md bg-cyan-normal py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                         <span className="block truncate">{selectedGame ? selectedGame.name : 'Select Game'}</span>
                                         <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                                             <ChevronUpDownIcon className="h-5 w-5 text-black" aria-hidden="true" />
@@ -247,12 +245,11 @@ const Home = () => {
 
                     {/* Listbox for Courses */}
                     <Listbox value={selectedCourse} onChange={(item) => handleSelect(item, 'course')}>
-                        {/* <Listbox value={selectedCourse} onChange={setSelectedCourse}> */}
                         {({ open }) => (
                             <>
                                 {/* <Listbox.Label className="block text-sm font-medium leading-6 text-white mt-1">Select Course:</Listbox.Label> */}
                                 <div className="relative mt-2">
-                                    <Listbox.Button className="relative w-full cursor-default rounded-md bg-blue-light py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <Listbox.Button className="relative w-full cursor-default rounded-md bg-cyan-normal py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                         <span className="block truncate">{selectedCourse ? selectedCourse.name : 'Select Course'}</span>
                                         <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                                             <ChevronUpDownIcon className="h-5 w-5 text-black" aria-hidden="true" />
