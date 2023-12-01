@@ -4,7 +4,7 @@ let socket = null;
 
 export const initSocket = () => {
     if (!socket) {
-        socket = io('wss://allsquare.club:9000');
+        socket = io('ws://localhost:9000');
 
         socket.on('connect', () => {
             console.log('Socket connected to server');
