@@ -79,13 +79,13 @@ const DisplayRounds = () => {
                     ))}
                 </tbody>
             </table>
-            <div className="text-white">
+            <div className="text-white mt-4">
                 {round.winners && round.winners.length === 1 ? (
-                    <h3>Winner: {round.winners[0]} won ${round.payout}</h3>
+                    <h3>Winner: {round.winners[0]} - ${round.payout}</h3>
                 ) : (
-                    <h3>
+                    <p>
                         Winners: {round.winners.join(", ")} each won ${round.payout}
-                    </h3>
+                    </p>
                 )}
             </div>
         </div>
@@ -117,7 +117,7 @@ const DisplayRounds = () => {
             <div className="text-white mt-4">
                 {/* Display the winning team */}
                 {round.winningTeam && (
-                    <p className="font-bold">Winner- {round.winningTeam.teamName} - ${round.payout}</p>
+                    <p className="font-bold">Winner: {round.winningTeam.teamName} - ${round.payout}</p>
                 )}
             </div>
         </div>
