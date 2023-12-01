@@ -1,91 +1,37 @@
 const mongoose = require('mongoose');
 
 
-
-
-// Need Id or unique code for each round
-
 const RoundSchema = new mongoose.Schema({
-    players: [],
-    winners: [],
-    payout: String,
-    amountBet: Number,
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
     game: String,
-    coursePicked: String
-    // player1: {
-    //     type: String,
-    // },
-    // player2: {
-    //     type: String,
-    // },
-    // player3: {
-    //     type: String,
-    // },
-    // player4: {
-    //     type: String,
-    // },
-    // game: {
-    //     type: String,
-    // },
-    // course: {
-    //     type: String,
-    // },
-    // player1TotalScore: {
-    //     type: Number,
-    // },
-    // player2TotalScore: {
-    //     type: Number,
-    // },
-    // player3TotalScore: {
-    //     type: Number,
-    // },
-    // player4TotalScore: {
-    //     type: Number,
-    // },
-    // player1Outcome: {
-    //     type: Number,
-    // },
-    // player2Outcome: {
-    //     type: Number,
-    // },
-    // player3Outcome: {
-    //     type: Number,
-    // },
-    // player4Outcome: {
-    //     type: Number,
-    // },
-    // player1TotalPoints: {
-    //     type: Number,
-    // },
-    // player2TotalPoints: {
-    //     type: Number,
-    // },
-    // player3TotalPoints: {
-    //     type: Number,
-    // },
-    // player4TotalPoints: {
-    //     type: Number,
-    // },
-    // player1MoneyEarned: {
-    //     type: Number,
-    // },
-    // player2MoneyEarned: {
-    //     type: Number,
-    // },
-    // player3MoneyEarned: {
-    //     type: Number,
-    // },
-    // player4MoneyEarned: {
-    //     type: Number,
-    // },
-
-
-
-
-})
+    course: String,
+    amountBet: Number,
+    payout: String,
+    winners: [], // Array of player/s names that won round
+    players: [ // For individual games
+        {
+            name: String,
+            score: Number,
+            points: Number
+        }
+    ],
+    teams: [ // For team games
+        {
+            teamName: String,
+            teamScore: Number,
+            teamPoints: Number,
+            players: [String] // Array of player names on each team
+        }
+    ]
+}, { timestamps: true });
 
 
 
 const Round = mongoose.model('Round', RoundSchema)
 
 module.exports = Round;
+

@@ -1,15 +1,11 @@
-// const { request } = require('express');
-
 const Round = require("../models/round.model")
-
-
 
 
 // Create new Round
 module.exports.createRound = (req, res) => {
     const roundData = req.body;
-    // console.log(req.body);
-    Round.create(req.body)
+    console.log('Data received from the frontend:', JSON.stringify(roundData, null, 2));
+    Round.create(roundData)
         .then(round => res.json(round))
         .catch(err => res.status(400).json(err));
 };
@@ -20,6 +16,16 @@ module.exports.getAllRounds = (req, res) => {
         .then(rounds => res.json(rounds))
         .catch(err => res.json(err));
 };
+
+// Get ONLY Rounds where logged in user is listed as a player
+module.exports.getUserRounds = (req, res) => {
+    const userId = req.params.userId; // Retrieve the user ID 
+
+    Round.find({ 'userId': userId }) // Find all rounds where the user ID is in the players array
+        .then(rounds => res.json(rounds))
+        .catch(err => res.status(400).json(err));
+};
+
 
 // Read One Round
 module.exports.getOneRound = (req, res) => {
