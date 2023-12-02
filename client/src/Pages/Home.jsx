@@ -6,8 +6,7 @@ import { Dialog, Transition, Listbox } from '@headlessui/react';
 import { CheckIcon, UserIcon, PlayCircleIcon, MapPinIcon, TrophyIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline';
 import { Axios } from '../helpers/axiosHelper';
 import logo from '../assets/All_Square_Logo.png'; // Adjust the path if your assets folder is structured differently
-import 'tailwindcss/tailwind.css';
-
+import { useAppContext } from '../App';
 
 
 const Home = () => {
@@ -19,10 +18,10 @@ const Home = () => {
     const [games, setGames] = useState([]);
     const [course, setCourse] = useState([]);
     const [selectedGame, setSelectedGame] = useState(null);
-    const [selectedCourse, setSelectedCourse] = useState(null);
+    // const [selectedCourse, setSelectedCourse] = useState(null);
 
-    // New State to allow user to input own course they are playing
-    const [userInputCourse, setUserInputCourse] = useState('');
+    // New State/context to allow user to input own course they are playing getteing from app.js
+    const { userInputCourse, setUserInputCourse } = useAppContext();
 
     const [loaded, setLoaded] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -105,6 +104,8 @@ const Home = () => {
     //     }
     // };
 
+
+    // handling selection of game only
     const handleSelect = (selectedItem, type) => {
         if (type === 'game') {
             setSelectedGame(selectedItem);
@@ -114,11 +115,16 @@ const Home = () => {
         // The 'else if' block for courses is removed as it's no longer needed since the state of userInputCourse will be handled by state.
     };
 
+    // handling selection of course by user
+    const handleCourseInputChange = (event) => {
+        setUserInputCourse(event.target.value);
+    };
+
+
     const handleSubmit = async (event) => {
         event.preventDefault();
-        console.log('Selected Game:', selectedGame);
-        console.log('userInputCourse:', userInputCourse);
-        // console.log('Selected Course:', selectedCourse);
+        // console.log('Selected Game:', selectedGame);
+        // console.log('userInputCourse:', userInputCourse);
         if (!selectedGame || !userInputCourse) {
             // alert('Kindly select the course and game values');
             setShowValidationMessage(true); // Hide validation message
@@ -144,7 +150,7 @@ const Home = () => {
         } catch (err) {
             console.error("Error submitting form:", err);
         }
-    }
+    };
 
     const joinRoom = () => {
         const inputLobbyId = document.getElementById('lobbyIdInput').value;
@@ -259,8 +265,7 @@ const Home = () => {
 
                     <input
                         type="text"
-                        value={userInputCourse}
-                        onChange={(e) => setUserInputCourse(e.target.value)}
+                        onChange={handleCourseInputChange}
                         className="relative w-full cursor-default rounded-md bg-cyan-normal py-1.5 pl-3 pr-10 text-left shadow-sm ring-1 ring-inset ring-gray-300 focus:border-2 focus:border-salmon-light sm:text-sm sm:leading-6 placeholder-black"
                         placeholder="Enter Course Name"
                     />

@@ -4,7 +4,7 @@ import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.css';
 import { getSocket } from '../helpers/socketHelper';
 import { Axios } from '../helpers/axiosHelper';
-import { useAppContext } from '../helpers/context';
+import { useAppContext } from '../App';
 
 const ScoreCard = () => {
     const socket = getSocket();
@@ -12,8 +12,7 @@ const ScoreCard = () => {
     const { gameType } = useParams();
     // State values
     const [user, setUser] = useState([]);
-    const { userInputCourse } = useAppContext(); // Accessing userInputCourse from context
-
+    const { userInputCourse, setUserInputCourse } = useAppContext(); // Accessing userInputCourse from context
 
     // State variables for scorecard
     const [players, setPlayers] = useState(() => {
@@ -97,15 +96,15 @@ const ScoreCard = () => {
 
 
     // Function to send all users in Game the selectedGame, userInputCourse.
-    useEffect(() => {
-        if (isCreator) {
-            // Emit the game and course information to other players in the lobby
-            socket.emit('gameInfo', {
-                selectedGame: selectedGame[0],
-                userInputCourse: userInputCourse,
-            });
-        }
-    }, [isCreator, selectedGame, userInputCourse, socket]);
+    // useEffect(() => {
+    //     if (isCreator) {
+    //         // Emit the game and course information to other players in the lobby
+    //         socket.emit('gameInfo', {
+    //             selectedGame: selectedGame[0],
+    //             userInputCourse: userInputCourse,
+    //         });
+    //     }
+    // }, [isCreator, selectedGame, userInputCourse, socket]);
 
 
 
@@ -171,12 +170,11 @@ const ScoreCard = () => {
         }
     };
 
-    console.log('User Input Course:', userInputCourse);
+    // console.log('User Input Course:', userInputCourse);
     // New way utilizing userId for individual and team
     const saveRoundData = async () => {
         try {
 
-            const courseName = userInputCourse; // Accessing userInputCourse from context
             const userId = JSON.parse(localStorage.getItem('user_id'));
 
             let roundData;
@@ -184,7 +182,7 @@ const ScoreCard = () => {
                 // Individual game logic
                 roundData = {
                     game: selectedGame[0],
-                    course: courseName,
+                    course: userInputCourse,
                     userId: userId,
                     players: scorePoints.map(player => ({
                         name: player.user,
@@ -199,7 +197,7 @@ const ScoreCard = () => {
                 // Team game logic
                 roundData = {
                     game: selectedGame[0],
-                    course: courseName,
+                    course: userInputCourse,
                     userId: userId,
                     teams: teamPoints.map(team => ({
                         teamName: team.team,
@@ -699,7 +697,6 @@ const ScoreCard = () => {
                                 <th className="px-2 py-2 text-center text-xs font-medium text-white uppercase tracking-wider">{gameType === 'individual' ? 'Player' : 'Team'}</th>
                                 <th className="px-2 py-2 text-center text-xs font-medium text-white uppercase tracking-wider">Score</th>
                                 <th className="px-2 py-2 text-center text-xs font-medium text-white uppercase tracking-wider">Points</th>
-                                {gameType !== 'individual' && <th className="px-2 py-2 text-center text-xs font-medium text-white uppercase tracking-wider">Players</th>}
                             </tr>
                         </thead>
                         <tbody className="bg-gray-lightest divide-y">
@@ -716,7 +713,6 @@ const ScoreCard = () => {
                                         <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-black">{team.team}</td>
                                         <td className="px-4 py-3 whitespace-nowrap text-sm text-black">{team.score}</td>
                                         <td className="px-4 py-3 whitespace-nowrap text-sm text-black">{team.point}</td>
-                                        <td className="px-4 py-3 whitespace-nowrap text-sm text-black">{team.players.join(', ')}</td>
                                     </tr>
                                 ))
                             }
