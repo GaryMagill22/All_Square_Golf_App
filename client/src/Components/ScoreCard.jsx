@@ -4,6 +4,7 @@ import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.css';
 import { getSocket } from '../helpers/socketHelper';
 import { Axios } from '../helpers/axiosHelper';
+import { useAppContext } from '../App';
 
 const ScoreCard = () => {
     const socket = getSocket();
@@ -11,6 +12,7 @@ const ScoreCard = () => {
     const { gameType } = useParams();
     // State values
     const [user, setUser] = useState([]);
+    const { userInputCourse, setUserInputCourse } = useAppContext(); // Accessing userInputCourse from context
 
     // State variables for scorecard
     const [players, setPlayers] = useState(() => {
@@ -62,7 +64,7 @@ const ScoreCard = () => {
     const [teams, setTeams] = useState(JSON.parse(localStorage.getItem('teams')));
     const scoreUpdating = Object.values(totalScores);
     const selectedGame = useState(JSON.parse(localStorage.getItem('user_selected_game')));
-    const selectedCourse = useState(JSON.parse(localStorage.getItem('user_selected_course')));
+    // const selectedCourse = useState(JSON.parse(localStorage.getItem('user_selected_course')));
     const [isPlayerRecordChosen, setIsPlayerRecordChosen] = useState(false);
     // state for signing scorecard to disable Save Round button until all players have signed
     const [isScorecardSigned, setIsScorecardSigned] = useState(false);
@@ -93,35 +95,38 @@ const ScoreCard = () => {
 
 
 
-    // Function to send all users in Game the selectedGame, selectedCourse.
-    useEffect(() => {
-        if (isCreator) {
-            // Emit the game and course information to other players in the lobby
-            socket.emit('gameInfo', {
-                selectedGame: selectedGame[0],
-                selectedCourse: selectedCourse[0],
-            });
-        }
-    }, [isCreator, selectedGame, selectedCourse, socket]);
+    // Function to send all users in Game the selectedGame, userInputCourse.
+    // useEffect(() => {
+    //     if (isCreator) {
+    //         // Emit the game and course information to other players in the lobby
+    //         socket.emit('gameInfo', {
+    //             selectedGame: selectedGame[0],
+    //             userInputCourse: userInputCourse,
+    //         });
+    //     }
+    // }, [isCreator, selectedGame, userInputCourse, socket]);
 
 
 
     // listens for gameInfo event and updates the game and course information in localStorage
-    useEffect(() => {
-        if (socket) {
-            socket.on('gameInfo', (data) => {
-                localStorage.setItem('user_selected_game', JSON.stringify(data.selectedGame));
-                localStorage.setItem('user_selected_course', JSON.stringify(data.selectedCourse));
-            });
-        }
+    // useEffect(() => {
+    //     if (socket) {
+    //         socket.on('gameInfo', (data) => {
+    //             localStorage.setItem('user_selected_game', JSON.stringify(data.selectedGame));
 
-        // Cleanup listener on unmount
-        return () => {
-            if (socket) {
-                socket.off('gameInfo');
-            }
-        };
-    }, [socket]);
+    //             if (data.courseName) {
+    //             setUserInputCourse(data.courseName); // Update the course using context
+    //         }
+    //         });
+    //     }
+
+    //     // Cleanup listener on unmount
+    //     return () => {
+    //         if (socket) {
+    //             socket.off('gameInfo');
+    //         }
+    //     };
+    // }, [socket, userInputCourse]);
 
 
 
@@ -165,10 +170,11 @@ const ScoreCard = () => {
         }
     };
 
+    // console.log('User Input Course:', userInputCourse);
     // New way utilizing userId for individual and team
     const saveRoundData = async () => {
         try {
-            const courseName = Array.isArray(selectedCourse) ? selectedCourse[0] : selectedCourse;
+
             const userId = JSON.parse(localStorage.getItem('user_id'));
 
             let roundData;
@@ -176,7 +182,7 @@ const ScoreCard = () => {
                 // Individual game logic
                 roundData = {
                     game: selectedGame[0],
-                    course: courseName,
+                    course: userInputCourse,
                     userId: userId,
                     players: scorePoints.map(player => ({
                         name: player.user,
@@ -191,7 +197,7 @@ const ScoreCard = () => {
                 // Team game logic
                 roundData = {
                     game: selectedGame[0],
-                    course: courseName,
+                    course: userInputCourse,
                     userId: userId,
                     teams: teamPoints.map(team => ({
                         teamName: team.team,
@@ -373,7 +379,7 @@ const ScoreCard = () => {
     // useEffect to fetch user data from the server
     useEffect(() => {
         axios
-            .get(`http://localhost:8000/api/users/getUser`, { withCredentials: true })
+            .get(`https://allsquare.club/api/users/getUser`, { withCredentials: true })
             .then((res) => setUser(res.data))
             .catch((error) => console.log(error));
     }, []);
@@ -691,7 +697,6 @@ const ScoreCard = () => {
                                 <th className="px-2 py-2 text-center text-xs font-medium text-white uppercase tracking-wider">{gameType === 'individual' ? 'Player' : 'Team'}</th>
                                 <th className="px-2 py-2 text-center text-xs font-medium text-white uppercase tracking-wider">Score</th>
                                 <th className="px-2 py-2 text-center text-xs font-medium text-white uppercase tracking-wider">Points</th>
-                                {gameType !== 'individual' && <th className="px-2 py-2 text-center text-xs font-medium text-white uppercase tracking-wider">Players</th>}
                             </tr>
                         </thead>
                         <tbody className="bg-gray-lightest divide-y">
@@ -708,7 +713,6 @@ const ScoreCard = () => {
                                         <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-black">{team.team}</td>
                                         <td className="px-4 py-3 whitespace-nowrap text-sm text-black">{team.score}</td>
                                         <td className="px-4 py-3 whitespace-nowrap text-sm text-black">{team.point}</td>
-                                        <td className="px-4 py-3 whitespace-nowrap text-sm text-black">{team.players.join(', ')}</td>
                                     </tr>
                                 ))
                             }

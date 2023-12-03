@@ -7,6 +7,7 @@ import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline';
 import { Transition, Listbox } from '@headlessui/react';
 import { Link, useNavigate, useLocation, useParams } from 'react-router-dom';
 import { getSocket } from '../helpers/socketHelper';
+import { useAppContext } from '../App';
 
 
 const LobbyPage = () => {
@@ -31,6 +32,9 @@ const LobbyPage = () => {
     const [selectedPlayer, setSelectedPlayer] = useState('');
     const [roomKey, setRoomKey] = useState('');
     const [isCreator, setIsCreator] = useState(false);
+
+    const { userInputCourse, setUserInputCourse } = useAppContext();
+
 
     useEffect(() => {
         if (socket) {
@@ -226,7 +230,7 @@ const LobbyPage = () => {
         socket.emit('proceedToGame', gamePayload, teams);
     }
 
-
+    // console.log('userInputCourse', userInputCourse);
     return (
         <div className=' flex flex-col container min-h-screeen bg-gray-dark   mx-auto p-4'>
             <div className="bg-gray-light dark:bg-gray-light shadow rounded-lg p-4 mb-4 flex-grow border-2 border-salmon-light">
