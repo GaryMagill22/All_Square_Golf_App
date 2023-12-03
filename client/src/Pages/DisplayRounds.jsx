@@ -140,50 +140,71 @@ const DisplayRounds = () => {
 
 
     return (
-        <div className="container bg-gray-dark mx-auto p-4">
-            <h1 className="text-2xl text-salmon-light font-bold mb-4">Previous Rounds</h1>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {displayRounds.map((round) => (
-                    <div
-                        key={round._id}
-                        className="card bg-white rounded-lg border border-salmon-light shadow-md p-4 cursor-pointer"
-                        onClick={() => openModal(round)}
-                    >
-                        <div className="card-body bg-gray-light">
-                            <h5 className="card-title">Date: {round.formattedDate}</h5>
-                            <h5>Game Type: {round.gameType}</h5>
-                            <h5 className="text-lg text-black">Course: {round.course || "Not specified"}</h5>
-                        </div>
-                    </div>
-                ))}
-            </div>
+        <>
+            <nav className="bg-gray-dark fixed w-full h-16 z-20 top-0 border-b border-salmon-light">
+                <div className="flex justify-center items-center mx-auto p-4">
+                    <ul className="flex flex-row items-center space-x-4">
+                        <li>
+                            <a href="/home" className="py-2 px-3 text-orange-light focus:no-underline hover:text-indigo-normal transition-colors">Home</a>
+                        </li>
+                        <li>
+                            <a href="/profile" className="py-2 px-3 text-orange-light focus:no-underline hover:text-indigo-normal transition-colors">Profile</a>
+                        </li>
+                        <li>
+                            <a href="/courses" className="py-2 px-3 text-orange-light focus:no-underline hover:text-indigo-normal transition-colors">Courses</a>
+                        </li>
+                        <li>
+                            <a href="/games" className="py-2 px-3 text-orange-light focus:no-underline hover:text-indigo-normal transition-colors">Games</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
 
-            {isModalOpen && selectedRound && (
-                <Dialog open={isModalOpen} onClose={closeModal} className="fixed inset-0 z-10 overflow-y-auto">
-                    <div className="flex min-h-screen items-center justify-center p-4 text-center">
-                        <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
-                        <div className="w-full max-w-md mx-auto bg-gray-dark rounded-lg shadow-xl border-2 border-salmon-light transform transition-all">
-                            <div className="p-4">
-                                <Dialog.Title className="text-xxl text-white font-bold text-center">Round Details</Dialog.Title>
-                                <div className="mt-4 text-center text-semibold">
-                                    <p className="text-salmon-light">Game: <span className="text-orange-light">{selectedRound.game}</span></p>
-                                    <p className="text-salmon-light">Date: <span className="text-orange-light">{selectedRound.formattedDate}</span></p>
-                                    <p className="text-salmon-light">Course: <span className="text-orange-light">{selectedRound.course}</span></p>
-                                </div>
-                                {selectedRound.gameType === 'individual' ? <IndividualRoundDetails round={selectedRound} /> : <TeamRoundDetails round={selectedRound} />}
-                                <div className="mt-4 flex justify-end">
-                                    <button className="rounded-md bg-cyan-normal px-4 py-2 text-sm font-medium text-white hover:bg-maroon-normal" onClick={closeModal}>Close</button>
+            <div className="container bg-gray-dark mx-auto p-4">
+                <h1 className="text-3xl text-salmon-light font-semibold mt-16 mb-4">Previous Rounds</h1>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {displayRounds.map((round) => (
+                        <div
+                            key={round._id}
+                            className="card bg-white rounded-lg border border-salmon-light shadow-md p-4 cursor-pointer"
+                            onClick={() => openModal(round)}
+                        >
+                            <div className="card-body bg-gray-light">
+                                <h5 className="card-title">Date: {round.formattedDate}</h5>
+                                <h5>Game Type: {round.gameType}</h5>
+                                <h5 className="text-lg text-black">Course: {round.course || "Not specified"}</h5>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                {isModalOpen && selectedRound && (
+                    <Dialog open={isModalOpen} onClose={closeModal} className="fixed inset-0 z-10 overflow-y-auto">
+                        <div className="flex min-h-screen items-center justify-center p-4 text-center">
+                            <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
+                            <div className="w-full max-w-md mx-auto bg-gray-dark rounded-lg shadow-xl border-2 border-salmon-light transform transition-all">
+                                <div className="p-4">
+                                    <Dialog.Title className="text-xxl text-white font-bold text-center">Round Details</Dialog.Title>
+                                    <div className="mt-4 text-center text-semibold">
+                                        <p className="text-salmon-light">Date: <span className="text-orange-light">{selectedRound.formattedDate}</span></p>
+                                        <p className="text-salmon-light">Game: <span className="text-orange-light">{selectedRound.game}</span></p>
+                                        <p className="text-salmon-light">Course: <span className="text-orange-light">{selectedRound.course}</span></p>
+                                    </div>
+                                    {selectedRound.gameType === 'individual' ? <IndividualRoundDetails round={selectedRound} /> : <TeamRoundDetails round={selectedRound} />}
+                                    <div className="mt-4 flex justify-end">
+                                        <button className="rounded-md bg-cyan-normal px-4 py-2 text-sm font-medium text-white hover:bg-maroon-normal" onClick={closeModal}>Close</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </Dialog>
-            )}
+                    </Dialog>
+                )}
 
-            <div className="mt-4">
-                <Link to="/home" className="inline-block leading-6 text-center w-60 py-2 px-4 border border-transparent text-sm font-medium text-white bg-maroon-normal rounded-md hover:bg-blue-600 focus:outline-none focus:ring">Home</Link>
+                <div className="mt-4">
+                    <Link to="/home" className="inline-block leading-6 text-center w-60 py-2 px-4 border border-transparent text-sm font-medium text-white bg-maroon-normal rounded-md hover:bg-blue-600 focus:outline-none focus:ring">Home</Link>
+                </div>
             </div>
-        </div>
+        </>
     );
 };
 
