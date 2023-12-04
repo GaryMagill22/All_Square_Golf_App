@@ -104,13 +104,13 @@ const ProfileCard = () => {
 
 
     useEffect(() => {
-        axios.get(`https://allsquare.club/api/users/getUser`, { withCredentials: true })
+        axios.get(`http://localhost:8000/api/users/getUser`, { withCredentials: true })
             .then(res => setUser(res.data))
             .catch()
     }, [])
 
     const logoutHandler = () => {
-        axios.delete(`https://allsquare.club/api/users/logout`, { withCredentials: true })
+        axios.delete(`http://localhost:8000/api/users/logout`, { withCredentials: true })
             .then(res => {
                 // clear all local/session storage
                 localStorage.clear();
@@ -142,7 +142,7 @@ const ProfileCard = () => {
                             <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
                         </svg>
                     </span>
-                    <h1 className="m-1 text-xxl font-medium text-orange-light dark:text-orange-light">{user && user.username}</h1>
+                    <h1 className="m-1 text-5xl font-medium text-orange-light dark:text-orange-light">{user && user.username}</h1>
                     <h2 className="text-xl text-salmon-light dark:text-salmon-light">Handicap: {user && user.handicap}</h2>
                     {/* Wallet Balance */}
                     <div className="m-3 bg-gray-light dark:bg-gray-light p-2 w-60 h-full rounded-lg shadow flex flex-col items-center justify-center border-2 border-slamon-light">
@@ -204,3 +204,4 @@ const ProfileCard = () => {
 };
 
 export default ProfileCard;
+
