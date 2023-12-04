@@ -52,8 +52,12 @@ app.use('/api/wallet', walletRoutes);
 require("./config/mongoose.config");
 
 
+// Serve static files from the React app's build directory
+app.use(express.static(path.join(__dirname, 'client/build')));
 
-
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+});
 
 // MODELS IMPORT
 const Lobby = require('./models/lobby.model');
