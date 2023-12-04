@@ -676,7 +676,7 @@ const ScoreCard = () => {
                         </div>
                     </div>
 
-                    <div className="py-2 px-4 mx-4 bg-gray-light rounded-b-lg shadow-md">
+                    <div className="py-2 px-4 mx-4 bg-gray-lightest rounded-b-lg shadow-md">
                         <h2 className="text-xl text-black font-bold">Betting Amount: ${bettingAmount}</h2>
                     </div>
                     <div className="m-2">
