@@ -529,7 +529,7 @@ const ScoreCard = () => {
     return (
         <main>
             {!isSubmitted ?
-                <section className="bg-gray-dark">
+                <section className="bg-gray-dark min-h-screen">
                     <div>
                         <h6 className="text-white" >Game Selected: {selectedGame[0]}, Game type: {gameType}</h6>
                         <h1 className="text-salmon-light">Hole #{currentHoleNumber}</h1>
