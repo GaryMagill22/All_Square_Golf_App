@@ -213,7 +213,7 @@ const ScoreCard = () => {
             }
 
             console.log('Round data being sent to backend:', roundData);
-            const response = await axios.post('http://localhost:8000/api/rounds/new', roundData);
+            const response = await axios.post('https://allsquare.club/api/rounds/new', roundData);
             if (response.status === 200) {
                 console.log('Round data saved successfully:', response.data);
                 navigate("/home");
@@ -379,7 +379,7 @@ const ScoreCard = () => {
     // useEffect to fetch user data from the server
     useEffect(() => {
         axios
-            .get(`http://localhost:8000/api/users/getUser`, { withCredentials: true })
+            .get(`https://allsquare.club/api/users/getUser`, { withCredentials: true })
             .then((res) => setUser(res.data))
             .catch((error) => console.log(error));
     }, []);
@@ -676,7 +676,7 @@ const ScoreCard = () => {
                         </div>
                     </div>
 
-                    <div className="py-2 px-4 mx-4 bg-gray-light rounded-b-lg shadow-md">
+                    <div className="py-2 px-4 mx-4 bg-gray-lightest rounded-b-lg shadow-md">
                         <h2 className="text-xl text-black font-bold">Betting Amount: ${bettingAmount}</h2>
                     </div>
                     <div className="m-2">
