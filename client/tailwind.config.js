@@ -57,7 +57,9 @@ module.exports = {
           normal: '#0891b2',
           dark: '#083344',
         },
+        // Add more custom colors here
       },
+      // Custom breakpoints if needed
       screens: {
         sm: '640px',
         md: '768px',
