@@ -1,6 +1,6 @@
 import './App.css';
 import { Routes, Route, BrowserRouter, Link } from 'react-router-dom';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState, createContext, useContext } from 'react';
 import { initSocket } from './helpers/socketHelper';
 import ProtectedRoute from './Components/ProtectedRoute.jsx';
 import Home from './Pages/Home';
@@ -19,8 +19,37 @@ import FundWallet from './Pages/FundWallet';
 import VerifyPayment from './Pages/VerifyPayment';
 import RequestStripeLink from './Pages/RequestStripeAccountLink';
 import SelectGameType from './Pages/SelectGameType';
-import AppContext from './helpers/context';
-import 'bootstrap/dist/css/bootstrap.min.css';
+
+
+// Creating the context
+const AppContext = createContext();
+
+
+// Context Provider Component
+export const AppContextProvider = ({ children }) => {
+    const [userInputCourse, setUserInputCourse] = useState('');
+
+    const contextValue = {
+        userInputCourse,
+        setUserInputCourse,
+    };
+
+    return (
+        <AppContext.Provider value={contextValue}>
+            {children}
+        </AppContext.Provider>
+    );
+};
+
+
+// Custom Hook to access context
+export const useAppContext = () => {
+    const context = useContext(AppContext);
+    if (context === undefined) {
+        throw new Error('useAppContext must be used within an AppContextProvider');
+    }
+    return context;
+};
 
 
 function App() {
@@ -30,32 +59,18 @@ function App() {
     }, []);
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     console.log('on app file', isLoggedIn);
-    return (
-        <div className="App">
 
-            <BrowserRouter>
-                {/* <p><Link to="/">Test Cookie</Link>|
-                    <Link to="/register">Register</Link>|
-                    <Link to="/login">Login</Link>|
-                    <Link to="/allUsers">All users</Link>|
-                    <Link to="/userInfo"> User info</Link>
-                </p> */}
-                <AppContext.Provider>
+
+
+    return (
+        <AppContextProvider>
+            <div className="App">
+
+                <BrowserRouter>
                     <Routes>
                         <Route path="/register" element={<Cookie />} />
                         <Route path="/" element={<DashBoard />} />
-                        {/* <Route
-                        path="/users"
-                        element={
-                            <ProtectedRoute isLoggedIn={isLoggedIn}>
-                                <Home />
-                            </ProtectedRoute>
-                        }
-                    /> */}
-                        {/* <Route path="/register" element={<Register />} /> */}
                         <Route path="/login" element={<Login />} />
-                        {/* <Route path="/home" element={<Button />} /> */}
-                        {/* <Route path="/home" element={<Home />} /> */}
                         <Route
                             path="/home"
                             element={
@@ -64,7 +79,6 @@ function App() {
                                 </ProtectedRoute>
                             }
                         />
-                        {/* <Route path="/home" element={<BottomNav />} /> */}
                         <Route
                             path="/allUsers"
                             element={
@@ -79,7 +93,7 @@ function App() {
                         <Route path="/profile" element={<ProfileCard />} />
                         <Route path="/new/game/:gameType" element={<ScoreCard />} />
                         <Route path="/rounds" element={<DisplayRounds />} />
-                        <Route path="/courses" element={ <DisplayCourses />} />
+                        <Route path="/courses" element={<DisplayCourses />} />
                         <Route path="/new/round/:gameType/:lobbyId" element={<LobbyPage />} />
                         <Route path="/new/round/:lobbyId" element={<LobbyPage />} />
                         <Route path="/fund-wallet/:amount" element={<FundWallet />} />
@@ -87,10 +101,10 @@ function App() {
                         <Route path="/request-stripe-authlink" element={<RequestStripeLink />} />
                         <Route path="/select-game/:lobbyId" element={<SelectGameType />} />
                     </Routes>
-                </AppContext.Provider>
-            </BrowserRouter>
+                </BrowserRouter>
 
-        </div>
+            </div>
+        </AppContextProvider>
     );
 }
 
