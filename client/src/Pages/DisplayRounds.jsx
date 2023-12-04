@@ -170,8 +170,8 @@ const DisplayRounds = () => {
                             onClick={() => openModal(round)}
                         >
                             <div className="card-body bg-gray-light">
-                                <h5 className="card-title">Date: {round.formattedDate}</h5>
-                                <h5>Game Type: {round.gameType}</h5>
+                                <h5 className="card-title text-black text-lg">Date: {round.formattedDate}</h5>
+                                <h5 className="text-black text-lg">Game Type: {round.gameType}</h5>
                                 <h5 className="text-lg text-black">Course: {round.course || "Not specified"}</h5>
                             </div>
                         </div>

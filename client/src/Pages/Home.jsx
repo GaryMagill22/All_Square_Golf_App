@@ -69,13 +69,16 @@ const Home = () => {
     useEffect(() => {
         axios.get('/games')
             .then((res) => {
-                setGames(res.data);
+                // Include only the games scores/points are coded for 
+                const filteredGames = res.data.filter(game => game.name === 'Stableford' || game.name === 'Match Play');
+                setGames(filteredGames);
                 setLoaded(true);
             })
             .catch((err) => {
                 console.log(`Error fetching games: ${err}, ${err.stack}`);
             });
     }, []);
+
 
     // GET ALL COURSES
     useEffect(() => {
@@ -90,20 +93,6 @@ const Home = () => {
     }, []);
 
 
-    // old way of handling select - when I had course dropdown
-    // const handleSelect = (selectedItem, type) => {
-    //     if (type === 'game') {
-    //         setSelectedGame(selectedItem);
-    //         const gameName = selectedItem.name;
-    //         localStorage.setItem('user_selected_game', JSON.stringify(gameName.toLowerCase()));
-    //         return;
-    //     } else if (type === 'course') {
-    //         setSelectedCourse(selectedItem);
-    //         const courseName = selectedItem.name; // Assuming selectedItem has a name property
-    //         localStorage.setItem('user_selected_course', JSON.stringify(courseName));
-    //     }
-    // };
-
 
     // handling selection of game only
     const handleSelect = (selectedItem, type) => {
@@ -112,7 +101,6 @@ const Home = () => {
             const gameName = selectedItem.name;
             localStorage.setItem('user_selected_game', JSON.stringify(gameName.toLowerCase()));
         }
-        // The 'else if' block for courses is removed as it's no longer needed since the state of userInputCourse will be handled by state.
     };
 
     // handling selection of course by user

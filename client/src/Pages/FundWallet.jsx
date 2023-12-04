@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import PaymentCheckout from '../Components/PaymentCheckout';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
@@ -33,6 +33,9 @@ const FundWallet = () => {
           }
         </Elements>
       </div>
+      <Link to="/home" className="w-40 inline-flex justify-center mt-4 py-2 px-4 border border-transparent rounded-md text-sm font-medium text-white bg-maroon-normal hover:bg-indigo-dark hover:no-underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-salmon-light">
+        Home
+      </Link>
     </div>
   )
 }
