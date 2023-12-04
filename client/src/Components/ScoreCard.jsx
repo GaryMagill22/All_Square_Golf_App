@@ -527,12 +527,12 @@ const ScoreCard = () => {
     }, [socket])
 
     return (
-        <main>
+        <main className="bg-gray-dark min-h-screen m-0 p-0">
             {!isSubmitted ?
-                <section className="bg-gray-dark min-h-screen">
-                    <div>
-                        <h6 className="text-white" >Game Selected: {selectedGame[0]}, Game type: {gameType}</h6>
-                        <h1 className="text-salmon-light">Hole #{currentHoleNumber}</h1>
+                <section className="bg-gray-dark pt-4">
+                    <div className="flex justify-between items-center bg-gray-lightest py-2 px-4 rounded-t-lg shadow-md mx-4 mb-4">
+                        <h4 className="text-2xl text-black font-bold">{selectedGame[0]}</h4>
+                        <h4 className="text-2xl font-bold text-black self-end">Hole #{currentHoleNumber}</h4>
                     </div>
                     {
                         gameType === 'individual' &&
@@ -560,7 +560,7 @@ const ScoreCard = () => {
                                                             <span className="font-medium text-white dark:text-blue-dark">{player.username}</span>
                                                         </div>
                                                     </td>
-                                                    <td className="px-2 py-2 border-2 border-indigo-light">{selectedPlayer[player.username].score}</td>
+                                                    <td className="px-2 py-2 border-2 text-white border-indigo-light">{selectedPlayer[player.username].score}</td>
                                                     <td className="px-2 py-2">
                                                         <div className="grid grid-cols-3 gap-1 py-1">
                                                             <button type="button" className="text-black bg-salmon-light hover:bg-blue-light focus:outline-none focus:ring-blue-300 font-sm rounded-full text-sm px-2 py-2.5 text-center" onClick={() => handleScoreUpdate(player.username, -2)} disabled={!isCreator}>-2</button>
@@ -641,6 +641,7 @@ const ScoreCard = () => {
                             <button type="submit" disabled={!isCreator} className="inline-flex justify-center py-2 px-4 mt-3 border border-salmon-light rounded-md text-sm font-medium text-white bg-maroon-normal" onClick={(event) => submitScore(event)}>Submit Score</button>
                         </div>
                     </div>
+
                     <div className="container mx-auto py-4">
                         <h1 className="text-salmon-light text-center text-3xl font-bold mb-4">ScoreCard</h1>
                         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -675,12 +676,12 @@ const ScoreCard = () => {
                         </div>
                     </div>
 
-                    <div>
-                        <h4>Betting Amount: ${bettingAmount}</h4>
+                    <div className="py-2 px-4 mx-4 bg-gray-light rounded-b-lg shadow-md">
+                        <h2 className="text-xl text-black font-bold">Betting Amount: ${bettingAmount}</h2>
                     </div>
                     <div className="m-2">
                         {isCreator && (
-                            <Link to="/home" className="btn btn-outline-primary btn-sm">
+                            <Link to="/home" className="inline-flex justify-center py-2 px-4 mt-3 border border-salmon-light rounded-md text-sm font-medium text-white bg-cyan-normal">
                                 Home
                             </Link>
                         )}
@@ -742,7 +743,7 @@ const ScoreCard = () => {
                             Save Round
                         </button>
                     </div>
-                    <Link to="/home" className="inline-block leading-6 text-center w-60 py-2 px-4 border border-transparent text-sm font-medium text-white bg-maroon-normal rounded-md hover:bg-blue-600 focus:outline-none focus:ring">
+                    <Link to="/home" className="inline-flex justify-center py-2 px-4 mt-3 border border-salmon-light rounded-md text-sm font-medium text-white bg-maroon-normal">
                         Home
                     </Link>
                 </div>
@@ -754,3 +755,4 @@ const ScoreCard = () => {
 
 };
 export default ScoreCard;
+
