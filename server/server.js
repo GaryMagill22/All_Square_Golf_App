@@ -90,10 +90,7 @@ socketServer.on('clientError', (error, socket) => {
     socket.destroy();
 });
 
-app.use(express.static(path.join(__dirname, 'client/build')));
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
-});
+
 
 // // Socket.io listening on Seperate port 9000 than express server (8000)
 app.listen(port, () => console.log(`Listening on port: ${port}`));
