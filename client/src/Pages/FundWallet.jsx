@@ -22,10 +22,10 @@ const FundWallet = () => {
   };
 
   return (
-    <div>
-      <div className='stripePaymentContainer ml-4 mr-4'>
+    <div  >
+      <div className='stripePaymentContainer ml-4 mr-4 pt-8'>
         <Elements stripe={stripePromise} options={options}>
-          <h3 className='payment-details'>Fund ${Math.ceil(amount)} into your wallet</h3>
+          <h2 className='payment-details text-black font-bold text-2xl mb-4'>Deposit ${Math.ceil(amount)} into your <br></br> All-Square wallet</h2>
           {
             clientSecret ?
               <PaymentCheckout /> :
