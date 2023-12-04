@@ -145,16 +145,16 @@ const DisplayRounds = () => {
                 <div className="flex justify-center items-center mx-auto p-4">
                     <ul className="flex flex-row items-center space-x-4">
                         <li>
-                            <a href="/home" className="py-2 px-3 text-orange-light focus:no-underline hover:text-indigo-normal transition-colors">Home</a>
+                            <Link to="/home" className="py-2 px-3 text-orange-light focus:no-underline hover:text-indigo-normal transition-colors">Home</Link>
                         </li>
                         <li>
-                            <a href="/profile" className="py-2 px-3 text-orange-light focus:no-underline hover:text-indigo-normal transition-colors">Profile</a>
+                            <Link to="/profile" className="py-2 px-3 text-orange-light focus:no-underline hover:text-indigo-normal transition-colors">Profile</Link>
                         </li>
                         <li>
-                            <a href="/courses" className="py-2 px-3 text-orange-light focus:no-underline hover:text-indigo-normal transition-colors">Courses</a>
+                            <Link to="/courses" className="py-2 px-3 text-orange-light focus:no-underline hover:text-indigo-normal transition-colors">Courses</Link>
                         </li>
                         <li>
-                            <a href="/games" className="py-2 px-3 text-orange-light focus:no-underline hover:text-indigo-normal transition-colors">Games</a>
+                            <Link to="/games" className="py-2 px-3 text-orange-light focus:no-underline hover:text-indigo-normal transition-colors">Games</Link>
                         </li>
                     </ul>
                 </div>
