@@ -52,12 +52,6 @@ app.use('/api/wallet', walletRoutes);
 require("./config/mongoose.config");
 
 
-// Serve static files from the React app's build directory
-app.use(express.static(path.join(__dirname, 'client/build')));
-
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
-});
 
 // MODELS IMPORT
 const Lobby = require('./models/lobby.model');
@@ -83,9 +77,11 @@ const io = require('socket.io')(socketServer, {
 });
 
 
+
 io.on('connection', (socket) => {
     console.log('A user connected with Socket.io');
 });
+
 
 
 // Handle client errors on the server
@@ -94,6 +90,10 @@ socketServer.on('clientError', (error, socket) => {
     socket.destroy();
 });
 
+app.use(express.static(path.join(__dirname, 'client/build')));
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+});
 
 // // Socket.io listening on Seperate port 9000 than express server (8000)
 app.listen(port, () => console.log(`Listening on port: ${port}`));
