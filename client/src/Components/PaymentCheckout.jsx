@@ -33,12 +33,16 @@ const PaymentCheckout = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <PaymentElement />
-      <button className='main-button mt-4 btn btn-primary' disabled={!stripe}>Complete Payment with Stripe</button>
-      {/* Show error message to your customers */}
-      {errorMessage && <div>{errorMessage}</div>}
-    </form>
+
+    <div className="flex justify-center items-center p-4 border-2 border:bg-gray-dark">
+      <form onSubmit={handleSubmit}>
+        <PaymentElement />
+        <button className="mt-4 bg-maroon-normal text-white font-semibold py-2 px-4 border border-salmon-light rounded-md shadow-sm hover:bg-cyan-normal focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-maroon-normal disabled:opacity-50" disabled={!stripe}>
+          Complete Payment with Stripe
+        </button>
+        {errorMessage && <div className="text-red-normal">{errorMessage}</div>}
+      </form>
+    </div>
   )
 };
 

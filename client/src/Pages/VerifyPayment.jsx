@@ -1,4 +1,6 @@
 import React from "react";
+import { Link } from 'react-router-dom';
+
 
 export default function VerifyPayment() {
     return (
@@ -6,7 +8,7 @@ export default function VerifyPayment() {
             <div>
                 <img src={require("../assets/payment-verify.jpeg")} alt="Verify Payment" />
                 <h2>Payment is being verified...Your wallet will be funded once payment is confirmed.</h2>
-                <a href="/home">Go Back Home</a>
+                <Link to="/home">Go Back Home</Link>
             </div>
         </div>
     )
