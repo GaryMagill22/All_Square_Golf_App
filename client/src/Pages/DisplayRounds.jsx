@@ -141,7 +141,7 @@ const DisplayRounds = () => {
 
     return (
         <>
-            <nav className="bg-gray-dark fixed w-full h-16 z-20 top-0 border-b border-salmon-light">
+            <nav className=" fixed w-full h-16 z-20 top-0 border-b border-salmon-light ">
                 <div className="flex justify-center items-center mx-auto p-4">
                     <ul className="flex flex-row items-center space-x-4">
                         <li>
@@ -160,7 +160,7 @@ const DisplayRounds = () => {
                 </div>
             </nav>
 
-            <div className="container bg-gray-dark mx-auto p-4">
+            <div className="container bg-gradient-to-r from-gray-dark to-cyan-normal mx-auto p-4">
                 <h1 className="text-3xl text-salmon-light font-semibold mt-16 mb-4">Previous Rounds</h1>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {displayRounds.map((round) => (
@@ -182,7 +182,7 @@ const DisplayRounds = () => {
                     <Dialog open={isModalOpen} onClose={closeModal} className="fixed inset-0 z-10 overflow-y-auto">
                         <div className="flex min-h-screen items-center justify-center p-4 text-center">
                             <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
-                            <div className="w-full max-w-md mx-auto bg-gray-dark rounded-lg shadow-xl border-2 border-salmon-light transform transition-all">
+                            <div className="w-full max-w-md mx-auto rounded-lg shadow-xl border-2 border-salmon-light transform transition-all dark:bg-gray-dark overflow-hidden [url('https://flowbite.s3.amazonaws.com/docs/jumbotron/hero-pattern.svg')] dark:bg-[url('https://flowbite.s3.amazonaws.com/docs/jumbotron/hero-pattern-dark.svg')]">
                                 <div className="p-4">
                                     <Dialog.Title className="text-xxl text-white font-bold text-center">Round Details</Dialog.Title>
                                     <div className="mt-4 text-center text-semibold">

@@ -22,9 +22,9 @@ export default function SelectGameType() {
     }
 
     return (
-        <div className="bg-gray-dark min-h-screen">
+        <div className="bg-gradient-to-b from-gray-dark to-cyan-normal min-h-screen">
             <div className="pt-4 text-center">
-                <h2 className="text-white text-2xl font-bold">Select Game Type</h2>
+                <h2 className="text-white text-3xl font-bold pt-10">Select Game Type</h2>
                 {(isIndividual || isTeamPlay) && (
                     <h5 className="text-white mt-2">Selected game: {isIndividual ? 'Individual' : 'Team'}</h5>
                 )}

@@ -527,17 +527,17 @@ const ScoreCard = () => {
     }, [socket])
 
     return (
-        <main className="bg-gray-dark min-h-screen m-0 p-0">
+        <main className="bg-gradient-to-t from-gray-dark to-cyan-normal min-h-screen m-0 p-0">
             {!isSubmitted ?
-                <section className="bg-gray-dark pt-4">
-                    <div className="flex justify-between items-center bg-gray-lightest py-2 px-4 rounded-t-lg shadow-md mx-4 mb-4">
+                <section className="bg-gray-dark pt-4 dark:bg-gray-900 bg-[url('https://flowbite.s3.amazonaws.com/docs/jumbotron/hero-pattern.svg')] dark:bg-[url('https://flowbite.s3.amazonaws.com/docs/jumbotron/hero-pattern-dark.svg')]">
+                    <div className="flex justify-between items-center bg-gray-lightest py-2 px-4 mt-8 rounded-t-lg shadow-md mx-4 mb-4">
                         <h4 className="text-2xl text-black font-bold">{selectedGame[0]}</h4>
                         <h4 className="text-2xl font-bold text-black self-end">Hole #{currentHoleNumber}</h4>
                     </div>
                     {
                         gameType === 'individual' &&
-                        <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                            <table className="w-full text-sm text-center text-gray-500 dark:text-gray-400">
+                        <div className="flex justify-center overflow-x-auto shadow-md sm:rounded-lg">
+                            <table className="text-sm text-center text-white dark:text-gray-400 w-11/12">
                                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                     <tr className="text-white border-2 border-indigo-light">
                                         <th scope="col" className="px-2 py-3 text-center">Player</th>
@@ -552,8 +552,8 @@ const ScoreCard = () => {
                                                 <tr className="bg-gray-light border-2 border-indigo-light dark:bg-gray-800 dark:border-indigo-light">
                                                     <td className="px-2 py-4 whitespace-nowrap border-2 border-indigo-light" >
                                                         <div className="flex items-center space-x-3">
-                                                            <div className="w-6 h-6 overflow-hidden bg-salmon-light rounded-full dark:bg-blue-dark">
-                                                                <svg className="w-full h-full text-salmon-light" fill="currentColor" viewBox="2 0 15 10" xmlns="http://www.w3.org/2000/svg">
+                                                            <div className="w-4 h-4 overflow-hidden bg-salmon-light rounded-full dark:bg-gray-dark">
+                                                                <svg className="w-auto h-auto text-salmon-light" fill="currentColor" viewBox="2 -3 15 14" xmlns="http://www.w3.org/2000/svg">
                                                                     <path fillRule="evenodd" d="M10 5a2 2 0 100-4 2 2 0 000 4zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"></path>
                                                                 </svg>
                                                             </div>
@@ -592,7 +592,7 @@ const ScoreCard = () => {
                                             const playerScore = selectedPlayer[player.name] ? selectedPlayer[player.name].score : 0;
 
                                             return (
-                                                <table className="w-full mx-auto text-sm text-left text-white dark:text-white  border-2 border-b border-indigo-light">
+                                                <table className="w-11/12 mx-auto text-sm text-left text-white dark:text-white  border-2 border-b border-indigo-light">
                                                     <thead className="text-xs text-white uppercase bg-gray-light dark:bg-gray-light dark:text-white">
                                                         <tr className="text-black border-2 border-indigo-light">
                                                             <th scope="col" className="px-2 py-3 text-center">Player</th>
@@ -681,7 +681,7 @@ const ScoreCard = () => {
                     </div>
                     <div className="m-2">
                         {isCreator && (
-                            <Link to="/home" className="inline-flex justify-center py-2 px-4 mt-3 border border-salmon-light rounded-md text-sm font-medium text-white bg-cyan-normal">
+                            <Link to="/home" className="inline-flex justify-center py-2 px-4 m-4 border border-salmon-light rounded-md text-sm font-medium text-white bg-cyan-normal">
                                 Home
                             </Link>
                         )}
@@ -690,7 +690,7 @@ const ScoreCard = () => {
 
                 :
 
-                <div className="container bg-gray-dark">
+                <div className="container  dark:bg-gray-dark dark:bg-[url('https://flowbite.s3.amazonaws.com/docs/jumbotron/hero-pattern-dark.svg')]">
                     <h2 className='text-salmon-light p-8'>Round Totals</h2>
                     <table className="w-full divide-y">
                         <thead className="bg-gray-700">
@@ -743,7 +743,7 @@ const ScoreCard = () => {
                             Save Round
                         </button>
                     </div>
-                    <Link to="/home" className="inline-flex justify-center py-2 px-4 mt-3 border border-salmon-light rounded-md text-sm font-medium text-white bg-maroon-normal">
+                    <Link to="/home" className="inline-flex justify-center py-2 px-4 m-4 border border-salmon-light rounded-md text-sm font-medium text-white bg-maroon-normal">
                         Home
                     </Link>
                 </div>

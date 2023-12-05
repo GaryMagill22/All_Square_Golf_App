@@ -232,7 +232,7 @@ const LobbyPage = () => {
 
 // console.log('userInputCourse', userInputCourse);
     return (
-        <div className=' flex flex-col container min-h-screeen bg-gray-dark   mx-auto p-4'>
+        <div className=' flex flex-col container min-h-screeen bg-gradient-to-r from-gray-dark to-cyan-normal mx-auto p-4'>
             <div className="bg-gray-light dark:bg-gray-light shadow rounded-lg p-4 mb-4 flex-grow border-2 border-salmon-light">
                 <h1 class="mb-4 text-3xl font-extrabold text-gray-normal dark:text-gray-dark md:text-5xl lg:text-6xl"><span class="text-transparent bg-clip-text bg-gradient-to-r to-blue-normal from-maroon-normal">Lobby Code:</span> {lobbyId}</h1>
                 <p class="text-lg font-normal text-black lg:text-lg dark:text-gray-400">Give Lobby Code to playing partners - Note that it is case sensative.</p>

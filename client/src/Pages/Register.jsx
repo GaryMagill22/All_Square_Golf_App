@@ -95,15 +95,15 @@ const Register = () => {
 
 
     return (
-        <div className="bg-gray-900 min-h-screen flex flex-col justify-center px-2 sm:px-2 lg:px-2">
+        <div className="bg-gradient-to-b from-gray-dark to-cyan-normal min-h-screen flex flex-col justify-center px-2 sm:px-2 lg:px-2">
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
-                <h2 className="mt-1 text-center text-xl sm:text-3xl font-extrabold text-orange-light">
+                <h2 className="pb-4 text-center text-3xl sm:text-3xl font-extrabold text-orange-light">
                     Register your account
                 </h2>
             </div>
 
             <div className="mt-1 sm:mx-auto sm:w-full sm:max-w-md">
-                <form className="space-y-2 bg-gray-800 shadow-md rounded px-6 py-3 sm:p-6" onSubmit={submitHandler}>
+                <form className="space-y-2 bg-gray-darkest shadow-md rounded px-6 py-3 sm:p-6 border-1 border-salmon-light" onSubmit={submitHandler}>
                     <div>
                         <label htmlFor="firstName" className="block text-sm font-medium text-orange-light">
                             First Name:
@@ -213,7 +213,7 @@ const Register = () => {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="group relative w-9/12 inline-flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-maroon-normal hover:bg-gray-normal focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-salmon-light">
+                            className="group relative w-9/12 inline-flex justify-center py-2 mb-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-maroon-normal hover:bg-gray-normal focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-salmon-light">
                             {isLoading && <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>}
                             Register
                         </button>
