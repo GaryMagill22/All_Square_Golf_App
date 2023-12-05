@@ -5,7 +5,7 @@ import { Dialog, Transition, Listbox } from '@headlessui/react';
 // import {  CheckIcon, PlayCircleIcon, TrophyIcon, ChevronUpDownIcon } from '@heroicons/react/outline';
 import { CheckIcon, UserIcon, PlayCircleIcon, MapPinIcon, TrophyIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline';
 import { Axios } from '../helpers/axiosHelper';
-import logo from '../assets/All_Square_Logo.png'; // Adjust the path if your assets folder is structured differently
+import logo from '../assets/AllSquareLogo-WhiteNoBackground.png';
 import { useAppContext } from '../App';
 
 
@@ -170,9 +170,9 @@ const Home = () => {
     }
 
     return (
-        <div className=" bg-gray-900 min-h-screen overflow-hidden">
-            <div className="flex justify-center w-full">
-                <img className="max-w-full h-auto ml-3" src={logo} alt="All Square Logo" />
+        <div className="bg-gray-dark pt-4 dark:bg-gray-900 min-h-screen overflow-hidden bg-[url('https://flowbite.s3.amazonaws.com/docs/jumbotron/hero-pattern.svg')] dark:bg-[url('https://flowbite.s3.amazonaws.com/docs/jumbotron/hero-pattern-dark.svg')]">
+            <div className="flex justify-center w-full pt-10 ">
+                <img className="w-3/4 m-10" src={logo} alt="All Square Logo" />
             </div>
             <nav className="flex items-center justify-center overflow-y-auto m:h-screen mr-1" aria-label="Sidebar">
                 <ul role="options" className="-flex flex-col space-y-4">
@@ -198,7 +198,7 @@ const Home = () => {
 
 
             <div className="flex justify-center " >
-                <form onSubmit={handleSubmit} className="justify-center">
+                <form onSubmit={handleSubmit} className="justify-center mt-2">
                     {/* Dropdown Menu for Games */}
                     <Listbox value={selectedGame} onChange={(item) => handleSelect(item, 'game')}>
                         {({ open }) => (
@@ -254,7 +254,7 @@ const Home = () => {
                     <input
                         type="text"
                         onChange={handleCourseInputChange}
-                        className="relative w-full cursor-default rounded-md bg-cyan-normal py-1.5 pl-3 pr-10 text-left shadow-sm ring-1 ring-inset ring-gray-300 focus:border-2 focus:border-salmon-light sm:text-sm sm:leading-6 placeholder-black"
+                        className="relative w-full cursor-default rounded-md mt-2 bg-cyan-normal py-1.5 pl-3 pr-10 text-left shadow-sm ring-1 ring-inset ring-gray-300 focus:border-2 focus:border-salmon-light sm:text-sm sm:leading-6 placeholder-black"
                         placeholder="Enter Course Name"
                     />
 
