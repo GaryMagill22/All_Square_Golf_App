@@ -3,7 +3,7 @@ import { useState, useEffect, Fragment } from 'react'
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'tailwindcss/tailwind.css';
-import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline';
+import { CheckIcon, ChevronUpDownIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Transition, Listbox } from '@headlessui/react';
 import { Link, useNavigate, useLocation, useParams } from 'react-router-dom';
 import { getSocket } from '../helpers/socketHelper';
@@ -79,7 +79,7 @@ const LobbyPage = () => {
 
     // GET ALL GAMES
     useEffect(() => {
-        axios.get('https://allsquare.club/api/games')
+        axios.get('https://allsqaure.club/api/games')
             .then((res) => {
                 setGames(res.data);
                 // setLoaded(true);
@@ -232,15 +232,15 @@ const LobbyPage = () => {
 
     // console.log('userInputCourse', userInputCourse);
     return (
-        <div className=' flex flex-col container min-h-screeen bg-gradient-to-r from-gray-dark to-cyan-normal mx-auto p-4'>
-            <div className="bg-gray-light dark:bg-gray-light shadow rounded-lg p-4 mb-4 flex-grow border-2 border-salmon-light">
+        <div className='flex flex-col container min-h-screen bg-gradient-to-r from-gray-dark to-cyan-normal mx-auto p-4'>
+            <div className="bg-gray-light dark:bg-gray-light shadow rounded-lg p-4 mb-4 border-2 border-salmon-light">
                 <h1 class="mb-4 text-3xl font-extrabold text-gray-normal dark:text-gray-dark md:text-5xl lg:text-6xl"><span class="text-transparent bg-clip-text bg-gradient-to-r to-blue-normal from-maroon-normal">Lobby Code:</span> {lobbyId}</h1>
                 <p class="text-lg font-normal text-black lg:text-lg dark:text-gray-400">Give Lobby Code to playing partners - Note that it is case sensative.</p>
             </div>
 
             {/* Player Loading Section */}
-            <div className="bg-gray-light dark:bg-gray-light shadow rounded-lg p-4 mb-6 flex-grow border-2 border-salmon-light">
-                <h3 className="font-bold text-white">Players</h3>
+            <div className="bg-gray-light dark:bg-gray-light text-center shadow rounded-lg p-4 mb-6 flex-grow border-2 border-salmon-light">
+                <h3 className="font-bold text-2xl text-black mb-2">- Players -</h3>
                 <div className="justify-center space-y-2">
                     {players.map((p, i) => (
                         <div key={i} className="flex justify-center items-center space-x-2 space-y-0">
@@ -251,7 +251,7 @@ const LobbyPage = () => {
                                     </svg>
                                 </div>
                             </div>
-                            <h5 className=" text-gray-800 dark:text-blue-dark">{p.username}</h5>
+                            <h5 className="text-gray-900 dark:text-gray-900 font-bold">{p.username}</h5>
                         </div>
                     ))}
                 </div>
@@ -266,7 +266,7 @@ const LobbyPage = () => {
                     <div className="space-y-4">
                         <div className='flex flex-col md:flex-row items-center gap-4 flex-grow'>
                             <input className='form-control flex-grow' placeholder='Enter team name' onChange={(e) => setTeamValue(e.target.value)} />
-                            <button className='btn btn-success' onClick={handleCreateTeam}>Create team</button>
+                            <button className='inline-flex justify-center py-2 px-4 border border-transparent rounded-md text-sm font-medium text-white bg-maroon-normal hover:bg-gray-normal focus:ring-offset-2 focus:ring-salmon-light' onClick={handleCreateTeam}>Create team</button>
                         </div>
                         <div>
                             <h5>Add Players to team</h5>
@@ -344,7 +344,7 @@ const LobbyPage = () => {
                                     )}
                                 </Listbox>
 
-                                <button className='btn btn-info' onClick={addPlayerToTeam}>Add Player to Team</button>
+                                <button className='inline-flex justify-center py-2 px-4 border border-transparent rounded-md text-sm font-medium text-white bg-maroon-normal' onClick={addPlayerToTeam}>Add Player to Team</button>
                             </div>
                         </div>
                     </div>
@@ -356,29 +356,33 @@ const LobbyPage = () => {
                 <div className="flex flex-col bg-gray-light dark:bg-gray-light shadow rounded-lg p-4 mb-6 border-2 border-salmon-light">
                     <div className='grid grid-cols-1 md:grid-cols-2 gap-4 flex-grow'>
                         {teams.length > 0 ? teams.map((item, index) => (
-                            <div key={index} className='border border-gray-200 rounded-lg p-4'>
-                                <h4 className="font-semibold">{item.teamName}</h4>
+                            <div key={index} className='border-1 border-white rounded-lg p-4'>
+                                <h4 className="font-bold text-lg">{item.teamName}</h4>
                                 {item.players && (
-                                    <ul className="list-disc pl-5">
+                                    <div>
                                         {item.players.map((data) => (
-                                            <li key={data.id} className='mt-2'>
-                                                {data.name}
-                                                <button className='ml-2 text-red-500' onClick={() => removeUserFromTeam(data.id, item.teamName)}>x</button>
-                                            </li>
+                                            <div key={data.id} className='flex justify-between items-center mt-2 font-bold'>
+                                                <span>{data.name}</span>
+                                                <button
+                                                    className='ml-2 text-red-500 hover:text-red-700'
+                                                    onClick={() => removeUserFromTeam(data.id, item.teamName)}
+                                                >
+                                                    <XMarkIcon className="h-5 w-5 border-1 border-black bg-gray-normal rounded-full" />
+                                                </button>
+                                            </div>
                                         ))}
-                                    </ul>
+                                    </div>
                                 )}
                             </div>
                         )) : <p>No teams available...</p>}
                     </div>
                 </div>
             )}
-
             {/* Betting Amount Section */}
             <div className="bg-gray-light dark:bg-gray-light shadow rounded-lg p-4 mb-6 border-2 border-salmon-light">
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">
-                        <label htmlFor="bettingAmount" className="block text-lg font-medium text-gray-700">Bet Amount</label>
+                        <label htmlFor="bettingAmount" className="block text-lg font-bold text-black">Bet Amount</label>
                         <input type="number" className="mt-1 block w-full border-2 border-salmon-light rounded-md shadow-sm focus:border-blue-dark focus:ring-blue-dark sm:text-sm" name="bettingAmount" placeholder='Enter amount' disabled={!isCreator} onChange={(e) => setBettingAmount(parseInt(e.target.value))} />
                     </div>
                     <button type="submit" disabled={!isCreator} className="inline-flex justify-center py-2 px-4 border border-transparent rounded-md text-sm font-medium text-white bg-maroon-normal hover:bg-gray-normal focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-salmon-light">Submit</button>
