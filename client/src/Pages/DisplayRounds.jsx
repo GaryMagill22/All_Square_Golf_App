@@ -25,7 +25,7 @@ const DisplayRounds = () => {
         };
 
         if (userId) {
-            axios.get(`htts://allsquare.club/api/rounds/user/${userId}`)
+            axios.get(`https://allsquare.club/api/rounds/user/${userId}`)
                 .then((res) => {
                     const processedRounds = res.data.map(round => {
                         const roundDate = round.createdAt ? new Date(round.createdAt) : new Date();
