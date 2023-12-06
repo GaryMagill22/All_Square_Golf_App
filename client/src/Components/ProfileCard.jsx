@@ -141,7 +141,7 @@ const ProfileCard = () => {
                             <Link to="/home" className="py-2 px-3 text-orange-light no-underline hover:no-underline hover:text-indigo-normal transition-colors bg-gray-normal">Home</Link>
                         </li>
                         <li>
-                            <Link to="/profile" className="py-2 px-3 text-orange-light hover:no-underline hover:text-indigo-normal transition-colors bg-gray-normal">Profile</Link>
+                            <Link to="/rounds" className="py-2 px-3 text-orange-light hover:no-underline hover:text-indigo-normal transition-colors bg-gray-normal">Rounds</Link>
                         </li>
                         <li>
                             <Link to="/courses" className="py-2 px-3 text-orange-light hover:no-underline hover:text-indigo-normal transition-colors bg-gray-normal">Courses</Link>
@@ -152,6 +152,7 @@ const ProfileCard = () => {
                     </ul>
                 </div>
             </nav>
+        </nav >
             <div className="min-h-screen pt-4 dark:bg-gray-dark overflow-hidden [url('https://flowbite.s3.amazonaws.com/docs/jumbotron/hero-pattern.svg')] dark:bg-[url('https://flowbite.s3.amazonaws.com/docs/jumbotron/hero-pattern-dark.svg')] flex justify-center items-center p-4">
                 <div className="w-full max-w-sm bg-gradient-to-b from-gray-dark to-cyan-normal border-2 border-salmon-light rounded-lg shadow dark:border-salmon-light">
                     <div className="flex flex-col items-center pb-10">
