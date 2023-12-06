@@ -152,7 +152,6 @@ const ProfileCard = () => {
                     </ul>
                 </div>
             </nav>
-        </nav >
             <div className="min-h-screen pt-4 dark:bg-gray-dark overflow-hidden [url('https://flowbite.s3.amazonaws.com/docs/jumbotron/hero-pattern.svg')] dark:bg-[url('https://flowbite.s3.amazonaws.com/docs/jumbotron/hero-pattern-dark.svg')] flex justify-center items-center p-4">
                 <div className="w-full max-w-sm bg-gradient-to-b from-gray-dark to-cyan-normal border-2 border-salmon-light rounded-lg shadow dark:border-salmon-light">
                     <div className="flex flex-col items-center pb-10">
