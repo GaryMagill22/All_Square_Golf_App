@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/AllSquareLogo-WhiteNoBackground.png';
-import golfBallGraphic from '../assets/GolfBallSplash.png';
 
 
 const DashBoard = () => {
