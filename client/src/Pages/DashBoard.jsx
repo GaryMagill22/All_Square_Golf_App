@@ -16,7 +16,7 @@ const DashBoard = () => {
                     <h2 className="text-4xl text-salmon-light font-bold mb-6">Bet. Play. Win.</h2>
                     <p className="text-lg mb-8">Upgrade your golf rounds: Simple Bets, Instant Wins. Challenge friends, track live scores, and ensure every shot matters. Bet directly from your digital wallet and savor speedy payouts. Our app eliminates complexity, focusing on simple scorecards and straightforward betting.</p>
                     <div className="inline-block">
-                        <Link to="/register" className="bg-indigo-light text-black hover:no-underline font-medium rounded-lg text-sm px-6 py-2.5 mb-2 block">
+                        <Link to="/register" className="bg-indigo-dark text-white hover:no-underline font-medium rounded-lg text-sm px-6 py-2.5 mb-2 block">
                             Get Started
                         </Link>
                         {/* Login button directly below Get Started button */}
