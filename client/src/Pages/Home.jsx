@@ -170,7 +170,7 @@ const Home = () => {
     }
 
     return (
-        <div className="bg-gray-dark pt-4 dark:bg-gray-900 min-h-screen overflow-hidden bg-[url('https://flowbite.s3.amazonaws.com/docs/jumbotron/hero-pattern.svg')] dark:bg-[url('https://flowbite.s3.amazonaws.com/docs/jumbotron/hero-pattern-dark.svg')]">
+        <div className="bg-gray-dark pt-4 min-h-screen overflow-hidden bg-[url('https://flowbite.s3.amazonaws.com/docs/jumbotron/hero-pattern.svg')] dark:bg-[url('https://flowbite.s3.amazonaws.com/docs/jumbotron/hero-pattern-dark.svg')]">
             <div className="flex justify-center w-full pt-10 ">
                 <img className="w-3/4 m-10" src={logo} alt="All Square Logo" />
             </div>
@@ -180,7 +180,7 @@ const Home = () => {
                         <li key={item.name}>
                             <Link
                                 to={item.to}
-                                className="w-30 pr-3 bg-gray-light text-black hover:text-indigo-600 hover:bg-gray-50 group flex gap-x-3 rounded-md p-1.5 text-md leading-6 font-semibold hover:no-underline"
+                                className="w-30 pr-3 bg-gradient-to-b from-gray-lightest to-gray-light text-black hover:text-indigo-600 hover:bg-gray-50 group flex gap-x-3 rounded-md p-1.5 text-md leading-6 font-semibold hover:no-underline"
                             >
                                 <item.icon
                                     className={classNames(
@@ -203,7 +203,7 @@ const Home = () => {
                     <Listbox value={selectedGame} onChange={(item) => handleSelect(item, 'game')}>
                         {({ open }) => (
                             <>
-                                <div className="relative mt-2">
+                                <div className="relative mt-3">
                                     <Listbox.Button className="relative w-full cursor-default mb-2 rounded-md bg-cyan-normal py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                         <span className="block truncate">{selectedGame ? selectedGame.name : 'Select Game'}</span>
                                         <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">

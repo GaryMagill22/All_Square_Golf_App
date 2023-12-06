@@ -141,26 +141,26 @@ const DisplayRounds = () => {
 
     return (
         <>
-            <nav className=" fixed w-full h-16 z-20 top-0 border-b border-salmon-light ">
-                <div className="flex justify-center items-center mx-auto p-4">
-                    <ul className="flex flex-row items-center space-x-4">
+            <nav className="fixed w-full h-16 z-20 top-0 border-b border-salmon-light flex justify-content bg-gray-dark ">
+                <div className="flex justify-center mx-auto">
+                    <ul className="flex flex-row items-center space-x-4 text-lg">
                         <li>
-                            <Link to="/home" className="py-2 px-3 text-orange-light focus:no-underline hover:text-indigo-normal transition-colors">Home</Link>
+                            <Link to="/home" className="py-2 px-3 text-orange-light no-underline hover:no-underline hover:text-indigo-normal transition-colors bg-gray-normal">Home</Link>
                         </li>
                         <li>
-                            <Link to="/profile" className="py-2 px-3 text-orange-light focus:no-underline hover:text-indigo-normal transition-colors">Profile</Link>
+                            <Link to="/profile" className="py-2 px-3 text-orange-light hover:no-underline hover:text-indigo-normal transition-colors bg-gray-normal">Profile</Link>
                         </li>
                         <li>
-                            <Link to="/courses" className="py-2 px-3 text-orange-light focus:no-underline hover:text-indigo-normal transition-colors">Courses</Link>
+                            <Link to="/courses" className="py-2 px-3 text-orange-light hover:no-underline hover:text-indigo-normal transition-colors bg-gray-normal">Courses</Link>
                         </li>
                         <li>
-                            <Link to="/games" className="py-2 px-3 text-orange-light focus:no-underline hover:text-indigo-normal transition-colors">Games</Link>
+                            <Link to="/games" className="py-2 px-3 text-orange-light hover:no-underline hover:text-indigo-normal transition-colors bg-gray-normal">Games</Link>
                         </li>
                     </ul>
                 </div>
             </nav>
 
-            <div className="container bg-gradient-to-r from-gray-dark to-cyan-normal mx-auto p-4">
+            <div className="container bg-gradient-to-r from-gray-dark to-cyan-dark mx-auto p-4">
                 <h1 className="text-3xl text-salmon-light font-semibold mt-16 mb-4">Previous Rounds</h1>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {displayRounds.map((round) => (
