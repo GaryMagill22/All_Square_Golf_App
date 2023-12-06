@@ -141,7 +141,7 @@ const ProfileCard = () => {
                             <Link to="/home" className="py-2 px-3 text-orange-light no-underline hover:no-underline hover:text-indigo-normal transition-colors bg-gray-normal">Home</Link>
                         </li>
                         <li>
-                            <Link to="/profile" className="py-2 px-3 text-orange-light hover:no-underline hover:text-indigo-normal transition-colors bg-gray-normal">Profile</Link>
+                            <Link to="/rounds" className="py-2 px-3 text-orange-light hover:no-underline hover:text-indigo-normal transition-colors bg-gray-normal">Rounds</Link>
                         </li>
                         <li>
                             <Link to="/courses" className="py-2 px-3 text-orange-light hover:no-underline hover:text-indigo-normal transition-colors bg-gray-normal">Courses</Link>
