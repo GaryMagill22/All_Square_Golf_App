@@ -97,7 +97,7 @@ const Register = () => {
     return (
         <div className="bg-gradient-to-b from-gray-dark to-cyan-normal min-h-screen flex flex-col justify-center px-2 sm:px-2 lg:px-2">
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
-                <h2 className="pb-4 text-center text-3xl sm:text-3xl font-extrabold text-orange-light">
+                <h2 className="pb-4 text-center text-3xl sm:text-3xl font-extrabold text-salmon-light">
                     Register your account
                 </h2>
             </div>
@@ -105,7 +105,7 @@ const Register = () => {
             <div className="mt-1 sm:mx-auto sm:w-full sm:max-w-md">
                 <form className="space-y-2 bg-gray-darkest shadow-md rounded px-6 py-3 sm:p-6 border-1 border-salmon-light" onSubmit={submitHandler}>
                     <div>
-                        <label htmlFor="firstName" className="block text-sm font-medium text-orange-light">
+                        <label htmlFor="firstName" className="block text-md font-bold text-orange-light">
                             First Name:
                         </label>
                         <input
@@ -120,7 +120,7 @@ const Register = () => {
                     </div>
 
                     <div>
-                        <label htmlFor="lastName" className="block text-sm font-medium text-orange-light">
+                        <label htmlFor="lastName" className="block text-md font-bold text-orange-light">
                             Last Name:
                         </label>
                         <input
@@ -134,7 +134,7 @@ const Register = () => {
                     </div>
 
                     <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-orange-light">
+                        <label htmlFor="email" className="block text-md font-bold text-orange-light">
                             Email:
                         </label>
                         <div>
@@ -150,7 +150,7 @@ const Register = () => {
                     </div>
 
                     <div>
-                        <label htmlFor="username" className="block text-sm font-medium text-orange-light">
+                        <label htmlFor="username" className="block text-md font-bold text-orange-light">
                             Username:
                         </label>
                         <input
@@ -164,7 +164,7 @@ const Register = () => {
                     </div>
 
                     <div>
-                        <label htmlFor="password" className="block text-sm font-medium text-orange-light">
+                        <label htmlFor="password" className="block text-md font-bold text-orange-light">
                             Password:
                         </label>
                         <input
@@ -179,7 +179,7 @@ const Register = () => {
                     </div>
 
                     <div>
-                        <label htmlFor="confirmPassword" className="block text-sm font-medium text-orange-light">
+                        <label htmlFor="confirmPassword" className="block text-md font-bold text-orange-light">
                             Confirm Password:
                         </label>
                         <input
@@ -193,7 +193,7 @@ const Register = () => {
                     </div>
 
                     <div>
-                        <label htmlFor="handicap" className="block text-sm font-medium text-orange-light">
+                        <label htmlFor="handicap" className="block text-md font-bold text-orange-light">
                             Handicap:
                         </label>
                         <input
@@ -213,7 +213,7 @@ const Register = () => {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="group relative w-9/12 inline-flex justify-center py-2 mb-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-maroon-normal hover:bg-gray-normal focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-salmon-light">
+                            className="group relative w-9/12 inline-flex justify-center py-2 mb-2 mt-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-maroon-normal hover:bg-gray-normal focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-salmon-light">
                             {isLoading && <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>}
                             Register
                         </button>
