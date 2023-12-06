@@ -104,13 +104,13 @@ const ProfileCard = () => {
 
 
     useEffect(() => {
-        axios.get(`https://allsquare.club/api/users/getUser`, { withCredentials: true })
+        axios.get(`http://localhost:8000/api/users/getUser`, { withCredentials: true })
             .then(res => setUser(res.data))
             .catch()
     }, [])
 
     const logoutHandler = () => {
-        axios.delete(`https://allsquare.club/api/users/logout`, { withCredentials: true })
+        axios.delete(`http://localhost:8000/api/users/logout`, { withCredentials: true })
             .then(res => {
                 // clear all local/session storage
                 localStorage.clear();
@@ -136,7 +136,7 @@ const ProfileCard = () => {
         <>
             <nav className="fixed w-full h-16 z-20 top-0 border-b border-salmon-light flex justify-content bg-gray-dark ">
                 <div className="flex justify-center mx-auto">
-                    <ul className="flex flex-row items-center space-x-4 text-lg">
+                    <ul className="flex flex-row items-center space-x-4 text-md">
                         <li>
                             <Link to="/home" className="py-2 px-3 text-orange-light no-underline hover:no-underline hover:text-indigo-normal transition-colors bg-gray-normal">Home</Link>
                         </li>
