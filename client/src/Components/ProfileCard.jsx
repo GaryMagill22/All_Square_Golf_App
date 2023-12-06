@@ -104,13 +104,13 @@ const ProfileCard = () => {
 
 
     useEffect(() => {
-        axios.get(`http://localhost:8000/api/users/getUser`, { withCredentials: true })
+        axios.get(`https://allsquare.club/api/users/getUser`, { withCredentials: true })
             .then(res => setUser(res.data))
             .catch()
     }, [])
 
     const logoutHandler = () => {
-        axios.delete(`http://localhost:8000/api/users/logout`, { withCredentials: true })
+        axios.delete(`https://allsquare.club/api/users/logout`, { withCredentials: true })
             .then(res => {
                 // clear all local/session storage
                 localStorage.clear();
