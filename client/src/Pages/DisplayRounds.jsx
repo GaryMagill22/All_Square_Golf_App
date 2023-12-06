@@ -143,7 +143,7 @@ const DisplayRounds = () => {
         <>
             <nav className="fixed w-full h-16 z-20 top-0 border-b border-salmon-light flex justify-content bg-gray-dark ">
                 <div className="flex justify-center mx-auto">
-                    <ul className="flex flex-row items-center space-x-4 text-lg">
+                    <ul className="flex flex-row items-center space-x-4 text-md">
                         <li>
                             <Link to="/home" className="py-2 px-3 text-orange-light no-underline hover:no-underline hover:text-indigo-normal transition-colors bg-gray-normal">Home</Link>
                         </li>

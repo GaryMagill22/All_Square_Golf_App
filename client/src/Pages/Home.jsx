@@ -150,7 +150,7 @@ const Home = () => {
     const handleUserUpdateIntoTheLobby = async (lobbyId, room) => {
         try {
             const storedPlayers = localStorage.getItem('players');
-            const response = await axios.post(`http://localhost:8000/api/lobbys/update-users/${lobbyId}`, { updatedPlayers: JSON.parse(storedPlayers) });
+            const response = await axios.post(`https://allsquare.club/api/lobbys/update-users/${lobbyId}`, { updatedPlayers: JSON.parse(storedPlayers) });
 
             navigate(`/new/round/${lobbyId}`);
         } catch (error) {
@@ -172,7 +172,7 @@ const Home = () => {
     return (
         <div className="bg-gray-dark pt-4 min-h-screen overflow-hidden bg-[url('https://flowbite.s3.amazonaws.com/docs/jumbotron/hero-pattern.svg')] dark:bg-[url('https://flowbite.s3.amazonaws.com/docs/jumbotron/hero-pattern-dark.svg')]">
             <div className="flex justify-center w-full pt-10 ">
-                <img className="w-3/4 m-10" src={logo} alt="All Square Logo" />
+                <img className="w-3/4 m-8 mt-2" src={logo} alt="All Square Logo" />
             </div>
             <nav className="flex items-center justify-center overflow-y-auto m:h-screen mr-1" aria-label="Sidebar">
                 <ul role="options" className="-flex flex-col space-y-4">
