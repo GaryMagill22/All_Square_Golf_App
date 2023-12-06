@@ -79,7 +79,7 @@ const Login = () => {
 
     return (
         <div className="flex min-h-screen flex-col justify-center px-6 lg:px-8 bg-gradient-to-b from-gray-darkest to-cyan-normal">
-            <div className="flex flex-col justify-center py-4 px-4 bg-gray-darkest border-1 border-salmon-light">
+            <div className="flex flex-col justify-center py-4 px-4 bg-gray-dark border-1 border-salmon-light">
                 <div className="sm:mx-auto sm:w-full sm:max-w-md">
                     <h2 className="text-center text-3xl font-extrabold text-orange-light">
                         Sign in to your account
@@ -167,3 +167,4 @@ const Login = () => {
 }
 
 export default Login
+
