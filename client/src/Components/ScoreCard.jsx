@@ -94,43 +94,6 @@ const ScoreCard = () => {
     });
 
 
-
-    // Function to send all users in Game the selectedGame, userInputCourse.
-    // useEffect(() => {
-    //     if (isCreator) {
-    //         // Emit the game and course information to other players in the lobby
-    //         socket.emit('gameInfo', {
-    //             selectedGame: selectedGame[0],
-    //             userInputCourse: userInputCourse,
-    //         });
-    //     }
-    // }, [isCreator, selectedGame, userInputCourse, socket]);
-
-
-
-    // listens for gameInfo event and updates the game and course information in localStorage
-    // useEffect(() => {
-    //     if (socket) {
-    //         socket.on('gameInfo', (data) => {
-    //             localStorage.setItem('user_selected_game', JSON.stringify(data.selectedGame));
-
-    //             if (data.courseName) {
-    //             setUserInputCourse(data.courseName); // Update the course using context
-    //         }
-    //         });
-    //     }
-
-    //     // Cleanup listener on unmount
-    //     return () => {
-    //         if (socket) {
-    //             socket.off('gameInfo');
-    //         }
-    //     };
-    // }, [socket, userInputCourse]);
-
-
-
-
     // Function to handle score update for each player
     const handleScoreUpdate = (player, score) => {
         var points;
